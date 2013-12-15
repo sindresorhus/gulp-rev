@@ -1,6 +1,6 @@
 {
   "name": "gulp-rev",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Static asset revisioning by prepending content hash to filenames: unicorn.css => 098f6bcd.unicorn.css",
   "license": "MIT",
   "repository": "sindresorhus/gulp-rev",
