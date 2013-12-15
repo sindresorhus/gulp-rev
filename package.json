@@ -1,0 +1,42 @@
+{
+  "name": "gulp-rev",
+  "version": "0.0.0",
+  "description": "Static asset revisioning by prepending content hash to filenames: unicorn.css => 098f6bcd.unicorn.css",
+  "license": "MIT",
+  "repository": "sindresorhus/gulp-rev",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "http://sindresorhus.com"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulpplugin",
+    "rev",
+    "revision",
+    "hash",
+    "optimize",
+    "version",
+    "versioning",
+    "cache",
+    "expire",
+    "static",
+    "asset",
+    "assets"
+  ],
+  "dependencies": {
+    "event-stream": "~3.0.20"
+  },
+  "devDependencies": {
+    "gulp-util": "~2.1.3",
+    "mocha": "*"
+  }
+}
