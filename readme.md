@@ -1,7 +1,7 @@
 # [gulp](https://github.com/wearefractal/gulp)-rev [![Build Status](https://secure.travis-ci.org/sindresorhus/gulp-rev.png?branch=master)](http://travis-ci.org/sindresorhus/gulp-rev)
 
-> Static asset revisioning by prepending content hash to filenames  
-`unicorn.css` => `098f6bcd.unicorn.css`
+> Static asset revisioning by appending content hash to filenames  
+`unicorn.css` => `unicorn-098f6bcd.css`
 
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
 
