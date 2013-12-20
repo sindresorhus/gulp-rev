@@ -9,7 +9,9 @@ function md5(str) {
 
 module.exports = function (data, options) {
 	return es.map(function (file, cb) {
-		var filename = md5(file.contents.toString()).slice(0, 8) + '.' + path.basename(file.path);
+		var hash = md5(file.contents.toString()).slice(0, 8);
+		var ext = path.extname(file.path);
+		var filename = path.basename(file.path, ext) + '_' + hash + ext;
 		file.path = path.join(path.dirname(file.path), filename);
 		cb(null, file);
 	});

@@ -8,7 +8,7 @@ it('should rev files', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (data) {
-		assert.equal(data.path, '~/dev/foo/098f6bcd.unicorn.css');
+		assert.equal(data.path, '~/dev/foo/unicorn_098f6bcd.css');
 		cb();
 	});
 
