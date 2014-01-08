@@ -12,10 +12,10 @@ module.exports = function (context) {
 		var hash = md5(file.contents.toString()).slice(0, 8);
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + '_' + hash + ext;
-		var oldPath = file.path;
+		var oldPath = file.relative;
 		file.path = path.join(path.dirname(file.path), filename);
 		if (context) {
-			context.put(oldPath, file.path);
+			context.put(oldPath, file.relative);
 		}
 		cb(null, file);
 	}).on('end', function() {

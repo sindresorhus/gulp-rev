@@ -20,14 +20,14 @@ describe('rev', function() {
 		}));
 	});
 
-	it('given context, rev should call #put on it', function (cb) {
+	it('given context, rev should call #put on it with relative path', function (cb) {
 		
 		var context = { };
 		var ok = false;
 
 		context.put = function(oldPath, newPath) {
-			assert.equal(oldPath, '~/dev/foo/unicorn.css');
-			assert.equal(newPath, '~/dev/foo/unicorn_098f6bcd.css');
+			assert.equal(oldPath, 'foo/unicorn.css');
+			assert.equal(newPath, 'foo/unicorn_098f6bcd.css');
 			ok = true;
 		};
 
@@ -40,6 +40,7 @@ describe('rev', function() {
 
 		stream.write(new gutil.File({
 			path: '~/dev/foo/unicorn.css',
+			base: '~/dev/',
 			contents: 'test'
 		}));
 

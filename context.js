@@ -24,7 +24,7 @@ function replace(promise, pattern, replacement) {
 			contents = contents.replace(pattern, replacement.bind(context));
 			file.contents = new Buffer(contents);
 			cb(null, file);
-		}).then(null, cb);
+		}).then(null, cb).done();
 	});
 
 }
