@@ -33,7 +33,8 @@
     "assets"
   ],
   "dependencies": {
-    "event-stream": "~3.0.20"
+    "event-stream": "~3.0.20",
+    "q": "~1.0.0"
   },
   "devDependencies": {
     "gulp-util": "~2.1.3",
