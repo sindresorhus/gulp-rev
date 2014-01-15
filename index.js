@@ -1,6 +1,7 @@
 'use strict';
 var crypto = require('crypto');
 var path = require('path');
+var map = require('map-stream');
 var es = require('event-stream');
 
 function md5(str) {
@@ -16,10 +17,10 @@ module.exports = function (context) {
 	}
 
 	return es.pipeline(
-		es.map(function (file, cb) {
+		map(function (file, cb) {
 			var hash = md5(file.contents.toString()).slice(0, 8);
 			var ext = path.extname(file.path);
-			var filename = path.basename(file.path, ext) + '_' + hash + ext;
+			var filename = path.basename(file.path, ext) + '-' + hash + ext;
 			var oldPath = file.relative;
 			file.path = path.join(path.dirname(file.path), filename);
 			fileEventStream.write({

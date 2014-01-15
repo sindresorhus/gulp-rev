@@ -11,13 +11,13 @@ describe('rev', function() {
 		var stream = rev();
 
 		stream.on('data', function (data) {
-			assert.equal(data.path, '~/dev/foo/unicorn_098f6bcd.css');
+			assert.equal(data.path, '~/dev/foo/unicorn-098f6bcd.css');
 			cb();
 		});
 
 		stream.write(new gutil.File({
 			path: '~/dev/foo/unicorn.css',
-			contents: 'test'
+			contents: new Buffer('test')
 		}));
 	});
 
@@ -25,7 +25,7 @@ describe('rev', function() {
 
 		var context = es.through(function(event) {
 			assert.equal(event.old, 'foo/unicorn.css');
-			assert.equal(event.new, 'foo/unicorn_098f6bcd.css');
+			assert.equal(event.new, 'foo/unicorn-098f6bcd.css');
 		}, function() {
 			cb();
 		});
@@ -35,7 +35,7 @@ describe('rev', function() {
 		stream.write(new gutil.File({
 			path: '~/dev/foo/unicorn.css',
 			base: '~/dev/',
-			contents: 'test'
+			contents: new Buffer('test')
 		}));
 
 		stream.end();
@@ -79,7 +79,7 @@ describe('rev.Context', function() {
 
 		stream.write(new gutil.File({
 			path: 'index.html',
-			contents: 'Hello, <!-- test --> yeah'
+			contents: new Buffer('Hello, <!-- test --> yeah')
 		}));
 
 	});
