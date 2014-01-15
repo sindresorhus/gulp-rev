@@ -33,6 +33,9 @@
     "assets"
   ],
   "dependencies": {
+    "event-stream": "~3.0.20",
+    "q": "~1.0.0",
+    "fnamemodify": "~0.2.0",
     "map-stream": "~0.1.0"
   },
   "devDependencies": {
