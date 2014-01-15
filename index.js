@@ -8,21 +8,31 @@ function md5(str) {
 }
 
 module.exports = function (context) {
-	return es.map(function (file, cb) {
-		var hash = md5(file.contents.toString()).slice(0, 8);
-		var ext = path.extname(file.path);
-		var filename = path.basename(file.path, ext) + '_' + hash + ext;
-		var oldPath = file.relative;
-		file.path = path.join(path.dirname(file.path), filename);
-		if (context) {
-			context.put(oldPath, file.relative);
-		}
-		cb(null, file);
-	}).on('end', function() {
-		if (context) {
-			context.end();
-		}
-	});
+
+	var fileEventStream = es.through();
+
+	if (context) {
+		fileEventStream.pipe(context);
+	}
+
+	return es.pipeline(
+		es.map(function (file, cb) {
+			var hash = md5(file.contents.toString()).slice(0, 8);
+			var ext = path.extname(file.path);
+			var filename = path.basename(file.path, ext) + '_' + hash + ext;
+			var oldPath = file.relative;
+			file.path = path.join(path.dirname(file.path), filename);
+			fileEventStream.write({
+				old: oldPath,
+				new: file.relative
+			});
+			cb(null, file);
+		}),
+		es.through(null, function() {
+			fileEventStream.end();
+		})
+	);
+
 };
 
 module.exports.Context = require('./context');

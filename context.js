@@ -1,13 +1,15 @@
 'use strict';
 var Q = require('q');
 var es = require('event-stream');
+var fnamemodify = require('fnamemodify');
 
 function compile(pattern, replacement) {
 	return function (text) {
 		var context = this;
 		return text.replace(pattern, replacement)
 		.replace(/\{\{(.*?)\}\}/g, function(_, name) {
-			return context.get(name);
+			var parts = fnamemodify.extract(name);
+			return fnamemodify(context.get(parts.fname), parts.mods);
 		});
 	};
 }
@@ -31,12 +33,15 @@ function replace(promise, pattern, replacement) {
 
 module.exports = function Context() {
 
-	var context = { };
+	var context = es.through(function(event) {
+		context._put(event.old, event.new);
+	});
+
 	var map = { };
 	var defer = Q.defer();
 	var promise = defer.promise;
 
-	context.put = function(oldPath, newPath) {
+	context._put = function(oldPath, newPath) {
 		map[oldPath] = newPath;
 	};
 

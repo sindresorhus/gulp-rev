@@ -3,6 +3,7 @@
 var assert = require('assert');
 var gutil = require('gulp-util');
 var rev = require('./index');
+var es = require('event-stream');
 
 describe('rev', function() {
 
@@ -20,47 +21,22 @@ describe('rev', function() {
 		}));
 	});
 
-	it('given context, rev should call #put on it with relative path', function (cb) {
-		
-		var context = { };
-		var ok = false;
+	it('given context, rev should pipe file names to it', function (cb) {
 
-		context.put = function(oldPath, newPath) {
-			assert.equal(oldPath, 'foo/unicorn.css');
-			assert.equal(newPath, 'foo/unicorn_098f6bcd.css');
-			ok = true;
-		};
-
-		var stream = rev(context);
-
-		stream.on('data', function () {
-			assert.ok(ok, 'context#put should have been called!');
+		var context = es.through(function(event) {
+			assert.equal(event.old, 'foo/unicorn.css');
+			assert.equal(event.new, 'foo/unicorn_098f6bcd.css');
+		}, function() {
 			cb();
 		});
+
+		var stream = rev(context);
 
 		stream.write(new gutil.File({
 			path: '~/dev/foo/unicorn.css',
 			base: '~/dev/',
 			contents: 'test'
 		}));
-
-	});
-
-	it('given context, rev should call #end when finish', function (cb) {
-		
-		var context = { };
-		var ok = false;
-
-		context.end = function() {
-			ok = true;
-		};
-
-		var stream = rev(context);
-
-		stream.on('end', function () {
-			assert.ok(ok, 'context#end should have been called!');
-			cb();
-		});
 
 		stream.end();
 
@@ -72,8 +48,8 @@ describe('rev.Context', function() {
 
 	it('#get should return the file name or throw', function () {
 		var context = rev.Context();
-		context.put('hello', 'world');
-		context.put('test', 'that');
+		context.write({ old: 'hello', new: 'world' });
+		context.write({ old: 'test',  new: 'that' });
 		assert.equal(context.get('hello'), 'world');
 		assert.throws(function () {
 			context.get('hasOwnProperty');
@@ -84,18 +60,18 @@ describe('rev.Context', function() {
 	});
 
 	it('#replace should replace the regular expression with the file', function (cb) {
-		
+
 		var context = rev.Context();
 
-		context.put('hello', 'world');
-		context.put('test', 'that');
+		context.write({ old: 'hello', new: 'world' });
+		context.write({ old: 'test',  new: 'that.txt' });
 		context.end();
 
-		var stream = context.replace(/<!-- (.*) -->/, '<a href="{{$1}}">{{hello}}</a>');
+		var stream = context.replace(/<!-- (.*) -->/, '<a href="{{$1}}">{{hello}}.{{$1:e}}</a>');
 
 		stream.on('data', function (data) {
 			assert.equal(data.contents.toString(),
-				'Hello, <a href="that">world</a> yeah');
+				'Hello, <a href="that.txt">world.txt</a> yeah');
 			cb();
 		});
 
