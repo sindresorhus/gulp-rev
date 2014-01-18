@@ -16,7 +16,7 @@ module.exports = function (data, options) {
 		}
 		if (file.isStream()) {
 			this.emit('error', new gutil.PluginError('gulp-rev', 'Stream content is not supported'));
-			return callback();
+			return cb();
 		}
 		var hash = md5(file.contents.toString()).slice(0, 8);
 		var ext = path.extname(file.path);
