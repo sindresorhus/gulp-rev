@@ -7,12 +7,12 @@ it('should rev files', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (file) {
-		assert.equal(file.path, 'unicorn-098f6bcd.css');
+		assert.equal(file.path, 'unicorn-d41d8cd9.css');
 		cb();
 	});
 
 	stream.write(new gutil.File({
 		path: 'unicorn.css',
-		contents: new Buffer('test')
+		contents: new Buffer('')
 	}));
 });
