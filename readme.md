@@ -28,6 +28,8 @@ gulp.task('default', function () {
 });
 ```
 
+Options are intentionally missing as the default should work in most cases.
+
 
 ## License
 
