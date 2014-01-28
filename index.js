@@ -40,6 +40,7 @@ plugin.map = {};
 plugin.save = function(fileName){
 	fs.writeFile(fileName, JSON.stringify(plugin.map), function (err) {
 	  if (err) throw err;
+	  gutil.log('gulp-rev: Saved map to ' + gutil.colors.green(fileName));
 	});
 }
 module.exports = plugin;
