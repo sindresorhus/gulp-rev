@@ -31,6 +31,30 @@ gulp.task('default', function () {
 Options are intentionally missing as the default should work in most cases.
 
 
+### Asset manifest
+
+```js
+var gulp = require('gulp');
+var rev = require('gulp-rev');
+
+gulp.task('default', function () {
+	gulp.src('src/*.css')
+		.pipe(rev())
+		.pipe(gulp.dest('dist'));
+		.pipe(rev.manifest())
+		.pipe(gulp.dest('dist'));
+});
+```
+
+An asset manifest will be written to `dist/manifest.json`:
+
+```json
+{
+  "unicorn.css": "unicorn-098f6bcd.css"
+}
+```
+
+
 ## License
 
 MIT © [Sindre Sorhus](http://sindresorhus.com)
