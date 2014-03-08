@@ -1,4 +1,4 @@
-# [gulp](https://github.com/wearefractal/gulp)-rev [![Build Status](https://secure.travis-ci.org/sindresorhus/gulp-rev.png?branch=master)](http://travis-ci.org/sindresorhus/gulp-rev)
+# [gulp](https://github.com/wearefractal/gulp)-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.png?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
 
 > Static asset revisioning by appending content hash to filenames  
 `unicorn.css` => `unicorn-098f6bcd.css`
@@ -8,10 +8,8 @@ Make sure to set the files to [never expire](http://developer.yahoo.com/performa
 
 ## Install
 
-Install with [npm](https://npmjs.org/package/gulp-rev)
-
-```
-npm install --save-dev gulp-rev
+```bash
+$ npm install --save-dev gulp-rev
 ```
 
 
@@ -28,7 +26,7 @@ gulp.task('default', function () {
 });
 ```
 
-Options are intentionally missing as the default should work in most cases.
+*Options are intentionally missing as the default should work in most cases.*
 
 
 ### Original path
@@ -55,11 +53,11 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 
 ```json
 {
-  "unicorn.css": "unicorn-098f6bcd.css"
+	"unicorn.css": "unicorn-098f6bcd.css"
 }
 ```
 
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+[MIT](http://opensource.org/licenses/MIT) © [Sindre Sorhus](http://sindresorhus.com)

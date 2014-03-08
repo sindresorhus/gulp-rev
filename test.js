@@ -18,13 +18,13 @@ it('should rev files', function (cb) {
 	}));
 });
 
-it('should build a rev manifest file', function(cb) {
+it('should build a rev manifest file', function (cb) {
 	var stream = rev.manifest();
 
 	stream.on('data', function (newFile) {
 		assert.equal(newFile.relative, 'rev-manifest.json');
 		assert.deepEqual(
-			JSON.parse(String(newFile.contents)),
+			JSON.parse(newFile.contents.toString()),
 			{'unicorn.css': 'unicorn-d41d8cd9.css'}
 		);
 		cb();
@@ -34,6 +34,7 @@ it('should build a rev manifest file', function(cb) {
 		path: 'unicorn-d41d8cd9.css',
 		contents: new Buffer('')
 	});
+
 	file.revOrigPath = 'unicorn.css';
 
 	stream.write(file);
