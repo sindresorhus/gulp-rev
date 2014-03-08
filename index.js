@@ -8,7 +8,7 @@ function md5(str) {
 	return crypto.createHash('md5').update(str, 'utf8').digest('hex');
 }
 
-module.exports = function () {
+var plugin = function () {
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			this.push(file);
@@ -20,6 +20,9 @@ module.exports = function () {
 			return cb();
 		}
 
+		// Save the old path for later...
+		file.revOrigPath = file.path;
+
 		var hash = md5(file.contents.toString()).slice(0, 8);
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + '-' + hash + ext;
@@ -28,3 +31,33 @@ module.exports = function () {
 		cb();
 	});
 };
+
+plugin.manifest = function () {
+	var manifest  = {};
+	var firstFile = null;
+
+	return through.obj(
+		function (file, enc, cb) {
+			// Ignore all non-rev'd files.
+			if (file.path && file.revOrigPath) {
+				firstFile = firstFile || file;
+				manifest[file.revOrigPath.replace(firstFile.base, '')] = file.path.replace(firstFile.base, '');
+			}
+			cb();
+		},
+
+		function (cb) {
+			if (firstFile) {
+				this.push(new gutil.File({
+					cwd:      firstFile.cwd,
+					base:     firstFile.base,
+					path:     path.join(firstFile.base, 'rev-manifest.json'),
+					contents: new Buffer(JSON.stringify(manifest, null, '  '))
+				}));
+			}
+			cb();
+		}
+	);
+};
+
+module.exports = plugin;
