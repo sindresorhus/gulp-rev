@@ -51,7 +51,7 @@ plugin.manifest = function () {
 				this.push(new gutil.File({
 					cwd:      firstFile.cwd,
 					base:     firstFile.base,
-					path:     path.join(firstFile.base, 'manifest.json'),
+					path:     path.join(firstFile.base, 'rev-manifest.json'),
 					contents: new Buffer(JSON.stringify(manifest, null, '  '))
 				}));
 			}
