@@ -8,6 +8,7 @@ it('should rev files', function (cb) {
 
 	stream.on('data', function (file) {
 		assert.equal(file.path, 'unicorn-d41d8cd9.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
 		cb();
 	});
 
@@ -15,4 +16,26 @@ it('should rev files', function (cb) {
 		path: 'unicorn.css',
 		contents: new Buffer('')
 	}));
+});
+
+it('should build a rev manifest file', function(cb) {
+	var stream = rev.manifest();
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'rev-manifest.json');
+		assert.deepEqual(
+			JSON.parse(String(newFile.contents)),
+			{'unicorn.css': 'unicorn-d41d8cd9.css'}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn-d41d8cd9.css',
+		contents: new Buffer('')
+	});
+	file.revOrigPath = 'unicorn.css';
+
+	stream.write(file);
+	stream.end();
 });
