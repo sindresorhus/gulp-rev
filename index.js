@@ -21,7 +21,7 @@ var plugin = function () {
 		}
 
 		// Save the old path for later...
-		file._preRevPath = file.path;
+		file.revOrigPath = file.path;
 
 		var hash = md5(file.contents.toString()).slice(0, 8);
 		var ext = path.extname(file.path);
@@ -39,9 +39,9 @@ plugin.manifest = function () {
 	return through.obj(
 		function (file, enc, cb) {
 			// Ignore all non-rev'd files.
-			if (file.path && file._preRevPath) {
+			if (file.path && file.revOrigPath) {
 				firstFile = firstFile || file;
-				manifest[file._preRevPath.replace(firstFile.base, '')] = file.path.replace(firstFile.base, '');
+				manifest[file.revOrigPath.replace(firstFile.base, '')] = file.path.replace(firstFile.base, '');
 			}
 			cb();
 		},
