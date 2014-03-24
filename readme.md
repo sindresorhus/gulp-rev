@@ -1,4 +1,4 @@
-# [gulp](https://github.com/wearefractal/gulp)-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.png?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
+# [gulp](https://github.com/wearefractal/gulp)-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
 
 > Static asset revisioning by appending content hash to filenames  
 `unicorn.css` => `unicorn-098f6bcd.css`
@@ -13,7 +13,7 @@ $ npm install --save-dev gulp-rev
 ```
 
 
-## Example
+## Usage
 
 ```js
 var gulp = require('gulp');
