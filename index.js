@@ -27,6 +27,11 @@ var plugin = function () {
 		var hash = md5(file.contents.toString()).slice(0, 8);
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + '-' + hash + ext;
+
+		// save the original filename and rev'd file name
+		file.origName = path.basename(file.path, ext) + ext;
+		file.revName = filename;
+
 		file.path = path.join(path.dirname(file.path), filename);
 		this.push(file);
 		cb();
@@ -39,9 +44,9 @@ plugin.manifest = function () {
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
-		if (file.path && file.revOrigPath) {
+		if (file.path && file.revName) {
 			firstFile = firstFile || file;
-			manifest[file.revOrigPath.replace(firstFile.revOrigBase, '')] = file.path.replace(firstFile.base, '');
+			manifest[file.origName] = file.revName;
 		}
 
 		cb();
