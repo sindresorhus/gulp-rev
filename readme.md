@@ -38,14 +38,17 @@ Original file paths are stored at `file.revOrigPath`. This could come in handy f
 
 ```js
 var gulp = require('gulp');
-var rev = require('gulp-rev');
+var rev  = require('gulp-rev');
 
-gulp.task('default', function () {
-	gulp.src('src/*.css')
+gulp.task('default', function() {
+	// By default, Gulp would pick `assets/css` as the base,
+	// so we need to set it explicitly:
+	return gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
+		.pipe(gulp.dest('build/assets'))  // copy original assets to build dir
 		.pipe(rev())
-		.pipe(gulp.dest('dist'))  // write revisioned assets to /dist
-		.pipe(rev.manifest())     // generate a revision manifest file
-		.pipe(gulp.dest('dist')); // write it to /dist/rev-manifest.json
+		.pipe(gulp.dest('build/assets'))  // write rev'd assets to build dir
+		.pipe(rev.manifest())
+		.pipe(gulp.dest('build/assets')); // write manifest to build dir
 });
 ```
 
@@ -53,7 +56,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 
 ```json
 {
-	"unicorn.css": "unicorn-098f6bcd.css"
+	"/css/unicorn.css": "/css/unicorn-098f6bcd.css"
 }
 ```
 
