@@ -36,6 +36,8 @@ it('should build a rev manifest file', function (cb) {
 	});
 
 	file.revOrigPath = 'unicorn.css';
+	file.origName = 'unicorn.css';
+	file.revName = 'unicorn-d41d8cd9.css';
 
 	stream.write(file);
 	stream.end();
