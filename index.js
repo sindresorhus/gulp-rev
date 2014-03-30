@@ -8,8 +8,13 @@ function md5(str) {
 	return crypto.createHash('md5').update(str, 'utf8').digest('hex');
 }
 
-function relPath(base, path) {
-	return path.replace(base, '').replace(/^\//, '');
+function relPath(base, filePath) {
+	var newPath = filePath.replace(base, '');
+	if (filePath !== newPath && newPath[0] === path.sep) {
+		return newPath.substr(1);
+	} else {
+		return newPath;
+	}
 }
 
 var plugin = function () {
