@@ -8,6 +8,10 @@ function md5(str) {
 	return crypto.createHash('md5').update(str, 'utf8').digest('hex');
 }
 
+function relPath(base, path) {
+	return path.replace(base, '').replace(/^\//, '');
+}
+
 var plugin = function () {
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -41,7 +45,7 @@ plugin.manifest = function () {
 		// ignore all non-rev'd files
 		if (file.path && file.revOrigPath) {
 			firstFile = firstFile || file;
-			manifest[file.revOrigPath.replace(firstFile.revOrigBase, '')] = file.path.replace(firstFile.base, '');
+			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
 		}
 
 		cb();
