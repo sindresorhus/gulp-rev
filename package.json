@@ -9,6 +9,13 @@
     "email": "sindresorhus@gmail.com",
     "url": "http://sindresorhus.com"
   },
+  "maintainers": [
+    {
+      "name": "Justin Hileman",
+      "email": "justin@justinhileman.info",
+      "url": "http://justinhileman.info"
+    }
+  ],
   "engines": {
     "node": ">=0.10.0"
   },
