@@ -9,8 +9,11 @@ function md5(str) {
 }
 
 function relPath(base, filePath) {
-	var newPath = filePath.replace(base, '');
-	if (filePath !== newPath && newPath[0] === path.sep) {
+	if (filePath.indexOf(base) !== 0) {
+		return filePath;
+	}
+	var newPath = filePath.substr(base.length);
+	if (newPath[0] === path.sep) {
 		return newPath.substr(1);
 	} else {
 		return newPath;
