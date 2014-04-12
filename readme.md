@@ -20,7 +20,7 @@ var gulp = require('gulp');
 var rev = require('gulp-rev');
 
 gulp.task('default', function () {
-	gulp.src('src/*.css')
+	return gulp.src('src/*.css')
 		.pipe(rev())
 		.pipe(gulp.dest('dist'));
 });
