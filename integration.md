@@ -1,5 +1,5 @@
 
-Integrating gulp-env into your app
+Integrating gulp-rev into your app
 ==================================
 
 Outlined below are two common approaches to integrating an asset manifest like the one __gulp-rev__ outputs into an application.
@@ -30,7 +30,7 @@ $.getJSON('/path/to/rev-manifest.json', function(manifest){
 
   var assetPath = function(src){
     src = 'js/' + src + '.js'
-    return [ '/assets', manifest[src] ];
+    return [ '/assets', manifest[src] ].join('/');
   };
 
   [ 'lib', 'app' ].forEach(function(src) {
@@ -54,7 +54,7 @@ The idea is to read in your app's `rev-manifest.json`, and use the non-fingerpri
 
 __index.hbs__
 
-```html
+```html+jinja
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,7 +90,7 @@ var handlebarOpts = {
 gulp.task('compile index.html', function(){
 
   // Read in our manifest file.
-  var manifest = JSON.parse(fs.readFileSync('path/to/rev-manifest.json', 'utf8'));
+  var manifest = require('path/to/rev-manifest');
 
   // Read in our handlebars template, compile it using
   // our manifest, and output it to index.html
