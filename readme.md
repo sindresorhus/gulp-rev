@@ -1,14 +1,14 @@
 # [gulp](https://github.com/wearefractal/gulp)-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
 
 > Static asset revisioning by appending content hash to filenames
-`unicorn.css` => `unicorn-098f6bcd.css`
+`unicorn.css` → `unicorn-098f6bcd.css`
 
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
 
 
 ## Install
 
-```bash
+```sh
 $ npm install --save-dev gulp-rev
 ```
 
@@ -62,7 +62,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 
 ### Integration
 
-For more info on how to integrate __gulp-rev__ into your app, have a look at the [integration guide](integration.md).
+For more info on how to integrate **gulp-rev** into your app, have a look at the [integration guide](integration.md).
 
 
 ## License
