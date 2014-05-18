@@ -19,6 +19,21 @@ it('should rev files', function (cb) {
 	}));
 });
 
+it('should respect file format', function (cb) {
+	var stream = rev({format: '{name}.v{hash}.{ext}'});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn.vd41d8cd9.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
 it('should build a rev manifest file', function (cb) {
 	var stream = rev.manifest();
 
