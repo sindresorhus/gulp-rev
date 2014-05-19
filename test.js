@@ -85,3 +85,18 @@ it('should respect directories', function (cb) {
 	stream.end();
 });
 
+it('should store the hashes for later', function(cb) {
+	var stream = rev();
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-d41d8cd9.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		assert.equal(file.revHash, 'd41d8cd9');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
