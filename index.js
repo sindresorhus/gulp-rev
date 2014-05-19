@@ -36,7 +36,7 @@ var plugin = function () {
 		file.revOrigPath = file.path;
 		file.revOrigBase = file.base;
 
-		var hash = md5(file.contents.toString()).slice(0, 8);
+		var hash = file.revHash = md5(file.contents.toString()).slice(0, 8);
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + '-' + hash + ext;
 		file.path = path.join(path.dirname(file.path), filename);
