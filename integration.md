@@ -107,7 +107,7 @@ If the file is not present in the manifest it will return the original filename.
  * @param  string  $filename
  * @return string
  */
-function rev_asset($filename)
+function asset_path($filename)
 {
   $manifest_path = 'assets/rev-manifest.json';
 
@@ -128,5 +128,21 @@ function rev_asset($filename)
   return $filename;
 }
 
-echo rev_asset('js/main.js');
+echo asset_path('js/main.js');
 ````
+
+Using [blade](http://laravel.com/docs/templates) your templates would look like this:
+
+```php
+<!doctype html>
+<html>
+	<head>
+		<title>My App</title>
+		<link rel="stylesheet" href="{{ asset_path('css/app.css') }}">
+	</head>
+	<body>
+		<script src="{{ asset_path('js/lib.js') }}"></script>
+		<script src="{{ asset_path('js/app.js') }}"></script>
+	</body>
+</html>
+```
