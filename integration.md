@@ -133,7 +133,7 @@ echo asset_path('js/main.js');
 
 Using [blade](http://laravel.com/docs/templates) your templates would look like this:
 
-```php
+```html+jinja
 <!doctype html>
 <html>
 	<head>
