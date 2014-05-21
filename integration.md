@@ -127,9 +127,9 @@ function asset_path($filename)
 
   return $filename;
 }
-
-echo asset_path('js/main.js');
 ````
+
+You can then call `asset_path` to get the rev'd path of your assets: `echo asset_path('js/main.js');`
 
 Using [blade](http://laravel.com/docs/templates) your templates would look like this:
 
