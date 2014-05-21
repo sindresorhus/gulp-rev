@@ -92,3 +92,41 @@ $.getJSON('/path/to/rev-manifest.json', function (manifest) {
 ````
 
 The above example assumes your assets live under `/assets` on your server.
+
+
+## Approach #3 - PHP parses the manifest and provides asset names
+
+This example PHP function provides the correct filename by reading it from the json manifest.
+
+If the file is not present in the manifest it will return the original filename.
+
+```php
+<?php
+
+/**
+ * @param  string  $filename
+ * @return string
+ */
+function rev_asset($filename)
+{
+  $manifest_path = 'assets/rev-manifest.json';
+
+  if (file_exists($manifest_path))
+  {
+    $manifest = json_decode(file_get_contents($manifest_path), TRUE);
+  }
+  else
+  {
+    $manifest = [];
+  }
+
+  if (array_key_exists($filename, $manifest))
+  {
+    return $manifest[$filename];
+  }
+
+  return $filename;
+}
+
+echo rev_asset('js/main.js');
+````
