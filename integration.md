@@ -89,6 +89,53 @@ $.getJSON('/path/to/rev-manifest.json', function (manifest) {
 		s.parentNode.insertBefore(el, s);
 	});
 })
-````
+```
 
 The above example assumes your assets live under `/assets` on your server.
+
+
+## Approach #3 - PHP reads the manifest and provides asset names
+
+This example PHP function provides the correct filename by reading it from the JSON manifest.
+
+If the file is not present in the manifest it will return the original filename.
+
+```php
+/**
+ * @param  string  $filename
+ * @return string
+ */
+function asset_path($filename) {
+	$manifest_path = 'assets/rev-manifest.json';
+
+	if (file_exists($manifest_path)) {
+		$manifest = json_decode(file_get_contents($manifest_path), TRUE);
+	} else {
+		$manifest = [];
+	}
+
+	if (array_key_exists($filename, $manifest)) {
+		return $manifest[$filename];
+	}
+
+	return $filename;
+}
+````
+
+You can then call `asset_path` to get the rev'd path of your assets: `echo asset_path('js/main.js');`
+
+Using [blade](http://laravel.com/docs/templates) your templates would look like this:
+
+```html+jinja
+<!doctype html>
+<html>
+	<head>
+		<title>My App</title>
+		<link rel="stylesheet" href="{{ asset_path('css/app.css') }}">
+	</head>
+	<body>
+		<script src="{{ asset_path('js/lib.js') }}"></script>
+		<script src="{{ asset_path('js/app.js') }}"></script>
+	</body>
+</html>
+```
