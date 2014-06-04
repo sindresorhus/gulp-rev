@@ -1,8 +1,10 @@
 'use strict';
+
 var crypto = require('crypto');
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
+var pluginName = 'gulp-rev';
 
 function md5(str) {
 	return crypto.createHash('md5').update(str, 'utf8').digest('hex');
@@ -28,7 +30,7 @@ var plugin = function () {
 		}
 
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('gulp-rev', 'Streaming not supported'));
+			this.emit('error', new gutil.PluginError(pluginName, 'Streaming not supported'));
 			return cb();
 		}
 
@@ -54,7 +56,12 @@ plugin.manifest = function (options) {
 
   if (options.existingManifest) {
     if (typeof options.existingManifest === 'string') {
-      manifest = require(path.join(process.cwd(), options.existingManifest)) || {};
+      try {
+        manifest = require(path.join(process.cwd(), options.existingManifest)) || {};
+      } catch(err) {
+        // pass through
+        manifest = {};
+      }
     } 
     else if (typeof options.existingManifest === 'object') {
       manifest = options.existingManifest;
