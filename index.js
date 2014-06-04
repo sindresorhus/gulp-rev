@@ -1,8 +1,10 @@
 'use strict';
+
 var crypto = require('crypto');
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
+var pluginName = 'gulp-rev';
 
 function md5(str) {
 	return crypto.createHash('md5').update(str, 'utf8').digest('hex');
@@ -28,7 +30,7 @@ var plugin = function () {
 		}
 
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('gulp-rev', 'Streaming not supported'));
+			this.emit('error', new gutil.PluginError(pluginName, 'Streaming not supported'));
 			return cb();
 		}
 
@@ -45,9 +47,26 @@ var plugin = function () {
 	});
 };
 
-plugin.manifest = function () {
-	var manifest  = {};
+plugin.manifest = function (options) {
+  options = options || {};
+
+  var manifestName = options.manifestName || 'rev-manifest.json';
+	var manifest = {};
 	var firstFile = null;
+
+  if (options.existingManifest) {
+    if (typeof options.existingManifest === 'string') {
+      try {
+        manifest = require(path.join(process.cwd(), options.existingManifest)) || {};
+      } catch(err) {
+        // pass through
+        manifest = {};
+      }
+    } 
+    else if (typeof options.existingManifest === 'object') {
+      manifest = options.existingManifest;
+    }
+  }
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
@@ -62,7 +81,7 @@ plugin.manifest = function () {
 			this.push(new gutil.File({
 				cwd: firstFile.cwd,
 				base: firstFile.base,
-				path: path.join(firstFile.base, 'rev-manifest.json'),
+				path: path.join(firstFile.base, manifestName),
 				contents: new Buffer(JSON.stringify(manifest, null, '  '))
 			}));
 		}
