@@ -57,13 +57,21 @@ gulp.task('default', function () {
 });
 ```
 
-An asset manifest, mapping the original paths to the revisioned paths, will be written to `dist/rev-manifest.json`:
+An asset manifest, mapping the original paths to the revisioned paths, will be written to `build/assets/rev-manifest.json`:
 
 ```json
 {
 	"css/unicorn.css": "css/unicorn-098f6bcd.css"
 }
 ```
+
+The following options exist for `rev.manifest(options)`:
+
+- **manifestName** - File name of the manifest; defaults to _rev-manifest.json_. Path should be specified with `gulp.dest`, see examples above.
+- **existingManifest** - Path to an existing manifest (or an object), which you want to use as the starting point. By default a new manifest is created.
+
+_Note: When specifying a **existingManifest** path, you still need to use `gulp.dest(..)` to actually create a manifest. If you want to overwrite the
+existing manifest, just specify that path, e.g. `gulp.dest('./path/to/existing-manifest.json')`._
 
 ### Integration
 

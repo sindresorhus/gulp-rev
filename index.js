@@ -45,9 +45,21 @@ var plugin = function () {
 	});
 };
 
-plugin.manifest = function () {
-	var manifest  = {};
+plugin.manifest = function (options) {
+  options = options || {};
+
+  var manifestName = options.manifestName || 'rev-manifest.json';
+	var manifest = {};
 	var firstFile = null;
+
+  if (options.existingManifest) {
+    if (typeof options.existingManifest === 'string') {
+      manifest = require(path.join(process.cwd(), options.existingManifest)) || {};
+    } 
+    else if (typeof options.existingManifest === 'object') {
+      manifest = options.existingManifest;
+    }
+  }
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
@@ -62,7 +74,7 @@ plugin.manifest = function () {
 			this.push(new gutil.File({
 				cwd: firstFile.cwd,
 				base: firstFile.base,
-				path: path.join(firstFile.base, 'rev-manifest.json'),
+				path: path.join(firstFile.base, manifestName),
 				contents: new Buffer(JSON.stringify(manifest, null, '  '))
 			}));
 		}
