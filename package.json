@@ -41,7 +41,7 @@
   ],
   "dependencies": {
     "gulp-util": "~2.2.9",
-    "through2": "~0.4.0"
+    "through2": "~0.5.1"
   },
   "devDependencies": {
     "mocha": "*"
