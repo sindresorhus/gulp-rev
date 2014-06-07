@@ -65,9 +65,16 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
+
 ### Integration
 
 For more info on how to integrate **gulp-rev** into your app, have a look at the [integration guide](integration.md).
+
+
+### Works with gulp-rev
+
+- [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace)
+- [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url)
 
 
 ## License
