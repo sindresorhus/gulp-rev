@@ -50,7 +50,7 @@ var plugin = function () {
 plugin.manifest = function (options) {
   options = options || {};
 
-  var manifestName = options.manifestName || 'rev-manifest.json';
+  var manifestName = 'rev-manifest.json';
 	var manifest = {};
 	var firstFile = null;
 

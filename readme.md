@@ -65,12 +65,15 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
-The following options exist for `rev.manifest(options)`:
+#### Using with multiple tasks
 
-- **manifestName** - File name of the manifest; defaults to _rev-manifest.json_. Path should be specified with `gulp.dest`, see examples above.
-- **existingManifest** - Path to an existing manifest (or an object), which you want to use as the starting point. By default a new manifest is created.
+In certain situations you might have css and javascript built in two different tasks, in which case you can utilize the functionality to build up your manifest
+from the previous task. You can accomplish this by passing a path as a string e.g. `rev.manifest('./dist/rev-manifest.json')`.
 
-_Note: When specifying a **existingManifest** path, you still need to use `gulp.dest(..)` to actually create a manifest. If you want to overwrite the
+For those other cases where you have already read in a manifest file or have created one programatically, `rev.manifest` can also take an object literal,
+e.g. `rev.manifest({ 'app.js': 'app.js-19124j32.js' })` and that will be merged with the newly generated manifest.
+
+_Note: When specifying an existing manifest, you still need to use `gulp.dest(..)` to actually create a manifest. If you want to overwrite the
 existing manifest, just specify that path, e.g. `gulp.dest('./path/to/existing-manifest.json')`._
 
 ### Integration
