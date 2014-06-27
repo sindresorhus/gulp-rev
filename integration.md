@@ -55,7 +55,7 @@ var handlebarOpts = {
 
 gulp.task('compile index.html', function () {
 	// read in our manifest file
-	var manifest = JSON.parse(fs.readFileSync('path/to/rev-manifest', "utf8"));
+	var manifest = JSON.parse(fs.readFileSync('path/to/rev-manifest', 'utf8'));
 
 	// read in our handlebars template, compile it using
 	// our manifest, and output it to index.html
