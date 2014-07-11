@@ -40,8 +40,9 @@
     "assets"
   ],
   "dependencies": {
-    "gulp-util": "~2.2.9",
-    "through2": "~0.5.1"
+    "gulp-util": "^2.2.9",
+    "lodash.defaults": "^2.4.1",
+    "through2": "^0.5.1"
   },
   "devDependencies": {
     "mocha": "*"
