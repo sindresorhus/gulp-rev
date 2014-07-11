@@ -49,7 +49,7 @@ it('should respect directories', function (cb) {
 	stream.on('data', function (newFile) {
 		var MANIFEST = {};
 		MANIFEST[path.join('foo', 'unicorn.css')] = path.join('foo', 'unicorn-d41d8cd9.css');
-		MANIFEST[path.join('bar', 'pony.css')]	= path.join('bar', 'pony-d41d8cd9.css');
+		MANIFEST[path.join('bar', 'pony.css')]    = path.join('bar', 'pony-d41d8cd9.css');
 
 		assert.equal(newFile.relative, 'rev-manifest.json');
 		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
@@ -65,8 +65,8 @@ it('should respect directories', function (cb) {
 
 	file1.revOrigBase = __dirname;
 	file1.revOrigPath = path.join(__dirname, 'foo', 'unicorn.css');
-	file1.origName	= 'unicorn.css';
-	file1.revName	 = 'unicorn-d41d8cd9.css';
+	file1.origName    = 'unicorn.css';
+	file1.revName     = 'unicorn-d41d8cd9.css';
 
 	var file2 = new gutil.File({
 		cwd:  __dirname,
@@ -77,8 +77,8 @@ it('should respect directories', function (cb) {
 
 	file2.revOrigBase = __dirname;
 	file2.revOrigPath = path.join(__dirname, 'bar', 'pony.css');
-	file2.origName	= 'pony.css';
-	file2.revName	 = 'pony-d41d8cd9.css';
+	file2.origName    = 'pony.css';
+	file2.revName     = 'pony-d41d8cd9.css';
 
 	stream.write(file1);
 	stream.write(file2);
