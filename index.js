@@ -48,7 +48,7 @@ plugin.manifest = function () {
 		// ignore all non-rev'd files
 		if (file.path && file.revOrigPath) {
 			firstFile = firstFile || file;
-			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
+			manifest[relPath(file.revOrigBase, file.revOrigPath)] = relPath(file.base, file.path);
 		}
 
 		cb();
