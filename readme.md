@@ -57,11 +57,12 @@ gulp.task('default', function () {
 });
 ```
 
-An asset manifest, mapping the original paths to the revisioned paths, will be written to `dist/rev-manifest.json`:
+An asset manifest, mapping the original paths to the revisioned paths, will be written to `build/assets/rev-manifest.json`:
 
 ```json
 {
-	"css/unicorn.css": "css/unicorn-098f6bcd.css"
+	"css/unicorn.css": "css/unicorn-098f6bcd.css",
+	"js/unicorn.js": "js/unicorn-273c2cin.js"
 }
 ```
 
