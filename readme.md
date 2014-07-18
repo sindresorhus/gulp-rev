@@ -61,7 +61,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 
 ```json
 {
-	"css/unicorn.css": "css/unicorn-098f6bcd.css"
+	"css/unicorn.css": "css/unicorn-098f6bcd.css",
 	"js/unicorn.js": "js/unicorn-273c2cin.js"
 }
 ```
