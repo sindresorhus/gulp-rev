@@ -100,3 +100,36 @@ it('should store the hashes for later', function(cb) {
 		contents: new Buffer('')
 	}));
 });
+
+it('should respect template', function (cb) {
+	var stream = rev({ template: 'test-<%=hash%><%=ext%>' });
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'test-d41d8cd9.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
+it('should respect manifest name', function (cb) {
+	var stream = rev.manifest({ name: 'test-manifest.json' });
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'test-manifest.json');
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn-d41d8cd9.css',
+		contents: new Buffer('')
+	});
+
+	file.revOrigPath = 'unicorn.css';
+
+	stream.write(file);
+	stream.end();
+});
