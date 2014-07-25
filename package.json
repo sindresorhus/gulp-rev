@@ -40,7 +40,7 @@
     "assets"
   ],
   "dependencies": {
-    "gulp-util": "~2.2.9",
+    "gulp-util": "^3.0.0",
     "through2": "~0.5.1"
   },
   "devDependencies": {
