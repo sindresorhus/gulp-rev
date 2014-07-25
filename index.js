@@ -27,6 +27,11 @@ var plugin = function () {
 			return cb();
 		}
 
+		if (file.isStream()) {
+			this.emit('error', new gutil.PluginError('gulp-rev', 'Streaming not supported'));
+			return cb();
+		}
+
 		// save the old path for later
 		file.revOrigPath = file.path;
 		file.revOrigBase = file.base;
