@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
+var objectAssign = require('object-assign');
 
 function md5(str) {
 	return crypto.createHash('md5').update(str).digest('hex');
@@ -45,13 +46,24 @@ var plugin = function () {
 	});
 };
 
-plugin.manifest = function () {
+plugin.manifest = function (opt) {
+	opt = objectAssign({path: 'rev-manifest.json'}, opt || {});
 	var manifest  = {};
 	var firstFile = null;
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
-		if (file.path && file.revOrigPath) {
+		if (!file.path || !file.revOrigPath) {
+			cb();
+			return;
+		}
+
+		// Combine previous manifest. Only add if key isn't already there.
+		if (opt.path == file.revOrigPath) {
+			var existingManifest = JSON.parse(file.contents.toString());
+			manifest = objectAssign(existingManifest, manifest);
+		// Add file to manifest
+		} else {
 			firstFile = firstFile || file;
 			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
 		}
@@ -62,7 +74,7 @@ plugin.manifest = function () {
 			this.push(new gutil.File({
 				cwd: firstFile.cwd,
 				base: firstFile.base,
-				path: path.join(firstFile.base, 'rev-manifest.json'),
+				path: path.join(firstFile.base, opt.path),
 				contents: new Buffer(JSON.stringify(manifest, null, '  '))
 			}));
 		}

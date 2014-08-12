@@ -66,6 +66,31 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
+By default, `rev-manifest.json` will be replaced as a whole. For modifications, add `rev-manifest.json` as a gulp source:
+
+```js
+var gulp = require('gulp');
+var rev = require('gulp-rev');
+
+gulp.task('default', function () {
+	// by default, gulp would pick `assets/css` as the base,
+	// so we need to set it explicitly:
+	return gulp.src([
+		'assets/css/*.css',
+		'assets/js/*.js'
+	], {base: 'assets'})
+		.pipe(gulp.dest('build/assets'))
+		.pipe(rev())
+		.pipe(gulp.dest('build/assets'))
+
+		// Add rev-manifest.json as a new src to prevent rev'ing rev-manifest.json
+		.pipe(gulp.src('build/assets/rev-manifest.json', {base: 'assets'}))
+		.pipe(rev.manifest())             // applies only changes to the manifest
+		.pipe(gulp.dest('build/assets'));
+});
+```
+
+You can optionally call `rev.manifest({path: 'manifest.json'})` to give it a different path or filename.
 
 ### Streaming
 
