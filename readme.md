@@ -126,6 +126,7 @@ For more info on how to integrate **gulp-rev** into your app, have a look at the
 - [gulp-rev-outdated](https://github.com/shonny-ua/gulp-rev-outdated)
 - [gulp-rev-collector](https://github.com/shonny-ua/gulp-rev-collector)
 
+
 ## License
 
-[MIT](http://opensource.org/licenses/MIT) © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](http://sindresorhus.com)

@@ -6,9 +6,9 @@ For our examples, we'll assume the following `rev-manifest.json`:
 
 ```json
 {
-  "js/app.js": "js/app-5c41412f.js",
-  "js/lib.js": "js/lib-6d94673e.js",
-  "css/app.css": "css/app-a4ae3dfa.css",
+	"js/app.js": "js/app-5c41412f.js",
+	"js/lib.js": "js/lib-6d94673e.js",
+	"css/app.css": "css/app-a4ae3dfa.css"
 }
 ````
 
@@ -47,7 +47,7 @@ var rename = require('gulp-rename');
 // fingerprinted asset by non-fingerprinted name
 var handlebarOpts = {
 	helpers: {
-		assetPath: function (path, context){
+		assetPath: function (path, context) {
 			return ['/assets', context.data.root[path]].join('/');
 		}
 	}

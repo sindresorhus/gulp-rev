@@ -24,13 +24,13 @@ function relPath(base, filePath) {
 var plugin = function () {
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
-			this.push(file);
-			return cb();
+			cb(null, file);
+			return;
 		}
 
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('gulp-rev', 'Streaming not supported'));
-			return cb();
+			cb(new gutil.PluginError('gulp-rev', 'Streaming not supported'));
+			return;
 		}
 
 		// save the old path for later
@@ -41,14 +41,13 @@ var plugin = function () {
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + '-' + hash + ext;
 		file.path = path.join(path.dirname(file.path), filename);
-		this.push(file);
-		cb();
+		cb(null, file);
 	});
 };
 
 plugin.manifest = function (opt) {
 	opt = objectAssign({path: 'rev-manifest.json'}, opt || {});
-	var manifest  = {};
+	var manifest = {};
 	var firstFile = null;
 
 	return through.obj(function (file, enc, cb) {
