@@ -148,3 +148,17 @@ it('should store the hashes for later', function (cb) {
 		contents: new Buffer('')
 	}));
 });
+
+it('should allow the separator to be customized', function(cb) {
+	var stream = rev({separator: '.CUSTOM-'});
+
+	stream.on('data', function(file) {
+		assert.equal(file.path, 'unicorn.CUSTOM-d41d8cd9.css')
+		cb()
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
