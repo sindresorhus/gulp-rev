@@ -21,7 +21,7 @@ function relPath(base, filePath) {
 	}
 }
 
-var plugin = function () {
+var plugin = function (opts) {
 	opts || (opts = {});
 	opts.separator || (opts.separator = '-');
 
