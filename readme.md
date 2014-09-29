@@ -90,7 +90,15 @@ gulp.task('default', function () {
 });
 ```
 
-You can optionally call `rev.manifest({path: 'manifest.json'})` to give it a different path or filename.
+#### Options for rev.manifest()
+
+##### path
+
+You can optionally call `rev.manifest({path: 'manifest.json'})` to give the manifest a different path or filename. Default `rev-manifest.json`.
+
+##### includeAll 
+
+Includes all assets in the manifest, not just assets that have been revisioned. Default `false`. 
 
 ### Streaming
 

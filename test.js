@@ -42,6 +42,27 @@ it('should build a rev manifest file', function (cb) {
 	stream.end();
 });
 
+it('should include non revisioned files in manifest', function (cb) {
+	var stream = rev.manifest({includeAll: true});
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'rev-manifest.json');
+		assert.deepEqual(
+			JSON.parse(newFile.contents.toString()),
+			{'unicorn.css': 'unicorn.css'}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	});
+
+	stream.write(file);
+	stream.end();
+});
+
 it('should allow naming the manifest file', function (cb) {
 	var path = 'manifest.json';
 	var stream = rev.manifest({path: path});
