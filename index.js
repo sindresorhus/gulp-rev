@@ -46,26 +46,40 @@ var plugin = function () {
 };
 
 plugin.manifest = function (opt) {
-	opt = objectAssign({path: 'rev-manifest.json'}, opt || {});
+	opt = objectAssign({
+		path: 'rev-manifest.json',
+		includeAll: false
+	}, opt || {});
 	var manifest = {};
 	var firstFile = null;
 
 	return through.obj(function (file, enc, cb) {
-		// ignore all non-rev'd files
-		if (!file.path || !file.revOrigPath) {
-			cb();
-			return;
-		}
-
 		// Combine previous manifest. Only add if key isn't already there.
-		if (opt.path == file.revOrigPath) {
+		if (opt.path === file.revOrigPath) {
 			var existingManifest = JSON.parse(file.contents.toString());
 			manifest = objectAssign(existingManifest, manifest);
-		// Add file to manifest
-		} else {
-			firstFile = firstFile || file;
-			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
+			return cb();
 		}
+
+		firstFile = firstFile || file;
+
+		if (!file.revOrigPath) {
+			// File has not been revisioned
+			if (!opt.includeAll) {
+				// Skip this file since we are not including non revision assets
+				return cb();
+			}
+
+			var revOrigBase = file.base;
+			var revOrigPath = file.path;
+		} 
+		else {
+			var revOrigBase = firstFile.revOrigBase;
+			var revOrigPath = file.revOrigPath;
+		}
+
+		// Add file to manifest
+		manifest[relPath(revOrigBase, revOrigPath)] = relPath(firstFile.base, file.path);
 
 		cb();
 	}, function (cb) {
