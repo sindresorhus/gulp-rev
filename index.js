@@ -11,10 +11,10 @@ function md5(str) {
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
-		return filePath;
+		return filePath.replace(/\\/g, '/');
 	}
-	var newPath = filePath.substr(base.length);
-	if (newPath[0] === path.sep) {
+	var newPath = filePath.substr(base.length).replace(/\\/g, '/');
+	if (newPath[0] === '/') {
 		return newPath.substr(1);
 	} else {
 		return newPath;
