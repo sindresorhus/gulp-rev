@@ -51,14 +51,16 @@ plugin.manifest = function (opt) {
 	var firstFile = null;
 
 	return through.obj(function (file, enc, cb) {
+		var fileIsManifest = (new RegExp(opt.path + '$')).test(file.path);
+
 		// ignore all non-rev'd files
-		if (!file.path || !file.revOrigPath) {
+		if ((!file.path || !file.revOrigPath) && !fileIsManifest) {
 			cb();
 			return;
 		}
 
 		// Combine previous manifest. Only add if key isn't already there.
-		if (opt.path == file.revOrigPath) {
+		if (fileIsManifest) {
 			var existingManifest = JSON.parse(file.contents.toString());
 			manifest = objectAssign(existingManifest, manifest);
 		// Add file to manifest
