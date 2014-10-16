@@ -10,15 +10,19 @@ function md5(str) {
 }
 
 function relPath(base, filePath) {
+	filePath = filePath.replace(/\\/g, '/');
+
 	if (filePath.indexOf(base) !== 0) {
-		return filePath.replace(/\\/g, '/');
+		return filePath;
 	}
-	var newPath = filePath.substr(base.length).replace(/\\/g, '/');
+
+	var newPath = filePath.substr(base.length);
+
 	if (newPath[0] === '/') {
 		return newPath.substr(1);
-	} else {
-		return newPath;
 	}
+
+	return newPath;
 }
 
 var plugin = function () {
@@ -57,11 +61,12 @@ plugin.manifest = function (opt) {
 			return;
 		}
 
-		// Combine previous manifest. Only add if key isn't already there.
+		// combine previous manifest
+		// only add if key isn't already there
 		if (opt.path == file.revOrigPath) {
 			var existingManifest = JSON.parse(file.contents.toString());
 			manifest = objectAssign(existingManifest, manifest);
-		// Add file to manifest
+		// add file to manifest
 		} else {
 			firstFile = firstFile || file;
 			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
