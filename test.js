@@ -62,22 +62,16 @@ it('should allow naming the manifest file', function (cb) {
 });
 
 it('should append to an existing rev manifest file', function (cb) {
-	var stream = rev.manifest();
+	var stream = rev.manifest({path: 'test.manifest-fixture.json', appendExisting: true});
 
 	stream.on('data', function (newFile) {
-		assert.equal(newFile.relative, 'rev-manifest.json');
+		assert.equal(newFile.relative, 'test.manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd9.css'}
 		);
 		cb();
 	});
-
-	var mFile = new gutil.File({
-		path: 'rev-manifest.json',
-		contents: new Buffer('{ "app.js": "app-a41d8cd1.js", "unicorn.css": "unicorn-b41d8cd2.css" }')
-	});
-	mFile.revOrigPath = 'rev-manifest.json';
 
 	var file = new gutil.File({
 		path: 'unicorn-d41d8cd9.css',
@@ -86,9 +80,33 @@ it('should append to an existing rev manifest file', function (cb) {
 
 	file.revOrigPath = 'unicorn.css';
 
-	stream.write(mFile);
 	stream.write(file);
 	stream.end();
+
+});
+
+it('should not append to an existing rev manifest by default', function (cb) {
+	var stream = rev.manifest({path: 'test.manifest-fixture.json'});
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'test.manifest-fixture.json');
+		assert.deepEqual(
+			JSON.parse(newFile.contents.toString()),
+			{'unicorn.css': 'unicorn-d41d8cd9.css'}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn-d41d8cd9.css',
+		contents: new Buffer('')
+	});
+
+	file.revOrigPath = 'unicorn.css';
+
+	stream.write(file);
+	stream.end();
+
 });
 
 it('should respect directories', function (cb) {
