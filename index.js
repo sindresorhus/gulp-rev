@@ -4,6 +4,7 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var objectAssign = require('object-assign');
+var file = require('vinyl-file');
 
 function md5(str) {
 	return crypto.createHash('md5').update(str).digest('hex');
@@ -23,6 +24,22 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
+function readExistingManifestFile(pth, opt) {
+	try {
+		if (opt.appendExisting) {
+			return file.readSync(path.join(opt.base, pth), opt);
+		}
+	}
+	catch (e) {
+		// no existing manifest found at path.join(opt.base, pth)
+	}
+
+	return new gutil.File({
+		cwd: opt.cwd,
+		base: opt.base,
+		path: path.join(opt.base, pth)
+	});
+}
 var plugin = function () {
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -48,9 +65,11 @@ var plugin = function () {
 };
 
 plugin.manifest = function (opt) {
-	opt = objectAssign({path: 'rev-manifest.json'}, opt || {});
-	var manifest = {};
+	opt = objectAssign({path: 'rev-manifest.json', base: '.', appendExisting: false}, opt || {});
 	var firstFile = null;
+
+	var manifestFile = readExistingManifestFile(opt.path, opt);
+	var manifest = manifestFile.isNull() ? {} : JSON.parse(manifestFile.contents.toString());
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
@@ -59,26 +78,14 @@ plugin.manifest = function (opt) {
 			return;
 		}
 
-		// combine previous manifest
-		// only add if key isn't already there
-		if (opt.path == file.revOrigPath) {
-			var existingManifest = JSON.parse(file.contents.toString());
-			manifest = objectAssign(existingManifest, manifest);
-		// add file to manifest
-		} else {
-			firstFile = firstFile || file;
-			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
-		}
+		firstFile = firstFile || file;
+		manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
 
 		cb();
 	}, function (cb) {
 		if (firstFile) {
-			this.push(new gutil.File({
-				cwd: firstFile.cwd,
-				base: firstFile.base,
-				path: path.join(firstFile.base, opt.path),
-				contents: new Buffer(JSON.stringify(manifest, null, '  '))
-			}));
+			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
+			this.push(manifestFile);
 		}
 
 		cb();
