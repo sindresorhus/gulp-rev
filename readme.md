@@ -26,7 +26,21 @@ gulp.task('default', function () {
 });
 ```
 
-*Options are intentionally missing as the default should work in most cases.*
+### Options
+
+#### hash
+
+Type: `Boolean`  
+Default: `true`
+
+Set as false will not put hash in output filename.
+
+#### version
+
+Type: `string`  
+Default: `undefined`
+
+If present the string will get placed into the output filename after the base name. For visual record of file version.
 
 
 ### Original path

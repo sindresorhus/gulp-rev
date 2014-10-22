@@ -23,7 +23,9 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-var plugin = function () {
+var plugin = function (opt) {
+	opt = objectAssign({}, opt || {});
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -39,9 +41,11 @@ var plugin = function () {
 		file.revOrigPath = file.path;
 		file.revOrigBase = file.base;
 
-		var hash = file.revHash = md5(file.contents).slice(0, 8);
+		var hash = file.revHash = (opt.hash === false) ? '' : md5(file.contents).slice(0, 8);
+		var version = (opt.version) ? opt.version : '';
+		var revSegment = (opt.version ? '-' + opt.version : '') + (hash ? '-' + hash : '');
 		var ext = path.extname(file.path);
-		var filename = path.basename(file.path, ext) + '-' + hash + ext;
+		var filename = path.basename(file.path, ext) + revSegment + ext;
 		file.path = path.join(path.dirname(file.path), filename);
 		cb(null, file);
 	});
