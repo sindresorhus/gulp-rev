@@ -26,16 +26,19 @@ function relPath(base, filePath) {
 
 function readExistingManifestFile(pth, opt) {
 	try {
-		return file.readSync(path.join(opt.base, pth), opt);
+		if (opt.appendExisting) {
+			return file.readSync(path.join(opt.base, pth), opt);
+		}
 	}
 	catch (e) {
 		// no existing manifest found at path.join(opt.base, pth)
-		return new gutil.File({
-			cwd: opt.cwd,
-			base: opt.base,
-			path: path.join(opt.base, pth)
-		});
 	}
+
+	return new gutil.File({
+		cwd: opt.cwd,
+		base: opt.base,
+		path: path.join(opt.base, pth)
+	});
 }
 var plugin = function () {
 	return through.obj(function (file, enc, cb) {
@@ -62,7 +65,7 @@ var plugin = function () {
 };
 
 plugin.manifest = function (opt) {
-	opt = objectAssign({path: 'rev-manifest.json', base: '.'}, opt || {});
+	opt = objectAssign({path: 'rev-manifest.json', base: '.', appendExisting: false}, opt || {});
 	var firstFile = null;
 
 	var manifestFile = readExistingManifestFile(opt.path, opt);
@@ -75,17 +78,8 @@ plugin.manifest = function (opt) {
 			return;
 		}
 
-		// combine previous manifest
-		// only add if key isn't already there
-		// this is used, if the manifest file is part of the stream.
-		if (opt.path == file.revOrigPath) {
-			var existingManifest = JSON.parse(file.contents.toString());
-			manifest = objectAssign(existingManifest, manifest);
-		// add file to manifest
-		} else {
-			firstFile = firstFile || file;
-			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
-		}
+		firstFile = firstFile || file;
+		manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
 
 		cb();
 	}, function (cb) {
