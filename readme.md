@@ -66,7 +66,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
-By default, `rev-manifest.json` will be replaced as a whole. For modifications, add `rev-manifest.json` as a gulp source:
+By default, `rev-manifest.json` will be replaced as a whole. For modifications, use optional options to rev.manifest():
 
 ```js
 var gulp = require('gulp');
@@ -82,10 +82,7 @@ gulp.task('default', function () {
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
-
-		// Add rev-manifest.json as a new src to prevent rev'ing rev-manifest.json
-		.pipe(gulp.src('build/assets/rev-manifest.json', {base: 'assets'}))
-		.pipe(rev.manifest())             // applies only changes to the manifest
+		.pipe(rev.manifest({base: 'build/assets', appendExisting: true))     // applies only changes to the manifest
 		.pipe(gulp.dest('build/assets'));
 });
 ```
