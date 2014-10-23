@@ -24,7 +24,8 @@ function relPath(base, filePath) {
 }
 
 var plugin = function (opt) {
-	opt = objectAssign({}, opt || {});
+	var defaultOpts = {hash: true, version: ''};
+	opt = objectAssign(defaultOpts, opt || {});
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -42,7 +43,6 @@ var plugin = function (opt) {
 		file.revOrigBase = file.base;
 
 		var hash = file.revHash = (opt.hash === false) ? '' : md5(file.contents).slice(0, 8);
-		var version = (opt.version) ? opt.version : '';
 		var revSegment = (opt.version ? '-' + opt.version : '') + (hash ? '-' + hash : '');
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + revSegment + ext;
