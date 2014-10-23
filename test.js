@@ -19,6 +19,51 @@ it('should rev files', function (cb) {
 	}));
 });
 
+it('should not rev files if hash is false', function (cb) {
+	var stream = rev({ hash: false });
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
+it('should rev and version if version set', function (cb) {
+	var stream = rev({ version: '0.1.0' });
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-0.1.0-d41d8cd9.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
+it('should not rev but add version if version set and hash is false', function (cb) {
+	var stream = rev({ hash: false, version: '0.1.0' });
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-0.1.0.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
 it('should build a rev manifest file', function (cb) {
 	var stream = rev.manifest();
 
