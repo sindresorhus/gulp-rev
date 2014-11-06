@@ -23,7 +23,11 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-var plugin = function () {
+var plugin = function (option) {
+	option = option || {};
+	var hashLength = Number(option.hashLength);
+	hashLength > 0 || (hashLength = 8);
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -39,7 +43,7 @@ var plugin = function () {
 		file.revOrigPath = file.path;
 		file.revOrigBase = file.base;
 
-		var hash = file.revHash = md5(file.contents).slice(0, 8);
+		var hash = file.revHash = md5(file.contents).slice(0, hashLength);
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + '-' + hash + ext;
 		file.path = path.join(path.dirname(file.path), filename);
