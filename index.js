@@ -48,7 +48,7 @@ var plugin = function () {
 };
 
 plugin.manifest = function (opt) {
-	opt = objectAssign({path: 'rev-manifest.json'}, opt || {});
+	opt = objectAssign({path: 'rev-manifest.json', base: undefined}, opt || {});
 	var manifest = {};
 	var firstFile = null;
 
@@ -67,7 +67,7 @@ plugin.manifest = function (opt) {
 		// add file to manifest
 		} else {
 			firstFile = firstFile || file;
-			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
+			manifest[relPath(opt.base || firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
 		}
 
 		cb();
