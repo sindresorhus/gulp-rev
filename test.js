@@ -5,10 +5,13 @@ var gutil = require('gulp-util');
 var rev = require('./');
 
 it('should rev files', function (cb) {
-	var stream = rev();
+	var options;
+	var stream = rev(options = {
+		delimiter: "my_own_delimiter"
+	});
 
 	stream.on('data', function (file) {
-		assert.equal(file.path, 'unicorn-d41d8cd9.css');
+		assert.equal(file.path, 'unicorn' + options.delimiter + 'd41d8cd9.css');
 		assert.equal(file.revOrigPath, 'unicorn.css');
 		cb();
 	});

@@ -23,7 +23,9 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-var plugin = function () {
+var plugin = function (opt) {
+	opt = objectAssign({delimiter: "-"}, opt || {});
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -41,7 +43,7 @@ var plugin = function () {
 
 		var hash = file.revHash = md5(file.contents).slice(0, 8);
 		var ext = path.extname(file.path);
-		var filename = path.basename(file.path, ext) + '-' + hash + ext;
+		var filename = path.basename(file.path, ext) + opt.delimiter + hash + ext;
 		file.path = path.join(path.dirname(file.path), filename);
 		cb(null, file);
 	});

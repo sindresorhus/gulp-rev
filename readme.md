@@ -28,6 +28,20 @@ gulp.task('default', function () {
 
 *Options are intentionally missing as the default should work in most cases.*
 
+## API
+
+### rev([options])
+
+#### options
+
+Type: `Object`
+
+The options object.
+
+Property     | Necessary | Type       | Plugin default value | Description
+-------------|-----------|------------|----------------------|------------------------------------------
+delimiter    | no        | `string`   | `-`                  | Delimiter, used in revisioned file names
+
 
 ### Original path
 
@@ -37,6 +51,19 @@ Original file paths are stored at `file.revOrigPath`. This could come in handy f
 ### Asset hash
 
 The hash of each rev'd file is stored at `file.revHash`. You can use this for customizing the file renaming, or for building different manifest formats.
+
+
+### rev.manifest([options])
+
+#### options
+
+Type: `Object`
+
+The options object.
+
+Property     | Necessary | Type       | Plugin default value | Description
+-------------|-----------|------------|----------------------|---------------------
+path         | no        | `string`   | `rev-manifest.json`  | Asset manifest path
 
 
 ### Asset manifest
