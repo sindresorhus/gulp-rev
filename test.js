@@ -148,3 +148,50 @@ it('should store the hashes for later', function (cb) {
 		contents: new Buffer('')
 	}));
 });
+
+it('should handle sourcemaps transparently', function(cb) {
+
+	var stream = rev();
+
+	stream.on('data', function (file) {
+		if (path.extname(file.path) === '.map') {
+			assert.equal(file.path, 'pastissada-d41d8cd9.css.map');
+			cb();
+		}
+	});
+
+	stream.write(new gutil.File({
+		path: 'pastissada.css',
+		contents: new Buffer('')
+	}));
+
+	stream.end(new gutil.File({
+		path: 'pastissada.css.map',
+		contents: new Buffer('delicious')
+	}));
+
+
+});
+
+it('should use the sourcemapDestPath parameter correctly', function(cb) {
+
+	var stream = rev({sourcemapDestPath: 'maps'});
+
+	stream.on('data', function (file) {
+		if (path.extname(file.path) === '.map') {
+			assert.equal(file.path, 'maps/pastissada-d41d8cd9.css.map');
+			cb();
+		}
+	});
+
+	stream.write(new gutil.File({
+		path: 'pastissada.css',
+		contents: new Buffer('')
+	}));
+
+	stream.end(new gutil.File({
+		path: 'maps/pastissada.css.map',
+		contents: new Buffer('delicious')
+	}));
+
+});

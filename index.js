@@ -23,7 +23,24 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-var plugin = function () {
+function transformFilename(file) {
+	// save the old path for later
+	file.revOrigPath = file.path;
+	file.revOrigBase = file.base;
+
+	var hash = file.revHash = md5(file.contents).slice(0, 8);
+	var ext = path.extname(file.path);
+	var filename = path.basename(file.path, ext) + '-' + hash + ext;
+	file.path = path.join(path.dirname(file.path), filename);
+}
+
+var plugin = function (options) {
+
+	var sourcemaps = [],
+		pathMap = {},
+		options = options || {},
+		destPath = options.sourcemapDestPath || '';
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -35,15 +52,39 @@ var plugin = function () {
 			return;
 		}
 
-		// save the old path for later
-		file.revOrigPath = file.path;
-		file.revOrigBase = file.base;
+		if (path.extname(file.path) == '.map') {
+			// This is a sourcemap, hold until the end
+			sourcemaps.push(file);
+			cb();
+		} else {
+			var oldPath = file.path;
+			transformFilename(file);
+			pathMap[oldPath] = file.path;
+			cb(null, file);
+		}
+	}, function(cb) {
 
-		var hash = file.revHash = md5(file.contents).slice(0, 8);
-		var ext = path.extname(file.path);
-		var filename = path.basename(file.path, ext) + '-' + hash + ext;
-		file.path = path.join(path.dirname(file.path), filename);
-		cb(null, file);
+		for (var i = 0; i < sourcemaps.length; i++) {
+
+			var file = sourcemaps[i];
+			var basename = path.basename(file.path, '.map');
+			var reverseFilename = path.relative(destPath, path.join(path.dirname(file.path), basename));
+
+			if (pathMap[reverseFilename]) {
+				// save the old path for later
+				file.revOrigPath = file.path;
+
+				file.path = path.join(path.dirname(pathMap[reverseFilename]), destPath, path.basename(pathMap[reverseFilename])) + '.map';
+			} else {
+				transformFilename(file);
+			}
+
+			this.push(file);
+
+		}
+
+		cb();
+
 	});
 };
 

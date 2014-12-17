@@ -26,8 +26,27 @@ gulp.task('default', function () {
 });
 ```
 
-*Options are intentionally missing as the default should work in most cases.*
+With `gulp-sourcemaps`:
 
+```js
+var gulp = require('gulp');
+var rev = require('gulp-rev');
+var sourcemaps = require('gulp-sourcemaps');
+
+gulp.task('default', function () {
+	return gulp.src('src/*.js')
+		.pipe(sourcemaps.init())
+		.pipe(gulp.concat('app.js'))
+		.pipe(sourcemaps.write('./maps'))
+		.pipe(rev({sourcemapDestPath: './maps'}))
+		.pipe(gulp.dest('dist'));
+});
+
+```
+
+### Options
+
+- `sourcemapDestPath`: if you're using `gulp-sourcemaps` with external source maps, supply the path from `sourcemaps.write()` here.
 
 ### Original path
 
