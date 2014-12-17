@@ -34,12 +34,9 @@ function transformFilename(file) {
 	file.path = path.join(path.dirname(file.path), filename);
 }
 
-var plugin = function (options) {
-
-	var sourcemaps = [],
-		pathMap = {},
-		options = options || {},
-		destPath = options.sourcemapDestPath || '';
+var plugin = function () {
+	var sourcemaps = [];
+	var pathMap = {};
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -59,29 +56,44 @@ var plugin = function (options) {
 		} else {
 			var oldPath = file.path;
 			transformFilename(file);
-			pathMap[oldPath] = file.path;
+			pathMap[oldPath] = file.revHash;
 			cb(null, file);
 		}
 	}, function(cb) {
 
-		for (var i = 0; i < sourcemaps.length; i++) {
+		sourcemaps.forEach(function(file) {
+			// attempt to parse the sourcemap's JSON to get the reverse filename
+			var reverseFilename;
+			var relativePath;
+			try {
+				var sourcemap = JSON.parse(file.contents.toString());
+				reverseFilename = sourcemap.file;
+				relativePath = path.relative(path.dirname(reverseFilename), path.dirname(file.path));
+			} catch(e) {}
 
-			var file = sourcemaps[i];
-			var basename = path.basename(file.path, '.map');
-			var reverseFilename = path.relative(destPath, path.join(path.dirname(file.path), basename));
+			if (!reverseFilename) {
+				var basename = path.basename(file.path, '.map');
+				reverseFilename = path.relative(path.dirname(file.path), basename);
+				relativePath = '.';
+			}
 
 			if (pathMap[reverseFilename]) {
 				// save the old path for later
 				file.revOrigPath = file.path;
+				file.revOrigBase = file.base;
 
-				file.path = path.join(path.dirname(pathMap[reverseFilename]), destPath, path.basename(pathMap[reverseFilename])) + '.map';
+				var hash = pathMap[reverseFilename];
+				var origPath = path.join(path.dirname(file.path), path.basename(file.path, '.map'));
+				var ext = path.extname(origPath);
+				var filename = path.basename(origPath, ext) + '-' + hash + ext + '.map';
+				file.path = path.join(path.dirname(origPath), filename);
 			} else {
 				transformFilename(file);
 			}
 
 			this.push(file);
 
-		}
+		}, this);
 
 		cb();
 
@@ -102,7 +114,7 @@ plugin.manifest = function (opt) {
 
 		// combine previous manifest
 		// only add if key isn't already there
-		if (opt.path == file.revOrigPath) {
+		if (opt.path === file.revOrigPath) {
 			var existingManifest = JSON.parse(file.contents.toString());
 			manifest = objectAssign(existingManifest, manifest);
 		// add file to manifest

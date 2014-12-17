@@ -155,30 +155,6 @@ it('should handle sourcemaps transparently', function(cb) {
 
 	stream.on('data', function (file) {
 		if (path.extname(file.path) === '.map') {
-			assert.equal(file.path, 'pastissada-d41d8cd9.css.map');
-			cb();
-		}
-	});
-
-	stream.write(new gutil.File({
-		path: 'pastissada.css',
-		contents: new Buffer('')
-	}));
-
-	stream.end(new gutil.File({
-		path: 'pastissada.css.map',
-		contents: new Buffer('delicious')
-	}));
-
-
-});
-
-it('should use the sourcemapDestPath parameter correctly', function(cb) {
-
-	var stream = rev({sourcemapDestPath: 'maps'});
-
-	stream.on('data', function (file) {
-		if (path.extname(file.path) === '.map') {
 			assert.equal(file.path, 'maps/pastissada-d41d8cd9.css.map');
 			cb();
 		}
@@ -191,7 +167,54 @@ it('should use the sourcemapDestPath parameter correctly', function(cb) {
 
 	stream.end(new gutil.File({
 		path: 'maps/pastissada.css.map',
-		contents: new Buffer('delicious')
+		contents: new Buffer(JSON.stringify({ file: 'pastissada.css' }))
+	}));
+
+
+});
+
+it('should handle unparseable sourcemaps correctly', function(cb) {
+
+	var stream = rev();
+
+	stream.on('data', function (file) {
+		if (path.extname(file.path) === '.map') {
+			assert.equal(file.path, 'pastissada-d41d8cd9.css.map');
+			cb();
+		}
+	});
+
+	stream.write(new gutil.File({
+		path: 'pastissada.css',
+		contents: new Buffer('')
+	}));
+
+	stream.end(new gutil.File({
+		path: 'pastissada.css.map',
+		contents: new Buffer('Wait a minute, this is invalid JSON!')
+	}));
+
+});
+
+it('should be okay when the optional sourcemap.file is not defined', function(cb) {
+
+	var stream = rev();
+
+	stream.on('data', function (file) {
+		if (path.extname(file.path) === '.map') {
+			assert.equal(file.path, 'pastissada-d41d8cd9.css.map');
+			cb();
+		}
+	});
+
+	stream.write(new gutil.File({
+		path: 'pastissada.css',
+		contents: new Buffer('')
+	}));
+
+	stream.end(new gutil.File({
+		path: 'pastissada.css.map',
+		contents: new Buffer(JSON.stringify({}))
 	}));
 
 });
