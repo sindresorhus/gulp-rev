@@ -49,7 +49,7 @@ var plugin = function () {
 			return;
 		}
 
-		if (path.extname(file.path) == '.map') {
+		if (path.extname(file.path) === '.map') {
 			// This is a sourcemap, hold until the end
 			sourcemaps.push(file);
 			cb();
