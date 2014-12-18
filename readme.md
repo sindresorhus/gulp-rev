@@ -133,9 +133,9 @@ gulp.task('default', function () {
 	return gulp.src('src/*.js') 
 		.pipe(sourcemaps.init())
 		.pipe(concat({ path: 'bundle.js', cwd: ''}))
-		.pipe(sourcemaps.write())
 		.pipe(rev())
-		.pipe(gulp.dest('dist'))
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest('dist'));
 
 ```
 
