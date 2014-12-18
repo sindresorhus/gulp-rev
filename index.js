@@ -23,7 +23,21 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
+function transformFilename(file) {
+	// save the old path for later
+	file.revOrigPath = file.path;
+	file.revOrigBase = file.base;
+
+	var hash = file.revHash = md5(file.contents).slice(0, 8);
+	var ext = path.extname(file.path);
+	var filename = path.basename(file.path, ext) + '-' + hash + ext;
+	file.path = path.join(path.dirname(file.path), filename);
+}
+
 var plugin = function () {
+	var sourcemaps = [];
+	var pathMap = {};
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -35,15 +49,54 @@ var plugin = function () {
 			return;
 		}
 
-		// save the old path for later
-		file.revOrigPath = file.path;
-		file.revOrigBase = file.base;
+		if (path.extname(file.path) === '.map') {
+			// This is a sourcemap, hold until the end
+			sourcemaps.push(file);
+			cb();
+		} else {
+			var oldPath = file.path;
+			transformFilename(file);
+			pathMap[oldPath] = file.revHash;
+			cb(null, file);
+		}
+	}, function(cb) {
 
-		var hash = file.revHash = md5(file.contents).slice(0, 8);
-		var ext = path.extname(file.path);
-		var filename = path.basename(file.path, ext) + '-' + hash + ext;
-		file.path = path.join(path.dirname(file.path), filename);
-		cb(null, file);
+		sourcemaps.forEach(function(file) {
+			// attempt to parse the sourcemap's JSON to get the reverse filename
+			var reverseFilename;
+			var relativePath;
+			try {
+				var sourcemap = JSON.parse(file.contents.toString());
+				reverseFilename = sourcemap.file;
+				relativePath = path.relative(path.dirname(reverseFilename), path.dirname(file.path));
+			} catch(e) {}
+
+			if (!reverseFilename) {
+				var basename = path.basename(file.path, '.map');
+				reverseFilename = path.relative(path.dirname(file.path), basename);
+				relativePath = '.';
+			}
+
+			if (pathMap[reverseFilename]) {
+				// save the old path for later
+				file.revOrigPath = file.path;
+				file.revOrigBase = file.base;
+
+				var hash = pathMap[reverseFilename];
+				var origPath = path.join(path.dirname(file.path), path.basename(file.path, '.map'));
+				var ext = path.extname(origPath);
+				var filename = path.basename(origPath, ext) + '-' + hash + ext + '.map';
+				file.path = path.join(path.dirname(origPath), filename);
+			} else {
+				transformFilename(file);
+			}
+
+			this.push(file);
+
+		}, this);
+
+		cb();
+
 	});
 };
 
@@ -61,7 +114,7 @@ plugin.manifest = function (opt) {
 
 		// combine previous manifest
 		// only add if key isn't already there
-		if (opt.path == file.revOrigPath) {
+		if (opt.path === file.revOrigPath) {
 			var existingManifest = JSON.parse(file.contents.toString());
 			manifest = objectAssign(existingManifest, manifest);
 		// add file to manifest
