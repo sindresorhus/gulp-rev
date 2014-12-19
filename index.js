@@ -66,32 +66,30 @@ var plugin = function () {
 			return;
 		}
 
+		// This is a sourcemap, hold until the end
 		if (path.extname(file.path) === '.map') {
-			// This is a sourcemap, hold until the end
 			sourcemaps.push(file);
 			cb();
-		} else {
-			var oldPath = file.path;
-			transformFilename(file);
-			pathMap[oldPath] = file.revHash;
-			cb(null, file);
+			return;
 		}
+
+		var oldPath = file.path;
+		transformFilename(file);
+		pathMap[oldPath] = file.revHash;
+		cb(null, file);
+
 	}, function(cb) {
 
 		sourcemaps.forEach(function(file) {
-			// attempt to parse the sourcemap's JSON to get the reverse filename
 			var reverseFilename;
-			var relativePath;
+
+			// attempt to parse the sourcemap's JSON to get the reverse filename
 			try {
-				var sourcemap = JSON.parse(file.contents.toString());
-				reverseFilename = sourcemap.file;
-				relativePath = path.relative(path.dirname(reverseFilename), path.dirname(file.path));
+				reverseFilename = JSON.parse(file.contents.toString()).file;
 			} catch(e) {}
 
 			if (!reverseFilename) {
-				var basename = path.basename(file.path, '.map');
-				reverseFilename = path.relative(path.dirname(file.path), basename);
-				relativePath = '.';
+				reverseFilename = path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
 			}
 
 			if (pathMap[reverseFilename]) {
@@ -134,6 +132,7 @@ plugin.manifest = function (opt) {
 
 		cb();
 	}, function (cb) {
+		// No need to write a manifest file if there's nothing to manifest.
 		if (Object.keys(manifest).length === 0) {
 			cb();
 			return;
