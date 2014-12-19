@@ -24,20 +24,20 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-function readExistingManifestFile(pth, opt) {
-	try {
-		if (opt.merge) {
-			return file.readSync(path.join(opt.base, pth), opt);
-		}
-	} catch (e) {
-		// no existing manifest found at path.join(opt.base, pth)
+function getManifestFile(pth, opt, cb) {
+	if (opt.merge) {
+		try {
+			opt.read = opt.merge;
+			file.read(path.join(opt.base, pth), opt, cb);
+			return;
+		} catch (e) {}
 	}
 
-	return new gutil.File({
-		cwd: opt.cwd,
+	cb(null, new gutil.File({
+		cwd:  opt.cwd,
 		base: opt.base,
 		path: path.join(opt.base, pth)
-	});
+	}));
 }
 
 function transformFilename(file) {
@@ -120,9 +120,7 @@ var plugin = function () {
 plugin.manifest = function (opt) {
 	opt = objectAssign({path: 'rev-manifest.json', base: '.', merge: false}, opt || {});
 	var firstFile = null;
-
-	var manifestFile = readExistingManifestFile(opt.path, opt);
-	var manifest = manifestFile.isNull() ? {} : JSON.parse(manifestFile.contents.toString());
+	var manifest  = {};
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
@@ -136,12 +134,30 @@ plugin.manifest = function (opt) {
 
 		cb();
 	}, function (cb) {
-		if (firstFile) {
-			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
-			this.push(manifestFile);
+		if (Object.keys(manifest).length === 0) {
+			cb();
+			return;
 		}
 
-		cb();
+		var that = this;
+		getManifestFile(opt.path, opt, function(err, manifestFile) {
+			if (err) {
+				cb(err);
+				return;
+			}
+
+			if (opt.merge && !manifestFile.isNull()) {
+				var oldManifest = {};
+				try {
+					oldManifest = JSON.parse(manifestFile.contents.toString());
+				} catch (e) {}
+				manifest = objectAssign(oldManifest, manifest);
+			}
+
+			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
+			that.push(manifestFile);
+			cb();
+		});
 	});
 };
 
