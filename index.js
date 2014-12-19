@@ -26,11 +26,10 @@ function relPath(base, filePath) {
 
 function readExistingManifestFile(pth, opt) {
 	try {
-		if (opt.appendExisting) {
+		if (opt.merge) {
 			return file.readSync(path.join(opt.base, pth), opt);
 		}
-	}
-	catch (e) {
+	} catch (e) {
 		// no existing manifest found at path.join(opt.base, pth)
 	}
 
@@ -119,7 +118,7 @@ var plugin = function () {
 };
 
 plugin.manifest = function (opt) {
-	opt = objectAssign({path: 'rev-manifest.json', base: '.', appendExisting: false}, opt || {});
+	opt = objectAssign({path: 'rev-manifest.json', base: '.', merge: false}, opt || {});
 	var firstFile = null;
 
 	var manifestFile = readExistingManifestFile(opt.path, opt);
