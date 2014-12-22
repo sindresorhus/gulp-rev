@@ -82,7 +82,7 @@ gulp.task('default', function () {
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
-		.pipe(rev.manifest({base: 'build/assets', appendExisting: true))     // applies only changes to the manifest
+		.pipe(rev.manifest({base: 'build/assets', merge: true))     // applies only changes to the manifest
 		.pipe(gulp.dest('build/assets'));
 });
 ```
@@ -111,6 +111,39 @@ gulp.task('default', function () {
 ```
 
 
+## API
+
+### rev()
+
+_Options are intentionally missing as the default should work in most cases._
+
+
+### rev.manifest(options)
+
+#### options
+
+##### path
+
+Type: `string`
+Default: `"rev-manifest.json"`
+
+Manifest file path.
+
+##### base
+
+Type: `string`
+Default: `cwd`
+
+Manifest path base.
+
+##### merge
+
+Type: `boolean`
+Default: `false`
+
+Merge existing manifest file.
+
+
 ### Integration
 
 For more info on how to integrate **gulp-rev** into your app, have a look at the [integration guide](integration.md).
@@ -129,7 +162,7 @@ var concat = require('gulp-concat');
 gulp.task('default', function () {
 	return gulp.src('src/*.js') 
 		.pipe(sourcemaps.init())
-		.pipe(concat({ path: 'bundle.js', cwd: ''}))
+		.pipe(concat({path: 'bundle.js', cwd: ''}))
 		.pipe(rev())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'));
