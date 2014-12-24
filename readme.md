@@ -80,7 +80,7 @@ gulp.task('default', function () {
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev.manifest({
-			base: process.cwd() + 'build/assets',
+			base: process.cwd() + '/build/assets',
 			merge: true // merge with the existing manifest (if one exists)
 		}))
 		.pipe(gulp.dest('build/assets'));
