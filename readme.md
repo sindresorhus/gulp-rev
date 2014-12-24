@@ -66,7 +66,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
-By default, `rev-manifest.json` will be replaced as a whole. For modifications, use optional options to rev.manifest():
+By default, `rev-manifest.json` will be replaced as a whole. For modifications, use pass options to `rev.manifest()`:
 
 ```js
 var gulp = require('gulp');
@@ -75,19 +75,19 @@ var rev = require('gulp-rev');
 gulp.task('default', function () {
 	// by default, gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	return gulp.src([
-		'assets/css/*.css',
-		'assets/js/*.js'
-	], {base: 'assets'})
+	return gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
-		.pipe(rev.manifest({base: 'build/assets', merge: true))     // applies only changes to the manifest
+		.pipe(rev.manifest({
+			base: process.cwd() + 'build/assets',
+			merge: true // merge with the existing manifest (if one exists)
+		}))
 		.pipe(gulp.dest('build/assets'));
 });
 ```
 
-You can optionally call `rev.manifest({path: 'manifest.json'})` to give it a different path or filename.
+You can optionally call `rev.manifest('manifest.json')` to give it a different path or filename.
 
 ### Streaming
 
@@ -115,26 +115,31 @@ gulp.task('default', function () {
 
 ### rev()
 
-_Options are intentionally missing as the default should work in most cases._
 
+### rev.manifest([path], options)
 
-### rev.manifest(options)
-
-#### options
-
-##### path
+#### path
 
 Type: `string`
 Default: `"rev-manifest.json"`
 
 Manifest file path.
 
+#### options
+
 ##### base
 
 Type: `string`
-Default: `cwd`
+Default: `process.cwd()`
 
-Manifest path base.
+Override the `base` of the manifest file.
+
+##### cwd
+
+Type: `string`
+Default: `process.cwd()`
+
+Override the `cwd` (current working directory) of the manifest file.
 
 ##### merge
 
