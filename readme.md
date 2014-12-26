@@ -66,7 +66,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
-By default, `rev-manifest.json` will be replaced as a whole. For modifications, use pass options to `rev.manifest()`:
+By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
 
 ```js
 var gulp = require('gulp');
