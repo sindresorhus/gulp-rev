@@ -4,12 +4,13 @@ var assert = require('assert');
 var gutil = require('gulp-util');
 var rev = require('./');
 
-it('should rev files', function (cb) {
+it('should md5 rev files', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (file) {
 		assert.equal(file.path, 'unicorn-d41d8cd9.css');
 		assert.equal(file.revOrigPath, 'unicorn.css');
+		assert.equal(file.revHashMethod, 'md5');
 		cb();
 	});
 
@@ -18,6 +19,55 @@ it('should rev files', function (cb) {
 		contents: new Buffer('')
 	}));
 });
+
+it('should sha1 rev files', function (cb) {
+	var stream = rev({hashMethod: 'sha1'});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-da39a3ee.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		assert.equal(file.revHashMethod, 'sha1');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
+it('should sha256 rev files', function (cb) {
+	var stream = rev({hashMethod: 'sha256'});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-e3b0c442.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		assert.equal(file.revHashMethod, 'sha256');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
+it('should sha512 rev files', function (cb) {
+	var stream = rev({hashMethod: 'sha512'});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-cf83e135.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		assert.equal(file.revHashMethod, 'sha512');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
 
 it('should build a rev manifest file', function (cb) {
 	var stream = rev.manifest();
@@ -140,6 +190,7 @@ it('should store the hashes for later', function (cb) {
 		assert.equal(file.path, 'unicorn-d41d8cd9.css');
 		assert.equal(file.revOrigPath, 'unicorn.css');
 		assert.equal(file.revHash, 'd41d8cd9');
+		assert.equal(file.revHashMethod, 'md5');
 		cb();
 	});
 

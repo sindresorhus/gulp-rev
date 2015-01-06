@@ -5,9 +5,6 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var objectAssign = require('object-assign');
 
-function md5(str) {
-	return crypto.createHash('md5').update(str).digest('hex');
-}
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
@@ -23,7 +20,14 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-var plugin = function () {
+var plugin = function (opt) {
+	opt = opt || {};
+	opt.hashMethod = opt.hashMethod || 'md5';
+
+	var digest =  function(str) {
+		return crypto.createHash(opt.hashMethod).update(str).digest('hex');
+	}
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -39,7 +43,8 @@ var plugin = function () {
 		file.revOrigPath = file.path;
 		file.revOrigBase = file.base;
 
-		var hash = file.revHash = md5(file.contents).slice(0, 8);
+		var hash = file.revHash = digest(file.contents).slice(0, 8);
+		file.revHashMethod = opt.hashMethod;
 		var ext = path.extname(file.path);
 		var filename = path.basename(file.path, ext) + '-' + hash + ext;
 		file.path = path.join(path.dirname(file.path), filename);
