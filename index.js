@@ -26,7 +26,7 @@ var plugin = function (opt) {
 
 	var digest =  function(str) {
 		return crypto.createHash(opt.hashMethod).update(str).digest('hex');
-	}
+	};
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
