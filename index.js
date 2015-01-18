@@ -4,7 +4,6 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var objectAssign = require('object-assign');
-var file = require('vinyl-file');
 
 function md5(str) {
 	return crypto.createHash('md5').update(str).digest('hex');
@@ -24,23 +23,21 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-function readExistingManifestFile(pth, opt) {
-	try {
-		if (opt.appendExisting) {
-			return file.readSync(path.join(opt.base, pth), opt);
-		}
-	}
-	catch (e) {
-		// no existing manifest found at path.join(opt.base, pth)
-	}
+function transformFilename(file) {
+	// save the old path for later
+	file.revOrigPath = file.path;
+	file.revOrigBase = file.base;
 
-	return new gutil.File({
-		cwd: opt.cwd,
-		base: opt.base,
-		path: path.join(opt.base, pth)
-	});
+	var hash = file.revHash = md5(file.contents).slice(0, 8);
+	var ext = path.extname(file.path);
+	var filename = path.basename(file.path, ext) + '-' + hash + ext;
+	file.path = path.join(path.dirname(file.path), filename);
 }
+
 var plugin = function () {
+	var sourcemaps = [];
+	var pathMap = {};
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -52,24 +49,61 @@ var plugin = function () {
 			return;
 		}
 
-		// save the old path for later
-		file.revOrigPath = file.path;
-		file.revOrigBase = file.base;
+		if (path.extname(file.path) === '.map') {
+			// This is a sourcemap, hold until the end
+			sourcemaps.push(file);
+			cb();
+		} else {
+			var oldPath = file.path;
+			transformFilename(file);
+			pathMap[oldPath] = file.revHash;
+			cb(null, file);
+		}
+	}, function(cb) {
 
-		var hash = file.revHash = md5(file.contents).slice(0, 8);
-		var ext = path.extname(file.path);
-		var filename = path.basename(file.path, ext) + '-' + hash + ext;
-		file.path = path.join(path.dirname(file.path), filename);
-		cb(null, file);
+		sourcemaps.forEach(function(file) {
+			// attempt to parse the sourcemap's JSON to get the reverse filename
+			var reverseFilename;
+			var relativePath;
+			try {
+				var sourcemap = JSON.parse(file.contents.toString());
+				reverseFilename = sourcemap.file;
+				relativePath = path.relative(path.dirname(reverseFilename), path.dirname(file.path));
+			} catch(e) {}
+
+			if (!reverseFilename) {
+				var basename = path.basename(file.path, '.map');
+				reverseFilename = path.relative(path.dirname(file.path), basename);
+				relativePath = '.';
+			}
+
+			if (pathMap[reverseFilename]) {
+				// save the old path for later
+				file.revOrigPath = file.path;
+				file.revOrigBase = file.base;
+
+				var hash = pathMap[reverseFilename];
+				var origPath = path.join(path.dirname(file.path), path.basename(file.path, '.map'));
+				var ext = path.extname(origPath);
+				var filename = path.basename(origPath, ext) + '-' + hash + ext + '.map';
+				file.path = path.join(path.dirname(origPath), filename);
+			} else {
+				transformFilename(file);
+			}
+
+			this.push(file);
+
+		}, this);
+
+		cb();
+
 	});
 };
 
 plugin.manifest = function (opt) {
-	opt = objectAssign({path: 'rev-manifest.json', base: '.', appendExisting: false}, opt || {});
+	opt = objectAssign({path: 'rev-manifest.json'}, opt || {});
+	var manifest = {};
 	var firstFile = null;
-
-	var manifestFile = readExistingManifestFile(opt.path, opt);
-	var manifest = manifestFile.isNull() ? {} : JSON.parse(manifestFile.contents.toString());
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
@@ -78,14 +112,26 @@ plugin.manifest = function (opt) {
 			return;
 		}
 
-		firstFile = firstFile || file;
-		manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
+		// combine previous manifest
+		// only add if key isn't already there
+		if (opt.path === file.revOrigPath) {
+			var existingManifest = JSON.parse(file.contents.toString());
+			manifest = objectAssign(existingManifest, manifest);
+		// add file to manifest
+		} else {
+			firstFile = firstFile || file;
+			manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
+		}
 
 		cb();
 	}, function (cb) {
 		if (firstFile) {
-			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
-			this.push(manifestFile);
+			this.push(new gutil.File({
+				cwd: firstFile.cwd,
+				base: firstFile.base,
+				path: path.join(firstFile.base, opt.path),
+				contents: new Buffer(JSON.stringify(manifest, null, '  '))
+			}));
 		}
 
 		cb();
