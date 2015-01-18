@@ -62,7 +62,7 @@ it('should allow naming the manifest file', function (cb) {
 });
 
 it('should append to an existing rev manifest file', function (cb) {
-	var stream = rev.manifest({path: 'test.manifest-fixture.json', appendExisting: true});
+	var stream = rev.manifest({path: 'test.manifest-fixture.json', merge: true});
 
 	stream.on('data', function (newFile) {
 		assert.equal(newFile.relative, 'test.manifest-fixture.json');

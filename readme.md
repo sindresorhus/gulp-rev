@@ -66,7 +66,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
-By default, `rev-manifest.json` will be replaced as a whole. For modifications, use optional options to rev.manifest():
+By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
 
 ```js
 var gulp = require('gulp');
@@ -75,19 +75,19 @@ var rev = require('gulp-rev');
 gulp.task('default', function () {
 	// by default, gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	return gulp.src([
-		'assets/css/*.css',
-		'assets/js/*.js'
-	], {base: 'assets'})
+	return gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
-		.pipe(rev.manifest({base: 'build/assets', appendExisting: true))     // applies only changes to the manifest
+		.pipe(rev.manifest({
+			base: 'build/assets',
+			merge: true // merge with the existing manifest (if one exists)
+		}))
 		.pipe(gulp.dest('build/assets'));
 });
 ```
 
-You can optionally call `rev.manifest({path: 'manifest.json'})` to give it a different path or filename.
+You can optionally call `rev.manifest('manifest.json')` to give it a different path or filename.
 
 ### Streaming
 
@@ -111,6 +111,44 @@ gulp.task('default', function () {
 ```
 
 
+## API
+
+### rev()
+
+
+### rev.manifest([path], options)
+
+#### path
+
+Type: `string`
+Default: `"rev-manifest.json"`
+
+Manifest file path.
+
+#### options
+
+##### base
+
+Type: `string`
+Default: `process.cwd()`
+
+Override the `base` of the manifest file.
+
+##### cwd
+
+Type: `string`
+Default: `process.cwd()`
+
+Override the `cwd` (current working directory) of the manifest file.
+
+##### merge
+
+Type: `boolean`
+Default: `false`
+
+Merge existing manifest file.
+
+
 ### Integration
 
 For more info on how to integrate **gulp-rev** into your app, have a look at the [integration guide](integration.md).
@@ -129,7 +167,7 @@ var concat = require('gulp-concat');
 gulp.task('default', function () {
 	return gulp.src('src/*.js') 
 		.pipe(sourcemaps.init())
-		.pipe(concat({ path: 'bundle.js', cwd: ''}))
+		.pipe(concat({path: 'bundle.js', cwd: ''}))
 		.pipe(rev())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'));
