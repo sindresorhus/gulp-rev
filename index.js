@@ -25,14 +25,15 @@ function relPath(base, filePath) {
 }
 
 function getManifestFile(opts, cb) {
-	file.read(opts.path, opts, function(err, manifest) {
+	file.read(opts.path, opts, function (err, manifest) {
 		if (err) {
-			// Not found
+			// not found
 			if (err.errno === 34) {
 				cb(null, new gutil.File(opts));
 			} else {
 				cb(err);
 			}
+
 			return;
 		}
 
@@ -79,14 +80,13 @@ var plugin = function () {
 		cb(null, file);
 
 	}, function(cb) {
-
-		sourcemaps.forEach(function(file) {
+		sourcemaps.forEach(function (file) {
 			var reverseFilename;
 
 			// attempt to parse the sourcemap's JSON to get the reverse filename
 			try {
 				reverseFilename = JSON.parse(file.contents.toString()).file;
-			} catch(e) {}
+			} catch (err) {}
 
 			if (!reverseFilename) {
 				reverseFilename = path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
@@ -107,11 +107,9 @@ var plugin = function () {
 			}
 
 			this.push(file);
-
 		}, this);
 
 		cb();
-
 	});
 };
 
@@ -119,7 +117,11 @@ plugin.manifest = function (pth, opts) {
 	if (typeof pth === 'string') {
 		pth = {path: pth};
 	}
-	opts = objectAssign({path: 'rev-manifest.json', merge: false}, opts || {}, pth || {});
+
+	opts = objectAssign({
+		path: 'rev-manifest.json',
+		merge: false
+	}, opts, pth);
 
 	var firstFile = null;
 	var manifest  = {};
@@ -136,14 +138,13 @@ plugin.manifest = function (pth, opts) {
 
 		cb();
 	}, function (cb) {
-		// No need to write a manifest file if there's nothing to manifest.
+		// no need to write a manifest file if there's nothing to manifest
 		if (Object.keys(manifest).length === 0) {
 			cb();
 			return;
 		}
 
-		var that = this;
-		getManifestFile(opts, function(err, manifestFile) {
+		getManifestFile(opts, function (err, manifestFile) {
 			if (err) {
 				cb(err);
 				return;
@@ -151,16 +152,18 @@ plugin.manifest = function (pth, opts) {
 
 			if (opts.merge && !manifestFile.isNull()) {
 				var oldManifest = {};
+
 				try {
 					oldManifest = JSON.parse(manifestFile.contents.toString());
-				} catch (e) {}
+				} catch (err) {}
+
 				manifest = objectAssign(oldManifest, manifest);
 			}
 
 			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
-			that.push(manifestFile);
+			this.push(manifestFile);
 			cb();
-		});
+		}.bind(this));
 	});
 };
 

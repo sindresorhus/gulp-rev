@@ -1,4 +1,4 @@
-# [gulp](https://github.com/wearefractal/gulp)-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
+# gulp-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
 
 > Static asset revisioning by appending content hash to filenames
 `unicorn.css` → `unicorn-098f6bcd.css`
@@ -8,7 +8,7 @@ Make sure to set the files to [never expire](http://developer.yahoo.com/performa
 
 ## Install
 
-```sh
+```
 $ npm install --save-dev gulp-rev
 ```
 
@@ -26,7 +26,42 @@ gulp.task('default', function () {
 });
 ```
 
-*Options are intentionally missing as the default should work in most cases.*
+
+## API
+
+### rev()
+
+### rev.manifest([path], [options])
+
+#### path
+
+Type: `string`  
+Default: `"rev-manifest.json"`
+
+Manifest file path.
+
+#### options
+
+##### base
+
+Type: `string`  
+Default: `process.cwd()`
+
+Override the `base` of the manifest file.
+
+##### cwd
+
+Type: `string`  
+Default: `process.cwd()`
+
+Override the `cwd` (current working directory) of the manifest file.
+
+##### merge
+
+Type: `boolean`  
+Default: `false`
+
+Merge existing manifest file.
 
 
 ### Original path
@@ -89,7 +124,28 @@ gulp.task('default', function () {
 
 You can optionally call `rev.manifest('manifest.json')` to give it a different path or filename.
 
-### Streaming
+
+## Sourcemaps and `gulp-concat`
+
+Because of the way `gulp-concat` handles file paths, you may need to set `cwd` and `path` manually on your `gulp-concat` instance to get everything to work correctly:
+
+```js
+var gulp = require('gulp');
+var rev = require('gulp-rev');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
+
+gulp.task('default', function () {
+	return gulp.src('src/*.js')
+		.pipe(sourcemaps.init())
+		.pipe(concat({path: 'bundle.js', cwd: ''}))
+		.pipe(rev())
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest('dist'));
+```
+
+
+## Streaming
 
 This plugin does not support streaming. If you have files from a streaming source, such as browserify, you should use [gulp-buffer](https://github.com/jeromew/gulp-buffer) before `gulp-rev` in your pipeline:
 
@@ -111,71 +167,12 @@ gulp.task('default', function () {
 ```
 
 
-## API
-
-### rev()
-
-
-### rev.manifest([path], options)
-
-#### path
-
-Type: `string`
-Default: `"rev-manifest.json"`
-
-Manifest file path.
-
-#### options
-
-##### base
-
-Type: `string`
-Default: `process.cwd()`
-
-Override the `base` of the manifest file.
-
-##### cwd
-
-Type: `string`
-Default: `process.cwd()`
-
-Override the `cwd` (current working directory) of the manifest file.
-
-##### merge
-
-Type: `boolean`
-Default: `false`
-
-Merge existing manifest file.
-
-
-### Integration
+## Integration
 
 For more info on how to integrate **gulp-rev** into your app, have a look at the [integration guide](integration.md).
 
 
-### Sourcemaps and `gulp-concat`
-
-Because of the way `gulp-concat` handles file paths, you may need to set `cwd` and `path` manually on your `gulp-concat` instance to get everything to work correctly:
-
-```js
-var gulp = require('gulp');
-var rev = require('gulp-rev');
-var sourcemaps = require('gulp-sourcemaps');
-var concat = require('gulp-concat');
-
-gulp.task('default', function () {
-	return gulp.src('src/*.js') 
-		.pipe(sourcemaps.init())
-		.pipe(concat({path: 'bundle.js', cwd: ''}))
-		.pipe(rev())
-		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest('dist'));
-
-```
-
-
-### Works with gulp-rev
+## Works with gulp-rev
 
 - [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace)
 - [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url)

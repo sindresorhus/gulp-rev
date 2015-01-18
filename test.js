@@ -62,7 +62,10 @@ it('should allow naming the manifest file', function (cb) {
 });
 
 it('should append to an existing rev manifest file', function (cb) {
-	var stream = rev.manifest({path: 'test.manifest-fixture.json', merge: true});
+	var stream = rev.manifest({
+		path: 'test.manifest-fixture.json',
+		merge: true
+	});
 
 	stream.on('data', function (newFile) {
 		assert.equal(newFile.relative, 'test.manifest-fixture.json');
@@ -167,8 +170,7 @@ it('should store the hashes for later', function (cb) {
 	}));
 });
 
-it('should handle sourcemaps transparently', function(cb) {
-
+it('should handle sourcemaps transparently', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (file) {
@@ -185,14 +187,11 @@ it('should handle sourcemaps transparently', function(cb) {
 
 	stream.end(new gutil.File({
 		path: 'maps/pastissada.css.map',
-		contents: new Buffer(JSON.stringify({ file: 'pastissada.css' }))
+		contents: new Buffer(JSON.stringify({file: 'pastissada.css'}))
 	}));
-
-
 });
 
-it('should handle unparseable sourcemaps correctly', function(cb) {
-
+it('should handle unparseable sourcemaps correctly', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (file) {
@@ -211,11 +210,9 @@ it('should handle unparseable sourcemaps correctly', function(cb) {
 		path: 'pastissada.css.map',
 		contents: new Buffer('Wait a minute, this is invalid JSON!')
 	}));
-
 });
 
-it('should be okay when the optional sourcemap.file is not defined', function(cb) {
-
+it('should be okay when the optional sourcemap.file is not defined', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (file) {
@@ -234,5 +231,4 @@ it('should be okay when the optional sourcemap.file is not defined', function(cb
 		path: 'pastissada.css.map',
 		contents: new Buffer(JSON.stringify({}))
 	}));
-
 });
