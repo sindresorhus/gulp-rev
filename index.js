@@ -28,7 +28,7 @@ function getManifestFile(opts, cb) {
 	file.read(opts.path, opts, function (err, manifest) {
 		if (err) {
 			// not found
-			if (err.errno === 34) {
+			if (err.code === 'ENOENT') {
 				cb(null, new gutil.File(opts));
 			} else {
 				cb(err);
