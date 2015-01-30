@@ -6,10 +6,6 @@ var through = require('through2');
 var objectAssign = require('object-assign');
 var file = require('vinyl-file');
 
-function md5(str) {
-	return crypto.createHash('md5').update(str).digest('hex');
-}
-
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
 		return filePath.replace(/\\/g, '/');
@@ -41,18 +37,40 @@ function getManifestFile(opts, cb) {
 	});
 }
 
-function transformFilename(file) {
-	// save the old path for later
+function transformFilename(file, transformer, hasher) {
+	// Save original path and base
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
 
-	var hash = file.revHash = md5(file.contents).slice(0, 8);
-	var ext = path.extname(file.path);
-	var filename = path.basename(file.path, ext) + '-' + hash + ext;
+	// Generate a hash
+	file.revHash = hasher(file);
+
+	if (typeof file.revHash !== 'string')
+		throw 'Hasher didn\'t return a string.';
+
+	// Transform the filename
+	var filename = transformer(file, file.revHash);
+
+	if (typeof filename !== 'string')
+		throw 'Name transformer didn\'t return a string.';
+
+	// Store the new path
 	file.path = path.join(path.dirname(file.path), filename);
 }
 
-var plugin = function () {
+var plugin = function (opts) {
+	opts = objectAssign({
+		transformer: plugin.defaultTransformer,
+		hasher: plugin.md5Hasher
+	}, opts);
+
+	// Check types
+	if (opts.transformer && typeof opts.transformer !== 'function')
+		throw 'Provided transformer must be a function.';
+
+	if (opts.hasher && typeof opts.hasher !== 'function')
+		throw 'Provided hasher must be a function.';
+
 	var sourcemaps = [];
 	var pathMap = {};
 
@@ -74,9 +92,12 @@ var plugin = function () {
 			return;
 		}
 
-		var oldPath = file.path;
-		transformFilename(file);
-		pathMap[oldPath] = file.revHash;
+		// Transform the file name
+		transformFilename(file, opts.transformer, opts.hasher);
+
+		// Store the hash
+		pathMap[file.revOrigPath] = file.revHash;
+
 		cb(null, file);
 
 	}, function(cb) {
@@ -103,7 +124,7 @@ var plugin = function () {
 				var filename = path.basename(origPath, ext) + '-' + hash + ext + '.map';
 				file.path = path.join(path.dirname(origPath), filename);
 			} else {
-				transformFilename(file);
+				transformFilename(file, opts.transformer, opts.hasher);
 			}
 
 			this.push(file);
@@ -165,6 +186,39 @@ plugin.manifest = function (pth, opts) {
 			cb();
 		}.bind(this));
 	});
+};
+
+plugin.md5Hasher = function (file) {
+	// MD5 the file contents
+	var hash = crypto.createHash('md5').update(file.contents).digest('hex');
+
+	// Get the first 8 characters
+	hash = hash.slice(0, 8)
+
+	return hash;
+};
+
+plugin.defaultTransformer = function (file, hash) {
+	// Get the file extension
+	var ext = path.extname(file.path);
+
+	// Build a new filename with the hash
+	var filename = path.basename(file.path, ext) + '-' + hash + ext;
+
+	return filename;
+};
+
+plugin.fullextTransformer = function (file, hash) {
+	// Get all file extensions so we end up with 'file-hash.min.css' instead of 'file.min-hash.css'
+	var ext = '';
+	while (path.extname(path.basename(file.path, ext)).length) {
+		ext = path.extname(path.basename(file.path, ext)) + ext;
+	}
+
+	// Build a new filename with the hash
+	var filename = path.basename(file.path, ext) + '-' + hash + ext;
+
+	return filename;
 };
 
 module.exports = plugin;

@@ -232,3 +232,39 @@ it('should be okay when the optional sourcemap.file is not defined', function (c
 		contents: new Buffer(JSON.stringify({}))
 	}));
 });
+
+it('should allow custom hashers to be used', function (cb) {
+	var stream = rev({
+		hasher: function (file) {
+			return 'testhash';
+		}
+	});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-testhash.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
+it('should allow custom transformers to be used', function (cb) {
+	var stream = rev({
+		transformer: rev.fullextTransformer
+	});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-d41d8cd9.min.css');
+		assert.equal(file.revOrigPath, 'unicorn.min.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.min.css',
+		contents: new Buffer('')
+	}));
+});

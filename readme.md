@@ -29,7 +29,25 @@ gulp.task('default', function () {
 
 ## API
 
-### rev()
+### rev([options])
+
+#### options
+
+##### hasher
+
+Type: `function(file)`
+Default: `rev.md5Hasher`
+
+Override the default file name hasher with a function that returns a hash. 
+
+##### transformer
+
+Type: `function(file, hash)`
+Default: `rev.defaultTransformer`
+
+Override the default file name transformer with a function that returns the transformed file name.
+
+`rev.fullextTransformer` is also available if you want your names to be `unicorn-hash.min.css` instead of `unicorn.min-hash.css`.
 
 ### rev.manifest([path], [options])
 
