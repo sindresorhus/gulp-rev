@@ -64,6 +64,14 @@ Default: `false`
 Merge existing manifest file.
 
 
+##### rails
+
+Type: `boolean`  
+Default: `false`
+
+Build Rails compatible manifest file.
+
+
 ### Original path
 
 Original file paths are stored at `file.revOrigPath`. This could come in handy for things like rewriting references to the assets.

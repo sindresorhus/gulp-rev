@@ -1,6 +1,7 @@
 'use strict';
 var crypto = require('crypto');
 var path = require('path');
+var fs = require('fs');
 var gutil = require('gulp-util');
 var through = require('through2');
 var objectAssign = require('object-assign');
@@ -50,6 +51,51 @@ function transformFilename(file) {
 	var ext = path.extname(file.path);
 	var filename = path.basename(file.path, ext) + '-' + hash + ext;
 	file.path = path.join(path.dirname(file.path), filename);
+}
+
+function addToManifest(manifest, firstFile, file, opts) {
+	var origPath = relPath(firstFile.revOrigBase, file.revOrigPath);
+	var path = relPath(firstFile.base, file.path);
+
+	if (opts.rails) {
+		// Sorry, a dirty hack: fs.statSync cannot be used in the tests
+		var mtime = file.stat.mtime ? file.stat.mtime : fs.statSync(file.path).mtime;
+
+		manifest.files[path] = {
+			'logical_path':	origPath,
+			'mtime':		new Date(mtime).toJSON(),
+			'size':			file.contents.length,
+			'digest':		md5(file.contents).slice(0, 8)
+		};
+		manifest.assets[origPath] = path;
+
+	} else {
+		manifest[origPath] = path;
+	}
+}
+
+function mergeManifest(oldManifest, manifest, opts) {
+	var merged = {};
+	var files = {};
+
+	if (opts.rails) {
+		merged.assets = objectAssign(oldManifest.assets, manifest.assets);
+		files = objectAssign(oldManifest.files, manifest.files);
+
+		// Remove old keys
+		for (var file in files) {
+			var key = files[file].logical_path;
+			if (file != merged.assets[key]) {
+				delete files[file];
+			}
+		}
+
+		merged.files = files;
+	} else {
+		merged = objectAssign(oldManifest, manifest);
+	}
+
+	return merged;
 }
 
 var plugin = function () {
@@ -120,11 +166,17 @@ plugin.manifest = function (pth, opts) {
 
 	opts = objectAssign({
 		path: 'rev-manifest.json',
-		merge: false
+		merge: false,
+		rails: false
 	}, opts, pth);
 
 	var firstFile = null;
 	var manifest  = {};
+
+	if (opts.rails) {
+		manifest.files = {};
+		manifest.assets = {};
+	}
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
@@ -134,7 +186,7 @@ plugin.manifest = function (pth, opts) {
 		}
 
 		firstFile = firstFile || file;
-		manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
+		addToManifest(manifest, firstFile, file, opts);
 
 		cb();
 	}, function (cb) {
@@ -157,7 +209,7 @@ plugin.manifest = function (pth, opts) {
 					oldManifest = JSON.parse(manifestFile.contents.toString());
 				} catch (err) {}
 
-				manifest = objectAssign(oldManifest, manifest);
+				manifest = mergeManifest(oldManifest, manifest, opts);
 			}
 
 			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
