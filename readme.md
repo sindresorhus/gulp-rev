@@ -174,10 +174,10 @@ For more info on how to integrate **gulp-rev** into your app, have a look at the
 
 ## Works with gulp-rev
 
-- [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace)
-- [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url)
-- [gulp-rev-outdated](https://github.com/shonny-ua/gulp-rev-outdated)
-- [gulp-rev-collector](https://github.com/shonny-ua/gulp-rev-collector)
+- [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace) - Rewrite occurences of filenames which have been renamed
+- [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url) - Override URLs in CSS files with the revved ones
+- [gulp-rev-outdated](https://github.com/shonny-ua/gulp-rev-outdated) - Old static asset revision files filter
+- [gulp-rev-collector](https://github.com/shonny-ua/gulp-rev-collector) - Static asset revision data collector
 - [rev-del](https://github.com/callumacrae/rev-del) - Delete old unused assets
 
 
