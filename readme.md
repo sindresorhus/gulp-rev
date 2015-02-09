@@ -178,6 +178,7 @@ For more info on how to integrate **gulp-rev** into your app, have a look at the
 - [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url)
 - [gulp-rev-outdated](https://github.com/shonny-ua/gulp-rev-outdated)
 - [gulp-rev-collector](https://github.com/shonny-ua/gulp-rev-collector)
+- [rev-del](https://github.com/callumacrae/rev-del)
 
 
 ## License
