@@ -42,6 +42,42 @@ it('should build a rev manifest file', function (cb) {
 	stream.end();
 });
 
+it('should build a rev manifest file for rails', function(cb) {
+	var stream = rev.manifest({rails: true});
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'rev-manifest.json');
+		assert.deepEqual(
+			JSON.parse(newFile.contents.toString()),
+			{
+				"files": {
+					"unicorn-d41d8cd9.css": {
+						"logical_path": "unicorn.css",
+						"mtime": "2014-11-21T06:21:52.000Z",
+						"size": 0,
+						"digest": "d41d8cd9"
+					}
+				},
+				"assets": {
+					"unicorn.css": "unicorn-d41d8cd9.css"
+				}
+			}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn-d41d8cd9.css',
+		contents: new Buffer(''),
+		stat: { mtime: new Date('2014-11-21T06:21:52.000Z') }
+	});
+
+	file.revOrigPath = 'unicorn.css';
+
+	stream.write(file);
+	stream.end();
+});
+
 it('should allow naming the manifest file', function (cb) {
 	var path = 'manifest.json';
 	var stream = rev.manifest({path: path});
@@ -87,6 +123,56 @@ it('should append to an existing rev manifest file', function (cb) {
 	stream.end();
 
 });
+
+
+it('should append to an existing rev manifest file for rails', function (cb) {
+	var stream = rev.manifest({
+		path: 'test.rails-manifest-fixture.json',
+		merge: true,
+		rails: true
+	});
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'test.rails-manifest-fixture.json');
+		assert.deepEqual(
+			JSON.parse(newFile.contents.toString()),
+			{
+				"files": {
+					"app-a41d8cd1.js": {
+						"logical_path": "app.js",
+						"mtime": "2014-11-21T06:21:52.000Z",
+						"size": 0,
+						"digest": "a41d8cd1"
+					},
+					"unicorn-d41d8cd9.css": {
+						"logical_path": "unicorn.css",
+						"mtime": "2014-11-21T06:21:52.000Z",
+						"size": 0,
+						"digest": "d41d8cd9"
+					}
+				},
+				"assets": {
+					"app.js": "app-a41d8cd1.js",
+					"unicorn.css": "unicorn-d41d8cd9.css"
+				}
+			}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn-d41d8cd9.css',
+		contents: new Buffer(''),
+		stat: { mtime: new Date('2014-11-21T06:21:52.000Z') }
+	});
+
+	file.revOrigPath = 'unicorn.css';
+
+	stream.write(file);
+	stream.end();
+
+});
+
 
 it('should not append to an existing rev manifest by default', function (cb) {
 	var stream = rev.manifest({path: 'test.manifest-fixture.json'});

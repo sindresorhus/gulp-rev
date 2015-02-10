@@ -1,0 +1,20 @@
+{
+	"files": {
+		"app-a41d8cd1.js": {
+			"logical_path": "app.js",
+			"mtime": "2014-11-21T06:21:52.000Z",
+			"size": 0,
+			"digest": "a41d8cd1"
+		},
+		"unicorn-b41d8cd2.css": {
+			"logical_path": "unicorn.css",
+			"mtime": "2014-11-21T06:21:52.000Z",
+			"size": 0,
+			"digest": "b41d8cd2"
+		}
+	},
+	"assets": {
+		"app.js": "app-a41d8cd1.js",
+		"unicorn.css": "unicorn-b41d8cd2.css"
+	}
+}
