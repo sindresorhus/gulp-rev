@@ -123,7 +123,6 @@ plugin.manifest = function (pth, opts) {
 		merge: false
 	}, opts, pth);
 
-	var firstFile = null;
 	var manifest  = {};
 
 	return through.obj(function (file, enc, cb) {
@@ -133,8 +132,7 @@ plugin.manifest = function (pth, opts) {
 			return;
 		}
 
-		firstFile = firstFile || file;
-		manifest[relPath(firstFile.revOrigBase, file.revOrigPath)] = relPath(firstFile.base, file.path);
+		manifest[relPath(file.revOrigBase, file.revOrigPath)] = relPath(file.base, file.path);
 
 		cb();
 	}, function (cb) {
