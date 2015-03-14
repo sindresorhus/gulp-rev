@@ -52,7 +52,7 @@ function transformFilename(file, opts) {
 	file.path = path.join(path.dirname(file.path), filename);
 }
 
-var plugin = function () {
+var plugin = function (opts) {
 	var sourcemaps = [];
 	var pathMap = {};
 	
