@@ -41,12 +41,12 @@ function getManifestFile(opts, cb) {
 	});
 }
 
-function transformFilename(file) {
+function transformFilename(file, opts) {
 	// save the old path for later
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
 
-	var hash = file.revHash = md5(file.contents).slice(0, 8);
+	var hash = file.revHash = md5(file.contents).slice(0, opts.hashLength);
 	var ext = path.extname(file.path);
 	var filename = path.basename(file.path, ext) + '-' + hash + ext;
 	file.path = path.join(path.dirname(file.path), filename);
@@ -55,6 +55,10 @@ function transformFilename(file) {
 var plugin = function () {
 	var sourcemaps = [];
 	var pathMap = {};
+	
+	opts = objectAssign({
+		hashLength: 8
+	}, opts);
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -75,7 +79,7 @@ var plugin = function () {
 		}
 
 		var oldPath = file.path;
-		transformFilename(file);
+		transformFilename(file, opts);
 		pathMap[oldPath] = file.revHash;
 		cb(null, file);
 
@@ -103,7 +107,7 @@ var plugin = function () {
 				var filename = path.basename(origPath, ext) + '-' + hash + ext + '.map';
 				file.path = path.join(path.dirname(origPath), filename);
 			} else {
-				transformFilename(file);
+				transformFilename(file, opts);
 			}
 
 			this.push(file);
@@ -119,6 +123,7 @@ plugin.manifest = function (pth, opts) {
 	}
 
 	opts = objectAssign({
+		hashLength: 8,
 		path: 'rev-manifest.json',
 		merge: false
 	}, opts, pth);
