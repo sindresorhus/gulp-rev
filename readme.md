@@ -29,7 +29,23 @@ gulp.task('default', function () {
 
 ## API
 
-### rev()
+### rev([options])
+
+#### options
+
+##### hashLength
+
+Type: `number`  
+Default: `8`
+
+The length of the hash appended to each filename.
+
+##### salt
+
+Type: `string`  
+Default: null
+
+Optional salt to apply to the hash of every file. Useful if you want to invalidate the cache by changing the cachebusting hash for every file without actually changing their contents.
 
 ### rev.manifest([path], [options])
 
