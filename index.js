@@ -6,8 +6,12 @@ var through = require('through2');
 var objectAssign = require('object-assign');
 var file = require('vinyl-file');
 
-function md5(str) {
-	return crypto.createHash('md5').update(str).digest('hex');
+function md5(str, salt) {
+	var hash = crypto.createHash('md5').update(str);
+        if (salt) {
+                hash.update(salt, 'utf8');
+        }
+        return hash.digest('hex');
 }
 
 function relPath(base, filePath) {
@@ -41,20 +45,25 @@ function getManifestFile(opts, cb) {
 	});
 }
 
-function transformFilename(file) {
+function transformFilename(file, opts) {
 	// save the old path for later
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
 
-	var hash = file.revHash = md5(file.contents).slice(0, 8);
+	var hash = file.revHash = md5(file.contents, opts.salt).slice(0, opts.hashLength);
 	var ext = path.extname(file.path);
 	var filename = path.basename(file.path, ext) + '-' + hash + ext;
 	file.path = path.join(path.dirname(file.path), filename);
 }
 
-var plugin = function () {
+var plugin = function (opts) {
 	var sourcemaps = [];
-	var pathMap = {};
+        var pathMap = {};
+
+        opts = objectAssign({
+                salt: null,
+                hashLength: 8
+	}, opts);
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -75,7 +84,7 @@ var plugin = function () {
 		}
 
 		var oldPath = file.path;
-		transformFilename(file);
+		transformFilename(file, opts);
 		pathMap[oldPath] = file.revHash;
 		cb(null, file);
 
@@ -103,7 +112,7 @@ var plugin = function () {
 				var filename = path.basename(origPath, ext) + '-' + hash + ext + '.map';
 				file.path = path.join(path.dirname(origPath), filename);
 			} else {
-				transformFilename(file);
+				transformFilename(file, opts);
 			}
 
 			this.push(file);
