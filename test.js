@@ -8,7 +8,7 @@ it('should rev files', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (file) {
-		assert.equal(file.path, 'unicorn-d41d8cd9.css');
+		assert.equal(file.path, 'unicorn-d41d8cd98f.css');
 		assert.equal(file.revOrigPath, 'unicorn.css');
 		cb();
 	});
@@ -26,13 +26,13 @@ it('should build a rev manifest file', function (cb) {
 		assert.equal(newFile.relative, 'rev-manifest.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
-			{'unicorn.css': 'unicorn-d41d8cd9.css'}
+			{'unicorn.css': 'unicorn-d41d8cd98f.css'}
 		);
 		cb();
 	});
 
 	var file = new gutil.File({
-		path: 'unicorn-d41d8cd9.css',
+		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
 
@@ -52,7 +52,7 @@ it('should allow naming the manifest file', function (cb) {
 	});
 
 	var file = new gutil.File({
-		path: 'unicorn-d41d8cd9.css',
+		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
 	file.revOrigPath = 'unicorn.css';
@@ -71,13 +71,13 @@ it('should append to an existing rev manifest file', function (cb) {
 		assert.equal(newFile.relative, 'test.manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
-			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd9.css'}
+			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd98f.css'}
 		);
 		cb();
 	});
 
 	var file = new gutil.File({
-		path: 'unicorn-d41d8cd9.css',
+		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
 
@@ -95,13 +95,13 @@ it('should not append to an existing rev manifest by default', function (cb) {
 		assert.equal(newFile.relative, 'test.manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
-			{'unicorn.css': 'unicorn-d41d8cd9.css'}
+			{'unicorn.css': 'unicorn-d41d8cd98f.css'}
 		);
 		cb();
 	});
 
 	var file = new gutil.File({
-		path: 'unicorn-d41d8cd9.css',
+		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
 
@@ -117,8 +117,8 @@ it('should respect directories', function (cb) {
 
 	stream.on('data', function (newFile) {
 		var MANIFEST = {};
-		MANIFEST[path.join('foo', 'unicorn.css')] = path.join('foo', 'unicorn-d41d8cd9.css');
-		MANIFEST[path.join('bar', 'pony.css')] = path.join('bar', 'pony-d41d8cd9.css');
+		MANIFEST[path.join('foo', 'unicorn.css')] = path.join('foo', 'unicorn-d41d8cd98f.css');
+		MANIFEST[path.join('bar', 'pony.css')] = path.join('bar', 'pony-d41d8cd98f.css');
 
 		assert.equal(newFile.relative, 'rev-manifest.json');
 		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
@@ -128,26 +128,26 @@ it('should respect directories', function (cb) {
 	var file1 = new gutil.File({
 		cwd: __dirname,
 		base: __dirname,
-		path: path.join(__dirname, 'foo', 'unicorn-d41d8cd9.css'),
+		path: path.join(__dirname, 'foo', 'unicorn-d41d8cd98f.css'),
 		contents: new Buffer('')
 	});
 
 	file1.revOrigBase = __dirname;
 	file1.revOrigPath = path.join(__dirname, 'foo', 'unicorn.css');
 	file1.origName = 'unicorn.css';
-	file1.revName = 'unicorn-d41d8cd9.css';
+	file1.revName = 'unicorn-d41d8cd98f.css';
 
 	var file2 = new gutil.File({
 		cwd: __dirname,
 		base: __dirname,
-		path: path.join(__dirname, 'bar', 'pony-d41d8cd9.css'),
+		path: path.join(__dirname, 'bar', 'pony-d41d8cd98f.css'),
 		contents: new Buffer('')
 	});
 
 	file2.revOrigBase = __dirname;
 	file2.revOrigPath = path.join(__dirname, 'bar', 'pony.css');
 	file2.origName = 'pony.css';
-	file2.revName = 'pony-d41d8cd9.css';
+	file2.revName = 'pony-d41d8cd98f.css';
 
 	stream.write(file1);
 	stream.write(file2);
@@ -158,9 +158,9 @@ it('should store the hashes for later', function (cb) {
 	var stream = rev();
 
 	stream.on('data', function (file) {
-		assert.equal(file.path, 'unicorn-d41d8cd9.css');
+		assert.equal(file.path, 'unicorn-d41d8cd98f.css');
 		assert.equal(file.revOrigPath, 'unicorn.css');
-		assert.equal(file.revHash, 'd41d8cd9');
+		assert.equal(file.revHash, 'd41d8cd98f');
 		cb();
 	});
 
@@ -175,7 +175,7 @@ it('should handle sourcemaps transparently', function (cb) {
 
 	stream.on('data', function (file) {
 		if (path.extname(file.path) === '.map') {
-			assert.equal(file.path, 'maps/pastissada-d41d8cd9.css.map');
+			assert.equal(file.path, 'maps/pastissada-d41d8cd98f.css.map');
 			cb();
 		}
 	});
@@ -196,7 +196,7 @@ it('should handle unparseable sourcemaps correctly', function (cb) {
 
 	stream.on('data', function (file) {
 		if (path.extname(file.path) === '.map') {
-			assert.equal(file.path, 'pastissada-d41d8cd9.css.map');
+			assert.equal(file.path, 'pastissada-d41d8cd98f.css.map');
 			cb();
 		}
 	});
@@ -217,7 +217,7 @@ it('should be okay when the optional sourcemap.file is not defined', function (c
 
 	stream.on('data', function (file) {
 		if (path.extname(file.path) === '.map') {
-			assert.equal(file.path, 'pastissada-d41d8cd9.css.map');
+			assert.equal(file.path, 'pastissada-d41d8cd98f.css.map');
 			cb();
 		}
 	});

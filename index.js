@@ -43,7 +43,7 @@ function transformFilename(file) {
 	// save the old path for later
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
-	file.revHash = revHash(file.contents).slice(0, 8);
+	file.revHash = revHash(file.contents);
 	file.path = revPath(file.path, file.revHash);
 }
 
