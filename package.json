@@ -7,13 +7,13 @@
   "author": {
     "name": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "http://sindresorhus.com"
+    "url": "sindresorhus.com"
   },
   "maintainers": [
     {
       "name": "Justin Hileman",
       "email": "justin@justinhileman.info",
-      "url": "http://justinhileman.info"
+      "url": "justinhileman.info"
     }
   ],
   "engines": {
@@ -28,6 +28,7 @@
   "keywords": [
     "gulpplugin",
     "rev",
+    "revving",
     "revision",
     "hash",
     "optimize",
