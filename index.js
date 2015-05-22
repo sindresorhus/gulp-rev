@@ -5,10 +5,8 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var objectAssign = require('object-assign');
 var file = require('vinyl-file');
-
-function md5(str) {
-	return crypto.createHash('md5').update(str).digest('hex');
-}
+var revHash = require('rev-hash');
+var revPath = require('rev-path');
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
@@ -45,11 +43,8 @@ function transformFilename(file) {
 	// save the old path for later
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
-
-	var hash = file.revHash = md5(file.contents).slice(0, 8);
-	var ext = path.extname(file.path);
-	var filename = path.basename(file.path, ext) + '-' + hash + ext;
-	file.path = path.join(path.dirname(file.path), filename);
+	file.revHash = revHash(file.contents).slice(0, 8);
+	file.path = revPath(file.path, file.revHash);
 }
 
 var plugin = function () {
@@ -98,10 +93,7 @@ var plugin = function () {
 				file.revOrigBase = file.base;
 
 				var hash = pathMap[reverseFilename];
-				var origPath = path.join(path.dirname(file.path), path.basename(file.path, '.map'));
-				var ext = path.extname(origPath);
-				var filename = path.basename(origPath, ext) + '-' + hash + ext + '.map';
-				file.path = path.join(path.dirname(origPath), filename);
+				file.path = revPath(file.path.replace(/\.map$/, ''), hash) + '.map';
 			} else {
 				transformFilename(file);
 			}

@@ -42,6 +42,8 @@
   "dependencies": {
     "gulp-util": "^3.0.0",
     "object-assign": "^2.0.0",
+    "rev-hash": "^1.0.0",
+    "rev-path": "^1.0.0",
     "through2": "^0.6.1",
     "vinyl-file": "^1.1.0"
   },
