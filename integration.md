@@ -6,9 +6,9 @@ For our examples, we'll assume the following `rev-manifest.json`:
 
 ```json
 {
-	"js/app.js": "js/app-5c41412f.js",
-	"js/lib.js": "js/lib-6d94673e.js",
-	"css/app.css": "css/app-a4ae3dfa.css"
+	"js/app.js": "js/app-5c41412f32.js",
+	"js/lib.js": "js/lib-6d94673e3d.js",
+	"css/app.css": "css/app-a4ae3dfa4d.css"
 }
 ````
 

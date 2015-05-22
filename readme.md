@@ -1,7 +1,7 @@
 # gulp-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
 
-> Static asset revisioning by appending content hash to filenames
-`unicorn.css` → `unicorn-d41d8cd98f.css`
+> Static asset revisioning by appending content hash to filenames  
+> `unicorn.css` → `unicorn-d41d8cd98f.css`
 
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
 
@@ -96,8 +96,8 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 
 ```json
 {
-	"css/unicorn.css": "css/unicorn-098f6bcd.css",
-	"js/unicorn.js": "js/unicorn-273c2cin.js"
+	"css/unicorn.css": "css/unicorn-d41d8cd98f.css",
+	"js/unicorn.js": "js/unicorn-273c2cin3f.js"
 }
 ```
 
