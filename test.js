@@ -154,6 +154,48 @@ it('should respect directories', function (cb) {
 	stream.end();
 });
 
+it('should respect files coming from directories with different bases', function (cb) {
+	var stream = rev.manifest();
+
+	stream.on('data', function (newFile) {
+		var MANIFEST = {};
+		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
+		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
+
+		assert.equal(newFile.relative, 'rev-manifest.json');
+		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
+		cb();
+	});
+
+	var file1 = new gutil.File({
+		cwd: __dirname,
+		base: path.join(__dirname, 'output'),
+		path: path.join(__dirname, 'output', 'foo', 'scriptfoo-d41d8cd98f.js'),
+		contents: new Buffer('')
+	});
+
+	file1.revOrigBase = path.join(__dirname, 'vendor1');
+	file1.revOrigPath = path.join(__dirname, 'vendor1', 'foo', 'scriptfoo.js');
+	file1.origName = 'scriptfoo.js';
+	file1.revName = 'scriptfoo-d41d8cd98f.js';
+
+	var file2 = new gutil.File({
+		cwd: __dirname,
+		base: path.join(__dirname, 'output'),
+		path: path.join(__dirname, 'output', 'bar', 'scriptbar-d41d8cd98f.js'),
+		contents: new Buffer('')
+	});
+
+	file2.revOrigBase = path.join(__dirname, 'vendor2');
+	file2.revOrigPath = path.join(__dirname, 'vendor2', 'bar', 'scriptbar.js');
+	file2.origName = 'scriptfoo.js';
+	file2.revName = 'scriptfoo-d41d8cd98f.js';
+
+	stream.write(file1);
+	stream.write(file2);
+	stream.end();
+});
+
 it('should store the hashes for later', function (cb) {
 	var stream = rev();
 
