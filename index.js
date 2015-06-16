@@ -1,5 +1,4 @@
 'use strict';
-var crypto = require('crypto');
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
@@ -74,7 +73,7 @@ var plugin = function () {
 		pathMap[oldPath] = file.revHash;
 		cb(null, file);
 
-	}, function(cb) {
+	}, function (cb) {
 		sourcemaps.forEach(function (file) {
 			var reverseFilename;
 
@@ -116,7 +115,7 @@ plugin.manifest = function (pth, opts) {
 	}, opts, pth);
 
 	var firstFileBase = null;
-	var manifest  = {};
+	var manifest = {};
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
