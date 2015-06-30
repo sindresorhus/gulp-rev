@@ -19,6 +19,26 @@ it('should rev files', function (cb) {
 	}));
 });
 
+it('should allow for custom has functions', function (cb) {
+	var hashFunction = function () {
+		return 'abc789';
+	};
+
+	var revOpts = {hashFunction: hashFunction};
+	var stream = rev(revOpts);
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-abc789.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
 it('should build a rev manifest file', function (cb) {
 	var stream = rev.manifest();
 
