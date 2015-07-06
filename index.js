@@ -6,6 +6,7 @@ var objectAssign = require('object-assign');
 var file = require('vinyl-file');
 var revHash = require('rev-hash');
 var revPath = require('rev-path');
+var sortKeys = require('sort-keys');
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
@@ -155,7 +156,7 @@ plugin.manifest = function (pth, opts) {
 				manifest = objectAssign(oldManifest, manifest);
 			}
 
-			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
+			manifestFile.contents = new Buffer(JSON.stringify(sortKeys(manifest), null, '  '));
 			this.push(manifestFile);
 			cb();
 		}.bind(this));
