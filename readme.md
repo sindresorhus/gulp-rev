@@ -58,7 +58,7 @@ Override the `cwd` (current working directory) of the manifest file.
 
 ##### merge
 
-Type: `boolean`, `string`
+Type: `boolean`, `string`  
 Default: `false`
 
 Merge existing manifest file. Optionally specify a path to the manifest file.
