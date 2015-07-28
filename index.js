@@ -6,6 +6,7 @@ var objectAssign = require('object-assign');
 var file = require('vinyl-file');
 var revHash = require('rev-hash');
 var revPath = require('rev-path');
+var sortKeys = require('sort-keys');
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
@@ -22,9 +23,9 @@ function relPath(base, filePath) {
 }
 
 function getManifestFile(opts, cb) {
-	var f = new gutil.File(opts)
-	if(opts.merge) {
-		var p = typeof opts.merge == 'string'? opts.merge : opts.path
+	var f = new gutil.File(opts);
+	if (opts.merge) {
+		var p = typeof opts.merge === 'string' ? opts.merge : opts.path;
 		file.read(p, opts, function (err, manifest) {
 			if (err) {
 				// not found
@@ -33,11 +34,10 @@ function getManifestFile(opts, cb) {
 				} else {
 					cb(err);
 				}
-
 				return;
 			}
-
-			f.contents = manifest.contents
+			// append contents to f
+			f.contents = manifest.contents;
 			cb(null, f);
 		});
 	} else {
@@ -162,7 +162,7 @@ plugin.manifest = function (pth, opts) {
 				manifest = objectAssign(oldManifest, manifest);
 			}
 
-			manifestFile.contents = new Buffer(JSON.stringify(manifest, null, '  '));
+			manifestFile.contents = new Buffer(JSON.stringify(sortKeys(manifest), null, '  '));
 			this.push(manifestFile);
 			cb();
 		}.bind(this));

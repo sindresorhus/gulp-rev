@@ -112,6 +112,39 @@ it('should not append to an existing rev manifest by default', function (cb) {
 
 });
 
+it('should sort the rev manifest keys', function (cb) {
+	var stream = rev.manifest({
+		path: 'test.manifest-fixture.json',
+		merge: true
+	});
+
+	stream.on('data', function (newFile) {
+		assert.deepEqual(
+			Object.keys(JSON.parse(newFile.contents.toString())),
+			['app.js', 'pony.css', 'unicorn.css']
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn-d41d8cd98f.css',
+		contents: new Buffer('')
+	});
+
+	file.revOrigPath = 'unicorn.css';
+
+	var fileTwo = new gutil.File({
+		path: 'pony-d41d8cd98f.css',
+		contents: new Buffer('')
+	});
+
+	fileTwo.revOrigPath = 'pony.css';
+
+	stream.write(file);
+	stream.write(fileTwo);
+	stream.end();
+});
+
 it('should respect directories', function (cb) {
 	var stream = rev.manifest();
 
