@@ -23,25 +23,22 @@ function relPath(base, filePath) {
 }
 
 function getManifestFile(opts, cb) {
-	var f = new gutil.File(opts);
 	if (opts.merge) {
-		var p = typeof opts.merge === 'string' ? opts.merge : opts.path;
-		file.read(p, opts, function (err, manifest) {
+		var manifestPath = typeof opts.merge === 'string' ? opts.merge : opts.path;
+		file.read(manifestPath, opts, function (err, manifest) {
 			if (err) {
 				// not found
 				if (err.code === 'ENOENT') {
-					cb(null, f);
+					cb(null, new gutil.File(opts));
 				} else {
 					cb(err);
 				}
 				return;
 			}
-			// append contents to f
-			f.contents = manifest.contents;
-			cb(null, f);
+			cb(null, manifest);
 		});
 	} else {
-		cb(null, f);
+		cb(null, new gutil.File(opts));
 	}
 }
 
