@@ -2,7 +2,7 @@
 var path = require('path');
 var assert = require('assert');
 var gutil = require('gulp-util');
-var rev = require('./');
+var rev = require('../');
 
 it('should rev files', function (cb) {
 	var stream = rev();
@@ -63,12 +63,38 @@ it('should allow naming the manifest file', function (cb) {
 
 it('should append to an existing rev manifest file', function (cb) {
 	var stream = rev.manifest({
-		path: 'test.manifest-fixture.json',
+		path: 'manifest-fixture.json',
 		merge: true
 	});
 
 	stream.on('data', function (newFile) {
-		assert.equal(newFile.relative, 'test.manifest-fixture.json');
+		assert.equal(newFile.relative, 'manifest-fixture.json');
+		assert.deepEqual(
+			JSON.parse(newFile.contents.toString()),
+			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd98f.css'}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'unicorn-d41d8cd98f.css',
+		contents: new Buffer('')
+	});
+
+	file.revOrigPath = 'unicorn.css';
+
+	stream.write(file);
+	stream.end();
+
+});
+
+it('should append to an existing rev manifest file that in other directory', function (cb) {
+	var stream = rev.manifest({
+		merge: 'dist/manifest-merge.json'
+	});
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'dist/manifest-merge.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd98f.css'}
@@ -89,10 +115,10 @@ it('should append to an existing rev manifest file', function (cb) {
 });
 
 it('should not append to an existing rev manifest by default', function (cb) {
-	var stream = rev.manifest({path: 'test.manifest-fixture.json'});
+	var stream = rev.manifest({path: 'manifest-fixture.json'});
 
 	stream.on('data', function (newFile) {
-		assert.equal(newFile.relative, 'test.manifest-fixture.json');
+		assert.equal(newFile.relative, 'manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'unicorn.css': 'unicorn-d41d8cd98f.css'}
@@ -114,7 +140,7 @@ it('should not append to an existing rev manifest by default', function (cb) {
 
 it('should sort the rev manifest keys', function (cb) {
 	var stream = rev.manifest({
-		path: 'test.manifest-fixture.json',
+		path: 'manifest-fixture.json',
 		merge: true
 	});
 

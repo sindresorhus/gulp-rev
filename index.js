@@ -23,20 +23,23 @@ function relPath(base, filePath) {
 }
 
 function getManifestFile(opts, cb) {
-	file.read(opts.path, opts, function (err, manifest) {
-		if (err) {
-			// not found
-			if (err.code === 'ENOENT') {
-				cb(null, new gutil.File(opts));
-			} else {
-				cb(err);
+	if (opts.merge) {
+		var manifestPath = typeof opts.merge === 'string' ? opts.merge : opts.path;
+		file.read(manifestPath, opts, function (err, manifest) {
+			if (err) {
+				// not found
+				if (err.code === 'ENOENT') {
+					cb(null, new gutil.File(opts));
+				} else {
+					cb(err);
+				}
+				return;
 			}
-
-			return;
-		}
-
-		cb(null, manifest);
-	});
+			cb(null, manifest);
+		});
+	} else {
+		cb(null, new gutil.File(opts));
+	}
 }
 
 function transformFilename(file) {
@@ -146,7 +149,7 @@ plugin.manifest = function (pth, opts) {
 				return;
 			}
 
-			if (opts.merge && !manifestFile.isNull()) {
+			if (!manifestFile.isNull()) {
 				var oldManifest = {};
 
 				try {
