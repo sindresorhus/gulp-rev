@@ -63,12 +63,12 @@ it('should allow naming the manifest file', function (cb) {
 
 it('should append to an existing rev manifest file', function (cb) {
 	var stream = rev.manifest({
-		path: 'test.manifest-fixture.json',
+		path: 'manifest-fixture.json',
 		merge: true
 	});
 
 	stream.on('data', function (newFile) {
-		assert.equal(newFile.relative, 'test.manifest-fixture.json');
+		assert.equal(newFile.relative, 'manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd98f.css'}
@@ -90,11 +90,11 @@ it('should append to an existing rev manifest file', function (cb) {
 
 it('should append to an existing rev manifest file that in other directory', function (cb) {
 	var stream = rev.manifest({
-		merge: 'dist/test.manifest-merge.json'
+		merge: 'dist/manifest-merge.json'
 	});
 
 	stream.on('data', function (newFile) {
-		assert.equal(newFile.relative, 'dist/test.manifest-merge.json');
+		assert.equal(newFile.relative, 'dist/manifest-merge.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd98f.css'}
@@ -115,10 +115,10 @@ it('should append to an existing rev manifest file that in other directory', fun
 });
 
 it('should not append to an existing rev manifest by default', function (cb) {
-	var stream = rev.manifest({path: 'test.manifest-fixture.json'});
+	var stream = rev.manifest({path: 'manifest-fixture.json'});
 
 	stream.on('data', function (newFile) {
-		assert.equal(newFile.relative, 'test.manifest-fixture.json');
+		assert.equal(newFile.relative, 'manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'unicorn.css': 'unicorn-d41d8cd98f.css'}
@@ -140,7 +140,7 @@ it('should not append to an existing rev manifest by default', function (cb) {
 
 it('should sort the rev manifest keys', function (cb) {
 	var stream = rev.manifest({
-		path: 'test.manifest-fixture.json',
+		path: 'manifest-fixture.json',
 		merge: true
 	});
 
