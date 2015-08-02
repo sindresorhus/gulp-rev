@@ -63,6 +63,12 @@ Default: `false`
 
 Merge existing manifest file.
 
+##### force
+
+Type: `boolean`
+Default: `false`
+
+Write to manifest, even with non-rev occurrences.
 
 ### Original path
 
