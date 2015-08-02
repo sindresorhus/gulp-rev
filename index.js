@@ -112,13 +112,24 @@ plugin.manifest = function (pth, opts) {
 
 	opts = objectAssign({
 		path: 'rev-manifest.json',
-		merge: false
+		merge: false,
+		force: false
+
 	}, opts, pth);
 
 	var firstFileBase = null;
 	var manifest = {};
 
 	return through.obj(function (file, enc, cb) {
+
+		// writes the manifest file in force mode
+		if (opts.force && file.path && !file.revOrigPath) {
+			firstFileBase = firstFileBase || file.base;
+			manifest[relPath(firstFileBase, file.path)] = relPath(firstFileBase, file.path);	
+			cb();
+			return;
+		}
+
 		// ignore all non-rev'd files
 		if (!file.path || !file.revOrigPath) {
 			cb();
