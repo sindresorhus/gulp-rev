@@ -68,7 +68,7 @@ Merge existing manifest file.
 Type: `boolean`
 Default: `false`
 
-Write to manifest, even whit non-rev occurrences.
+Write to manifest, even with non-rev occurrences.
 
 ### Original path
 
