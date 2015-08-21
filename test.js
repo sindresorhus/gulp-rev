@@ -32,6 +32,7 @@ it('should add the revision hash before the first `.` in the filename', function
 		path: 'unicorn.css.map',
 		contents: new Buffer('')
 	}));
+
 	stream.end();
 });
 
