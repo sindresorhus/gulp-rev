@@ -67,7 +67,7 @@ var plugin = function () {
 			return;
 		}
 
-		// This is a sourcemap, hold until the end
+		// this is a sourcemap, hold until the end
 		if (path.extname(file.path) === '.map') {
 			sourcemaps.push(file);
 			cb();
@@ -77,8 +77,8 @@ var plugin = function () {
 		var oldPath = file.path;
 		transformFilename(file);
 		pathMap[oldPath] = file.revHash;
-		cb(null, file);
 
+		cb(null, file);
 	}, function (cb) {
 		sourcemaps.forEach(function (file) {
 			var reverseFilename;

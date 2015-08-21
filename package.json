@@ -20,7 +20,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "xo && mocha"
   },
   "files": [
     "index.js"
@@ -42,14 +42,21 @@
   ],
   "dependencies": {
     "gulp-util": "^3.0.0",
-    "object-assign": "^2.0.0",
+    "object-assign": "^4.0.1",
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
     "sort-keys": "^1.0.0",
-    "through2": "^0.6.1",
+    "through2": "^2.0.0",
     "vinyl-file": "^1.1.0"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "xo": "*"
+  },
+  "xo": {
+    "envs": [
+      "node",
+      "mocha"
+    ]
   }
 }
