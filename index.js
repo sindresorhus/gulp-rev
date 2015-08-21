@@ -44,7 +44,12 @@ function transformFilename(file) {
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
 	file.revHash = revHash(file.contents);
-	file.path = revPath(file.path, file.revHash);
+	var extIndex = file.path.indexOf('.');
+	if (extIndex >= 0) {
+	  file.path = revPath(file.path.slice(0, extIndex), file.revHash) + file.path.slice(extIndex);
+	} else {
+	  file.path = revPath(file.path, file.revHash);
+	}
 }
 
 var plugin = function () {

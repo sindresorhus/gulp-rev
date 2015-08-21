@@ -19,6 +19,22 @@ it('should rev files', function (cb) {
 	}));
 });
 
+it('should add the revision hash before the first `.` in the filename', function (cb) {
+	var stream = rev();
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-d41d8cd98f.css.map');
+		assert.equal(file.revOrigPath, 'unicorn.css.map');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css.map',
+		contents: new Buffer('')
+	}));
+	stream.end();
+});
+
 it('should build a rev manifest file', function (cb) {
 	var stream = rev.manifest();
 
