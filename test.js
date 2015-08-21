@@ -72,6 +72,7 @@ it('should allow naming the manifest file', function (cb) {
 		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
+
 	file.revOrigPath = 'unicorn.css';
 
 	stream.write(file);
@@ -102,7 +103,6 @@ it('should append to an existing rev manifest file', function (cb) {
 
 	stream.write(file);
 	stream.end();
-
 });
 
 it('should not append to an existing rev manifest by default', function (cb) {
@@ -126,7 +126,6 @@ it('should not append to an existing rev manifest by default', function (cb) {
 
 	stream.write(file);
 	stream.end();
-
 });
 
 it('should sort the rev manifest keys', function (cb) {
