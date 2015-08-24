@@ -45,7 +45,7 @@ function transformFilename(file) {
 	file.revOrigBase = file.base;
 	file.revHash = revHash(file.contents);
 
-	var extIndex = file.path.indexOf('.');
+	var extIndex = file.path.indexOf('.', file.path.lastIndexOf('/'));
 
 	file.path = extIndex === -1 ?
 		revPath(file.path, file.revHash) :
