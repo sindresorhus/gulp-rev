@@ -7,6 +7,7 @@ var file = require('vinyl-file');
 var revHash = require('rev-hash');
 var revPath = require('rev-path');
 var sortKeys = require('sort-keys');
+var modifyFilename = require('modify-filename');
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
@@ -45,11 +46,15 @@ function transformFilename(file) {
 	file.revOrigBase = file.base;
 	file.revHash = revHash(file.contents);
 
-	var extIndex = file.path.indexOf('.');
+	file.path = modifyFilename(file.path, function (filename, extension) {
+		var extIndex = filename.indexOf('.');
 
-	file.path = extIndex === -1 ?
-		revPath(file.path, file.revHash) :
-		revPath(file.path.slice(0, extIndex), file.revHash) + file.path.slice(extIndex);
+		filename = extIndex === -1 ?
+			revPath(filename, file.revHash) :
+			revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
+
+		return filename + extension;
+	});
 }
 
 var plugin = function () {

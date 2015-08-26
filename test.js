@@ -323,3 +323,18 @@ it('should be okay when the optional sourcemap.file is not defined', function (c
 		contents: new Buffer(JSON.stringify({}))
 	}));
 });
+
+it('should handle a . in the folder name', function (cb) {
+	var stream = rev();
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'mysite.io/unicorn-d41d8cd98f.css');
+		assert.equal(file.revOrigPath, 'mysite.io/unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'mysite.io/unicorn.css',
+		contents: new Buffer('')
+	}));
+});
