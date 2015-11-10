@@ -179,7 +179,7 @@ For more info on how to integrate **gulp-rev** into your app, have a look at the
 - [gulp-rev-outdated](https://github.com/shonny-ua/gulp-rev-outdated) - Old static asset revision files filter
 - [gulp-rev-collector](https://github.com/shonny-ua/gulp-rev-collector) - Static asset revision data collector
 - [rev-del](https://github.com/callumacrae/rev-del) - Delete old unused assets
-
+- [gulp-rev-loader](https://github.com/adjavaherian/gulp-rev-loader) - Use rev-manifest with webpack
 
 ## License
 
