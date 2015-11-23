@@ -29,7 +29,16 @@ gulp.task('default', function () {
 
 ## API
 
-### rev()
+### rev([options])
+
+#### options
+
+##### hashFunction
+
+Type: `Function`  
+Default: `rev-hash`
+
+Override default hash function.
 
 ### rev.manifest([path], [options])
 
