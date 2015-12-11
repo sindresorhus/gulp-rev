@@ -125,7 +125,6 @@ plugin.manifest = function (pth, opts) {
 		merge: false
 	}, opts, pth);
 
-	var firstFileBase = null;
 	var manifest = {};
 
 	return through.obj(function (file, enc, cb) {
@@ -135,9 +134,7 @@ plugin.manifest = function (pth, opts) {
 			return;
 		}
 
-		firstFileBase = firstFileBase || file.base;
-
-		var revisionedFile = relPath(firstFileBase, file.path);
+		var revisionedFile = relPath(file.base, file.path);
 		var originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
 
 		manifest[originalFile] = revisionedFile;
