@@ -344,8 +344,8 @@ it('should use correct base path for each file', function (cb) {
 
 	stream.on('data', function (newFile) {
 		var MANIFEST = {};
-		MANIFEST[path.posix.join('foo', 'scriptfoo.js')] = path.posix.join('foo', 'scriptfoo-d41d8cd98f.js');
-		MANIFEST[path.posix.join('bar', 'scriptbar.js')] = path.posix.join('bar', 'scriptbar-d41d8cd98f.js');
+		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
+		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
 
 		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
 		cb();
@@ -354,7 +354,7 @@ it('should use correct base path for each file', function (cb) {
 	var fileFoo = new gutil.File({
 		cwd: 'app/',
 		base: 'app/',
-		path: 'app/foo/scriptfoo-d41d8cd98f.js',
+		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
 		contents: new Buffer('')
 	});
 	fileFoo.revOrigPath = 'scriptfoo.js';
@@ -362,7 +362,7 @@ it('should use correct base path for each file', function (cb) {
 	var fileBar = new gutil.File({
 		cwd: 'assets/',
 		base: 'assets/',
-		path: 'assets/bar/scriptbar-d41d8cd98f.js',
+		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
 		contents: new Buffer('')
 	});
 	fileBar.revOrigPath = 'scriptbar.js';
