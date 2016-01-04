@@ -356,7 +356,7 @@ it('should use correct base path for each file', function (cb) {
 		base: 'app/',
 		path: path.posix.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
 		contents: new Buffer('')
-	});	
+	});
 	fileFoo.revOrigPath = 'scriptfoo.js';
 
 	var fileBar = new gutil.File({
