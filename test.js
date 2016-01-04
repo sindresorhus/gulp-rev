@@ -354,7 +354,7 @@ it('should use correct base path for each file', function (cb) {
 	var fileFoo = new gutil.File({
 		cwd: 'app/',
 		base: 'app/',
-		path: 'app/foo/scriptfoo-d41d8cd98f.js', // Can't use path.posix
+		path: 'app/foo/scriptfoo-d41d8cd98f.js',
 		contents: new Buffer('')
 	});
 	fileFoo.revOrigPath = 'scriptfoo.js';
@@ -362,7 +362,7 @@ it('should use correct base path for each file', function (cb) {
 	var fileBar = new gutil.File({
 		cwd: 'assets/',
 		base: 'assets/',
-		path: 'assets/bar/scriptbar-d41d8cd98f.js', // Can't use path.posix
+		path: 'assets/bar/scriptbar-d41d8cd98f.js',
 		contents: new Buffer('')
 	});
 	fileBar.revOrigPath = 'scriptbar.js';
