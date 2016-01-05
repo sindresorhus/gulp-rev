@@ -29,7 +29,16 @@ gulp.task('default', function () {
 
 ## API
 
-### rev()
+### rev([options])
+
+### options
+
+#### rmOrig
+
+Type: `boolean`
+Default: `false`
+
+Removes the original file(s) after hash
 
 ### rev.manifest([path], [options])
 
