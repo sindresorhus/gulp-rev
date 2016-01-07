@@ -59,6 +59,53 @@ it('should build a rev manifest file', function (cb) {
 	stream.end();
 });
 
+it('should build a flatten rev manifest file', function (cb) {
+	var stream = rev.manifest({flatten: true});
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'rev-manifest.json');
+		assert.deepEqual(
+			JSON.parse(newFile.contents.toString()),
+			{'foo/bar/unicorn.css': 'unicorn-d41d8cd98f.css'}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'foo/bar/unicorn-d41d8cd98f.css',
+		contents: new Buffer('')
+	});
+
+	file.revOrigPath = 'foo/bar/unicorn.css';
+	file.revOrigBase = 'foo/bar/';
+
+	stream.write(file);
+	stream.end();
+});
+
+it('should build a not flatten rev manifest file', function (cb) {
+	var stream = rev.manifest({flatten: true});
+
+	stream.on('data', function (newFile) {
+		assert.equal(newFile.relative, 'rev-manifest.json');
+		assert.deepEqual(
+			JSON.parse(newFile.contents.toString()),
+			{'foo/bar/unicorn.css': 'foo/bar/unicorn-d41d8cd98f.css'}
+		);
+		cb();
+	});
+
+	var file = new gutil.File({
+		path: 'foo/bar/unicorn-d41d8cd98f.css',
+		contents: new Buffer('')
+	});
+
+	file.revOrigPath = 'foo/bar/unicorn.css';
+
+	stream.write(file);
+	stream.end();
+});
+
 it('should allow naming the manifest file', function (cb) {
 	var path = 'manifest.json';
 	var stream = rev.manifest({path: path});
@@ -321,20 +368,5 @@ it('should be okay when the optional sourcemap.file is not defined', function (c
 	stream.end(new gutil.File({
 		path: 'pastissada.css.map',
 		contents: new Buffer(JSON.stringify({}))
-	}));
-});
-
-it('should handle a . in the folder name', function (cb) {
-	var stream = rev();
-
-	stream.on('data', function (file) {
-		assert.equal(file.path, 'mysite.io/unicorn-d41d8cd98f.css');
-		assert.equal(file.revOrigPath, 'mysite.io/unicorn.css');
-		cb();
-	});
-
-	stream.write(new gutil.File({
-		path: 'mysite.io/unicorn.css',
-		contents: new Buffer('')
 	}));
 });
