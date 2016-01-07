@@ -84,7 +84,7 @@ it('should build a flatten rev manifest file', function (cb) {
 });
 
 it('should build a not flatten rev manifest file', function (cb) {
-	var stream = rev.manifest({flatten: true});
+	var stream = rev.manifest({flatten: false});
 
 	stream.on('data', function (newFile) {
 		assert.equal(newFile.relative, 'rev-manifest.json');
@@ -101,6 +101,7 @@ it('should build a not flatten rev manifest file', function (cb) {
 	});
 
 	file.revOrigPath = 'foo/bar/unicorn.css';
+	file.revOrigBase = 'foo/bar/';
 
 	stream.write(file);
 	stream.end();
