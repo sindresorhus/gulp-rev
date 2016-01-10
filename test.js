@@ -72,12 +72,12 @@ it('should build a flatten rev manifest file', function (cb) {
 	});
 
 	var file = new gutil.File({
-		path: 'foo/bar/unicorn-d41d8cd98f.css',
+		path: path.join(__dirname, 'unicorn-d41d8cd98f.css'),
 		contents: new Buffer('')
 	});
 
-	file.revOrigPath = 'foo/bar/unicorn.css';
-	file.revOrigBase = 'foo/bar/';
+	file.revOrigPath = path.join(__dirname, 'foo/bar/unicorn.css');
+	file.revOrigBase = path.join(__dirname);
 
 	stream.write(file);
 	stream.end();

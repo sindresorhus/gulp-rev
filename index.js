@@ -142,7 +142,8 @@ plugin.manifest = function (pth, opts) {
 		var originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
 
 		if (opts.flatten) {
-			revisionedFile = relPath(file.revOrigBase, file.path);
+			originalFile = relPath(firstFileBase, file.revOrigPath);
+			revisionedFile = relPath(firstFileBase, file.path);
 		}
 
 		manifest[originalFile] = revisionedFile;
