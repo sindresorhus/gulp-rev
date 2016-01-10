@@ -122,7 +122,8 @@ plugin.manifest = function (pth, opts) {
 
 	opts = objectAssign({
 		path: 'rev-manifest.json',
-		merge: false
+		merge: false,
+		flatten: false
 	}, opts, pth);
 
 	var firstFileBase = null;
@@ -139,6 +140,11 @@ plugin.manifest = function (pth, opts) {
 
 		var revisionedFile = relPath(firstFileBase, file.path);
 		var originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
+
+		if (opts.flatten) {
+			originalFile = relPath(firstFileBase, file.revOrigPath);
+			revisionedFile = relPath(firstFileBase, file.path);
+		}
 
 		manifest[originalFile] = revisionedFile;
 
