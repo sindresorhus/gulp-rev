@@ -338,3 +338,36 @@ it('should handle a . in the folder name', function (cb) {
 		contents: new Buffer('')
 	}));
 });
+
+it('should use correct base path for each file', function (cb) {
+	var stream = rev.manifest();
+
+	stream.on('data', function (newFile) {
+		var MANIFEST = {};
+		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
+		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
+
+		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
+		cb();
+	});
+
+	var fileFoo = new gutil.File({
+		cwd: 'app/',
+		base: 'app/',
+		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
+		contents: new Buffer('')
+	});
+	fileFoo.revOrigPath = 'scriptfoo.js';
+
+	var fileBar = new gutil.File({
+		cwd: 'assets/',
+		base: 'assets/',
+		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
+		contents: new Buffer('')
+	});
+	fileBar.revOrigPath = 'scriptbar.js';
+
+	stream.write(fileFoo);
+	stream.write(fileBar);
+	stream.end();
+});
