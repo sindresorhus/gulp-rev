@@ -8,6 +8,7 @@ var revHash = require('rev-hash');
 var revPath = require('rev-path');
 var sortKeys = require('sort-keys');
 var modifyFilename = require('modify-filename');
+var fs = require('fs');
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
@@ -57,9 +58,11 @@ function transformFilename(file) {
 	});
 }
 
-var plugin = function () {
+var plugin = function (opts) {
 	var sourcemaps = [];
 	var pathMap = {};
+
+	opts = opts || {rmOrig: false};
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -83,7 +86,13 @@ var plugin = function () {
 		transformFilename(file);
 		pathMap[oldPath] = file.revHash;
 
-		cb(null, file);
+		if (opts.rmOrig) {
+			fs.unlink(oldPath, function (err) {
+				cb(err ? new gutil.PluginError('gulp-rev', 'Error unlinking file ' + oldPath + ': ' + err) : null, file);
+			});
+		} else {
+			cb(null, file);
+		}
 	}, function (cb) {
 		sourcemaps.forEach(function (file) {
 			var reverseFilename;
