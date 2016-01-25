@@ -1,6 +1,6 @@
 # gulp-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
 
-> Static asset revisioning by appending content hash to filenames  
+> Static asset revisioning by appending content hash to filenames
 > `unicorn.css` → `unicorn-d41d8cd98f.css`
 
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
@@ -35,7 +35,7 @@ gulp.task('default', function () {
 
 #### path
 
-Type: `string`  
+Type: `string`
 Default: `"rev-manifest.json"`
 
 Manifest file path.
@@ -44,21 +44,21 @@ Manifest file path.
 
 ##### base
 
-Type: `string`  
+Type: `string`
 Default: `process.cwd()`
 
 Override the `base` of the manifest file.
 
 ##### cwd
 
-Type: `string`  
+Type: `string`
 Default: `process.cwd()`
 
 Override the `cwd` (current working directory) of the manifest file.
 
 ##### merge
 
-Type: `boolean`  
+Type: `boolean`
 Default: `false`
 
 Merge existing manifest file.
@@ -101,7 +101,10 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
-By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `cwd`) to `rev.manifest()`:
+By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass three parameters to `rev.manifest()`:
+- `merge: true`
+- `cwd`: the output destination
+- `path`: the absolute path to read the existing manifest from
 
 ```js
 var gulp = require('gulp');
@@ -115,6 +118,7 @@ gulp.task('default', function () {
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev.manifest({
+      path: __dirname + '/build/assets/manifest.json',
 			cwd: 'build/assets',
 			merge: true // merge with the existing manifest (if one exists)
 		}))
