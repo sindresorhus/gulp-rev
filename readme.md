@@ -101,7 +101,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 }
 ```
 
-By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
+By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `cwd`) to `rev.manifest()`:
 
 ```js
 var gulp = require('gulp');
@@ -115,7 +115,7 @@ gulp.task('default', function () {
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev.manifest({
-			base: 'build/assets',
+			cwd: 'build/assets',
 			merge: true // merge with the existing manifest (if one exists)
 		}))
 		.pipe(gulp.dest('build/assets'));
