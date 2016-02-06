@@ -344,8 +344,8 @@ it('should use correct base path for each file', function (cb) {
 
 	stream.on('data', function (newFile) {
 		var MANIFEST = {};
-		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
-		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
+		MANIFEST['scriptfoo.js'] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
+		MANIFEST['scriptbar.js'] = path.join('bar', 'scriptbar-d41d8cd98f.js');
 
 		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
 		cb();
