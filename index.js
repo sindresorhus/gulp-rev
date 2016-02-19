@@ -116,11 +116,11 @@ var plugin = function () {
 	});
 };
 
-function mtime (file) {
+function mtime(file) {
 	try {
 		return fs.statSync(file.path).mtime;
 	} catch (error) {
-	  return new Date();
+		return new Date();
 	}
 }
 
@@ -136,7 +136,9 @@ plugin.manifest = function (pth, opts) {
 
 	var manifest = {};
 
-	if (opts.rails4) { manifest = {assets: {}, files: {}} };
+	if (opts.rails4) {
+		manifest = {assets: {}, files: {}};
+	}
 
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
@@ -150,12 +152,14 @@ plugin.manifest = function (pth, opts) {
 
 		if (opts.rails4) {
 			manifest.assets[originalFile] = revisionedFile;
+			/* eslint-disable camelcase */
 			manifest.files[revisionedFile] = {
 				logical_path: originalFile,
 				mtime: mtime(file),
 				size: file.contents.length,
 				digest: file.revHash
 			};
+			/* eslint-enable camelcase */
 		} else {
 			manifest[originalFile] = revisionedFile;
 		}
