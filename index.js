@@ -1,5 +1,6 @@
 'use strict';
 var path = require('path');
+var fs = require('fs');
 var gutil = require('gulp-util');
 var through = require('through2');
 var objectAssign = require('object-assign');
@@ -115,6 +116,14 @@ var plugin = function () {
 	});
 };
 
+function mtime (file) {
+	try {
+		return fs.statSync(file.path).mtime;
+	} catch (error) {
+	  return new Date();
+	}
+}
+
 plugin.manifest = function (pth, opts) {
 	if (typeof pth === 'string') {
 		pth = {path: pth};
@@ -127,6 +136,8 @@ plugin.manifest = function (pth, opts) {
 
 	var manifest = {};
 
+	if (opts.rails4) { manifest = {assets: {}, files: {}} };
+
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
 		if (!file.path || !file.revOrigPath) {
@@ -137,7 +148,17 @@ plugin.manifest = function (pth, opts) {
 		var revisionedFile = relPath(file.base, file.path);
 		var originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
 
-		manifest[originalFile] = revisionedFile;
+		if (opts.rails4) {
+			manifest.assets[originalFile] = revisionedFile;
+			manifest.files[revisionedFile] = {
+				logical_path: originalFile,
+				mtime: mtime(file),
+				size: file.contents.length,
+				digest: file.revHash
+			};
+		} else {
+			manifest[originalFile] = revisionedFile;
+		}
 
 		cb();
 	}, function (cb) {

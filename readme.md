@@ -33,6 +33,13 @@ gulp.task('default', function () {
 
 ### rev.manifest([path], [options])
 
+### rails4
+
+Type: `boolean`
+Default: false
+
+Enables support for rails4 style manifest files.
+
 #### path
 
 Type: `string`  
