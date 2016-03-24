@@ -29,7 +29,16 @@ gulp.task('default', function () {
 
 ## API
 
-### rev()
+### rev([options])
+
+#### options
+
+##### customHash
+
+Type: `string`  
+Default: false
+
+Use a custom hash as the file revision.
 
 ### rev.manifest([path], [options])
 
