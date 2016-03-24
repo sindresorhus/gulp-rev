@@ -19,6 +19,21 @@ it('should rev files', function (cb) {
 	}));
 });
 
+it('should rev files with a custom hash', function (cb) {
+	var stream = rev({customHash: 'test'});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn-test.css');
+		assert.equal(file.revOrigPath, 'unicorn.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.css',
+		contents: new Buffer('')
+	}));
+});
+
 it('should add the revision hash before the first `.` in the filename', function (cb) {
 	var stream = rev();
 
