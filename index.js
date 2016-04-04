@@ -123,7 +123,7 @@ plugin.manifest = function (pth, opts) {
 	opts = objectAssign({
 		path: 'rev-manifest.json',
 		merge: false,
-		// Apply the default JSON transformer. 
+		// Apply the default JSON transformer.
 		// The user can pass in his on transformer if he wants. The only requirement is that it should
 		// support 'parse' and 'stringify' methods.
 		transformer: JSON
