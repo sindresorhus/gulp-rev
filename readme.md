@@ -1,6 +1,6 @@
 # gulp-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev)
 
-> Static asset revisioning by appending content hash to filenames  
+> Static asset revisioning by appending content hash to filenames
 > `unicorn.css` → `unicorn-d41d8cd98f.css`
 
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
@@ -35,7 +35,7 @@ gulp.task('default', function () {
 
 #### path
 
-Type: `string`  
+Type: `string`
 Default: `"rev-manifest.json"`
 
 Manifest file path.
@@ -44,24 +44,32 @@ Manifest file path.
 
 ##### base
 
-Type: `string`  
+Type: `string`
 Default: `process.cwd()`
 
 Override the `base` of the manifest file.
 
 ##### cwd
 
-Type: `string`  
+Type: `string`
 Default: `process.cwd()`
 
 Override the `cwd` (current working directory) of the manifest file.
 
 ##### merge
 
-Type: `boolean`  
+Type: `boolean`
 Default: `false`
 
 Merge existing manifest file.
+
+##### transformer
+
+Type: `object`
+Default: `JSON`
+
+An object with `parse` and `stringify` methods. This can be used to provide a
+custom transformer instead of the default `JSON` for the manifest file.
 
 
 ### Original path
