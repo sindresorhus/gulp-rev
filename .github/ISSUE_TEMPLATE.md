@@ -1,4 +1,0 @@
-### Description:
-
-#### Steps to reproduce:
-

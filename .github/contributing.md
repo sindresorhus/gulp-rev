@@ -1,4 +1,4 @@
-### Contribution guidelines:
+## Contribution guidelines
 
 - Be polite.
 - Branch naming convention: `{ IssueID }-short-description`.
