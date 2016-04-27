@@ -36,6 +36,23 @@ it('should add the revision hash before the first `.` in the filename', function
 	stream.end();
 });
 
+it('can add the revision hash before the last `.` in the filename', function (cb) {
+	var stream = rev({lastDot: true});
+
+	stream.on('data', function (file) {
+		assert.equal(file.path, 'unicorn.liger-d41d8cd98f.css');
+		assert.equal(file.revOrigPath, 'unicorn.liger.css');
+		cb();
+	});
+
+	stream.write(new gutil.File({
+		path: 'unicorn.liger.css',
+		contents: new Buffer('')
+	}));
+
+	stream.end();
+});
+
 it('should build a rev manifest file', function (cb) {
 	var stream = rev.manifest();
 
