@@ -29,7 +29,16 @@ gulp.task('default', function () {
 
 ## API
 
-### rev()
+### rev([options])
+
+#### options
+
+##### lastDot
+
+Type: `boolean`
+Default: `false`
+
+Preprend the hash before the final dot in the file path instead of the first
 
 ### rev.manifest([path], [options])
 

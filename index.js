@@ -40,26 +40,37 @@ function getManifestFile(opts, cb) {
 	});
 }
 
-function transformFilename(file) {
-	// save the old path for later
-	file.revOrigPath = file.path;
-	file.revOrigBase = file.base;
-	file.revHash = revHash(file.contents);
-
-	file.path = modifyFilename(file.path, function (filename, extension) {
+function revPathFirstDot(filePath, revHash) {
+	return modifyFilename(filePath, function (filename, extension) {
 		var extIndex = filename.indexOf('.');
 
 		filename = extIndex === -1 ?
-			revPath(filename, file.revHash) :
-			revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
+			revPath(filename, revHash) :
+			revPath(filename.slice(0, extIndex), revHash) + filename.slice(extIndex);
 
 		return filename + extension;
 	});
 }
 
-var plugin = function () {
+function transformFilename(file, opts) {
+	var lastDot = opts.lastDot;
+
+	// save the old path for later
+	file.revOrigPath = file.path;
+	file.revOrigBase = file.base;
+	file.revHash = revHash(file.contents);
+
+	if (lastDot) {
+		file.path = revPath(file.revOrigPath, file.revHash);
+	} else {
+		file.path = revPathFirstDot(file.revOrigPath, file.revHash);
+	}
+}
+
+var plugin = function (opts) {
 	var sourcemaps = [];
 	var pathMap = {};
+	opts = opts || {};
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -80,7 +91,7 @@ var plugin = function () {
 		}
 
 		var oldPath = file.path;
-		transformFilename(file);
+		transformFilename(file, opts);
 		pathMap[oldPath] = file.revHash;
 
 		cb(null, file);
@@ -105,7 +116,7 @@ var plugin = function () {
 				var hash = pathMap[reverseFilename];
 				file.path = revPath(file.path.replace(/\.map$/, ''), hash) + '.map';
 			} else {
-				transformFilename(file);
+				transformFilename(file, opts);
 			}
 
 			this.push(file);
