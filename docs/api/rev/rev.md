@@ -40,4 +40,4 @@ Default: `JSON`
 An object with `parse` and `stringify` methods. This can be used to provide a
 custom transformer instead of the default `JSON` for the manifest file.
 
-##### [next: Original path and asset hash] (rev/original_path_and_asset_hash.md)
+##### [next: Original path and asset hash] (original_path_and_asset_hash.md)
