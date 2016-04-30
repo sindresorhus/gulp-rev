@@ -48,4 +48,4 @@ gulp.task('default', function () {
 
 You can optionally call `rev.manifest('manifest.json')` to give it a different path or filename.
 
-##### [next: Sourcemaps and gulp-concat] (sourcemaps_and_gulp_concat.md)
+##### [next: Sourcemaps and gulp-concat] (../sourcemaps_and_gulp_concat.md)
