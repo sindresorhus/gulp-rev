@@ -40,4 +40,13 @@ Default: `JSON`
 An object with `parse` and `stringify` methods. This can be used to provide a
 custom transformer instead of the default `JSON` for the manifest file.
 
-##### [next: Original path and asset hash] (original_path_and_asset_hash.md)
+### Original path
+
+Original file paths are stored at `file.revOrigPath`. This could come in handy for things like rewriting references to the assets.
+
+
+### Asset hash
+
+The hash of each rev'd file is stored at `file.revHash`. You can use this for customizing the file renaming, or for building different manifest formats.
+
+##### [next: Asset manifest] (asset_manifest.md)
