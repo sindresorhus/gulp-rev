@@ -29,7 +29,7 @@ gulp.task('default', function () {
 ## Docs
 
 1.  [API](docs/api/rev/rev.md)
-		-   [Asset manifest](docs/api/rev/asset_manifest.md)
+	-   [Asset manifest](docs/api/rev/asset_manifest.md)
 2.	[Sourcemaps and gulp-concat](docs/api/sourcemaps_and_gulp_concat.md)
 3.  [Streaming](docs/api/streaming.md)
 4.	[Integration](docs/api/integration.md)
