@@ -139,3 +139,5 @@ Using [blade](http://laravel.com/docs/templates) your templates would look like 
 	</body>
 </html>
 ```
+
+##### [next: What works with gulp-rev?] (works_with_gulp_rev.md)
