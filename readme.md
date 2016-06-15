@@ -22,6 +22,7 @@ var rev = require('gulp-rev');
 gulp.task('default', function () {
 	return gulp.src('src/*.css')
 		.pipe(rev())
+		// any 'gulp-rev-*' plugins
 		.pipe(gulp.dest('dist'));
 });
 ```
@@ -29,47 +30,9 @@ gulp.task('default', function () {
 
 ## API
 
-### rev()
+This plugin takes no options.
 
-### rev.manifest([path], [options])
-
-#### path
-
-Type: `string`
-Default: `"rev-manifest.json"`
-
-Manifest file path.
-
-#### options
-
-##### base
-
-Type: `string`
-Default: `process.cwd()`
-
-Override the `base` of the manifest file.
-
-##### cwd
-
-Type: `string`
-Default: `process.cwd()`
-
-Override the `cwd` (current working directory) of the manifest file.
-
-##### merge
-
-Type: `boolean`
-Default: `false`
-
-Merge existing manifest file.
-
-##### transformer
-
-Type: `object`
-Default: `JSON`
-
-An object with `parse` and `stringify` methods. This can be used to provide a
-custom transformer instead of the default `JSON` for the manifest file.
+By using `rev()`, each `file` within your stream receives three new properties: `revOrigPath`, `revOrigBase`, and `revHash`.
 
 
 ### Original path
@@ -84,9 +47,14 @@ The hash of each rev'd file is stored at `file.revHash`. You can use this for cu
 
 ### Asset manifest
 
+> **Updated in 8.0**
+
+In order to generate an asset manifest, mapping the original paths to the revisioned paths, you must install [`gulp-rev-manifest`](https://github.com/lukeed/gulp-rev-manifest). An example usage is shown below:
+
 ```js
 var gulp = require('gulp');
 var rev = require('gulp-rev');
+var revManifest = require('gulp-revmanifest');
 
 gulp.task('default', function () {
 	// by default, gulp would pick `assets/css` as the base,
@@ -95,12 +63,12 @@ gulp.task('default', function () {
 		.pipe(gulp.dest('build/assets'))  // copy original assets to build dir
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))  // write rev'd assets to build dir
-		.pipe(rev.manifest())
+		.pipe(revManifest())
 		.pipe(gulp.dest('build/assets')); // write manifest to build dir
 });
 ```
 
-An asset manifest, mapping the original paths to the revisioned paths, will be written to `build/assets/rev-manifest.json`:
+An asset manifest will be written to `build/assets/rev-manifest.json`:
 
 ```json
 {
@@ -108,29 +76,6 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 	"js/unicorn.js": "js/unicorn-273c2cin3f.js"
 }
 ```
-
-By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
-
-```js
-var gulp = require('gulp');
-var rev = require('gulp-rev');
-
-gulp.task('default', function () {
-	// by default, gulp would pick `assets/css` as the base,
-	// so we need to set it explicitly:
-	return gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
-		.pipe(gulp.dest('build/assets'))
-		.pipe(rev())
-		.pipe(gulp.dest('build/assets'))
-		.pipe(rev.manifest({
-			base: 'build/assets',
-			merge: true // merge with the existing manifest (if one exists)
-		}))
-		.pipe(gulp.dest('build/assets'));
-});
-```
-
-You can optionally call `rev.manifest('manifest.json')` to give it a different path or filename.
 
 
 ## Sourcemaps and `gulp-concat`
@@ -175,13 +120,9 @@ gulp.task('default', function () {
 ```
 
 
-## Integration
-
-For more info on how to integrate **gulp-rev** into your app, have a look at the [integration guide](integration.md).
-
-
 ## Works with gulp-rev
 
+- [gulp-rev-manifest](https://github.com/lukeed/gulp-rev-manifest) - Generate a manifest file, mapping original paths to revisioned counterparts
 - [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace) - Rewrite occurences of filenames which have been renamed
 - [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url) - Override URLs in CSS files with the revved ones
 - [gulp-rev-outdated](https://github.com/shonny-ua/gulp-rev-outdated) - Old static asset revision files filter
