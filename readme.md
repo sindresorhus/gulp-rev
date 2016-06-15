@@ -54,7 +54,7 @@ In order to generate an asset manifest, mapping the original paths to the revisi
 ```js
 var gulp = require('gulp');
 var rev = require('gulp-rev');
-var revManifest = require('gulp-rev-manifest');
+var revManifest = require('gulp-revmanifest');
 
 gulp.task('default', function () {
 	// by default, gulp would pick `assets/css` as the base,
