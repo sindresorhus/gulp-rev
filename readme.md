@@ -189,6 +189,7 @@ For more info on how to integrate **gulp-rev** into your app, have a look at the
 - [rev-del](https://github.com/callumacrae/rev-del) - Delete old unused assets
 - [gulp-rev-delete-original](https://github.com/nib-health-funds/gulp-rev-delete-original) - Delete original files after rev
 - [gulp-rev-loader](https://github.com/adjavaherian/gulp-rev-loader) - Use rev-manifest with webpack
+- [gulp-rev-format](https://github.com/atamas101/gulp-rev-format) - Provide hash formatting options for static assets (prefix, suffix, last-extension)
 
 ## License
 
