@@ -89,7 +89,10 @@ it('should append to an existing rev manifest file', function (cb) {
 		assert.equal(newFile.relative, 'test.manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
-			{'app.js': 'app-a41d8cd1.js', 'unicorn.css': 'unicorn-d41d8cd98f.css'}
+			{
+				'app.js': 'app-a41d8cd1.js',
+				'unicorn.css': 'unicorn-d41d8cd98f.css'
+			}
 		);
 		cb();
 	});
