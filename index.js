@@ -103,7 +103,7 @@ var plugin = function () {
 				file.revOrigBase = file.base;
 
 				var hash = pathMap[reverseFilename];
-				file.path = revPath(file.path.replace(/\.map$/, ''), hash) + '.map';
+				file.path = revPath(file.path, hash);
 			} else {
 				transformFilename(file);
 			}
