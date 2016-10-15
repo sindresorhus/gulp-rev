@@ -123,6 +123,7 @@ plugin.manifest = function (pth, opts) {
 	opts = objectAssign({
 		path: 'rev-manifest.json',
 		merge: false,
+		get: false,
 		// Apply the default JSON transformer.
 		// The user can pass in his on transformer if he wants. The only requirement is that it should
 		// support 'parse' and 'stringify' methods.
@@ -134,15 +135,18 @@ plugin.manifest = function (pth, opts) {
 	return through.obj(function (file, enc, cb) {
 		// ignore all non-rev'd files
 		if (!file.path || !file.revOrigPath) {
-			cb();
-			return;
+			if (!opts.get) {
+				cb();
+				return;
+			}
+			if (!file.revHash) {
+				file.revHash = revHash(file.contents);
+			}
 		}
-
 		var revisionedFile = relPath(file.base, file.path);
-		var originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
-
+		var originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath || file.path)).replace(/\\/g, '/');
 		manifest[originalFile] = revisionedFile;
-
+		if(opts.get) manifest[originalFile]+= '?v=' + file.revHash
 		cb();
 	}, function (cb) {
 		// no need to write a manifest file if there's nothing to manifest
