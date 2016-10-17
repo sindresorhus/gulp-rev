@@ -3,6 +3,8 @@
 > Static asset revisioning by appending content hash to filenames
 > `unicorn.css` → `unicorn-d41d8cd98f.css`
 
+**This project is feature complete.**
+
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
 
 ---
@@ -22,14 +24,14 @@ $ npm install --save-dev gulp-rev
 ## Usage
 
 ```js
-var gulp = require('gulp');
-var rev = require('gulp-rev');
+const gulp = require('gulp');
+const rev = require('gulp-rev');
 
-gulp.task('default', function () {
-	return gulp.src('src/*.css')
+gulp.task('default', () =>
+	gulp.src('src/*.css')
 		.pipe(rev())
-		.pipe(gulp.dest('dist'));
-});
+		.pipe(gulp.dest('dist'))
+);
 ```
 
 
@@ -41,8 +43,8 @@ gulp.task('default', function () {
 
 #### path
 
-Type: `string`
-Default: `"rev-manifest.json"`
+Type: `string`<br>
+Default: `rev-manifest.json`
 
 Manifest file path.
 
@@ -50,28 +52,28 @@ Manifest file path.
 
 ##### base
 
-Type: `string`
+Type: `string`<br>
 Default: `process.cwd()`
 
 Override the `base` of the manifest file.
 
 ##### cwd
 
-Type: `string`
+Type: `string`<br>
 Default: `process.cwd()`
 
-Override the `cwd` (current working directory) of the manifest file.
+Override the current working directory of the manifest file.
 
 ##### merge
 
-Type: `boolean`
+Type: `boolean`<br>
 Default: `false`
 
 Merge existing manifest file.
 
 ##### transformer
 
-Type: `object`
+Type: `object`<br>
 Default: `JSON`
 
 An object with `parse` and `stringify` methods. This can be used to provide a
@@ -91,19 +93,19 @@ The hash of each rev'd file is stored at `file.revHash`. You can use this for cu
 ### Asset manifest
 
 ```js
-var gulp = require('gulp');
-var rev = require('gulp-rev');
+const gulp = require('gulp');
+const rev = require('gulp-rev');
 
-gulp.task('default', function () {
+gulp.task('default', () =>
 	// by default, gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	return gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
+	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
 		.pipe(gulp.dest('build/assets'))  // copy original assets to build dir
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))  // write rev'd assets to build dir
 		.pipe(rev.manifest())
-		.pipe(gulp.dest('build/assets')); // write manifest to build dir
-});
+		.pipe(gulp.dest('build/assets'))  // write manifest to build dir
+);
 ```
 
 An asset manifest, mapping the original paths to the revisioned paths, will be written to `build/assets/rev-manifest.json`:
@@ -118,22 +120,22 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
 
 ```js
-var gulp = require('gulp');
-var rev = require('gulp-rev');
+const gulp = require('gulp');
+const rev = require('gulp-rev');
 
-gulp.task('default', function () {
+gulp.task('default', () =>
 	// by default, gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	return gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
+	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev())
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev.manifest({
 			base: 'build/assets',
-			merge: true // merge with the existing manifest (if one exists)
+			merge: true // merge with the existing manifest if one exists
 		}))
-		.pipe(gulp.dest('build/assets'));
-});
+		.pipe(gulp.dest('build/assets'))
+);
 ```
 
 You can optionally call `rev.manifest('manifest.json')` to give it a different path or filename.
@@ -144,46 +146,47 @@ You can optionally call `rev.manifest('manifest.json')` to give it a different p
 Because of the way `gulp-concat` handles file paths, you may need to set `cwd` and `path` manually on your `gulp-concat` instance to get everything to work correctly:
 
 ```js
-var gulp = require('gulp');
-var rev = require('gulp-rev');
-var sourcemaps = require('gulp-sourcemaps');
-var concat = require('gulp-concat');
+const gulp = require('gulp');
+const rev = require('gulp-rev');
+const sourcemaps = require('gulp-sourcemaps');
+const concat = require('gulp-concat');
 
-gulp.task('default', function () {
-	return gulp.src('src/*.js')
+gulp.task('default', () =>
+	gulp.src('src/*.js')
 		.pipe(sourcemaps.init())
 		.pipe(concat({path: 'bundle.js', cwd: ''}))
 		.pipe(rev())
 		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest('dist'));
+		.pipe(gulp.dest('dist'))
+)
 ```
 
 
 ## Streaming
 
-This plugin does not support streaming. If you have files from a streaming source, such as browserify, you should use [gulp-buffer](https://github.com/jeromew/gulp-buffer) before `gulp-rev` in your pipeline:
+This plugin does not support streaming. If you have files from a streaming source, such as Browserify, you should use [`gulp-buffer`](https://github.com/jeromew/gulp-buffer) before `gulp-rev` in your pipeline:
 
 ```js
-var gulp = require('gulp');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var buffer = require('gulp-buffer');
-var rev = require('gulp-rev');
+const gulp = require('gulp');
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+const buffer = require('gulp-buffer');
+const rev = require('gulp-rev');
 
-gulp.task('default', function () {
-	return browserify('src/index.js')
+gulp.task('default', () =>
+	browserify('src/index.js')
 		.bundle({debug: true})
 		.pipe(source('index.min.js'))
 		.pipe(buffer())
 		.pipe(rev())
 		.pipe(gulp.dest('dist'))
-});
+);
 ```
 
 
 ## Integration
 
-For more info on how to integrate **gulp-rev** into your app, have a look at the [integration guide](integration.md).
+For more info on how to integrate `gulp-rev` into your app, have a look at the [integration guide](integration.md).
 
 
 ## Works with gulp-rev
@@ -197,6 +200,7 @@ For more info on how to integrate **gulp-rev** into your app, have a look at the
 - [gulp-rev-loader](https://github.com/adjavaherian/gulp-rev-loader) - Use rev-manifest with webpack
 - [gulp-rev-format](https://github.com/atamas101/gulp-rev-format) - Provide hash formatting options for static assets (prefix, suffix, last-extension)
 
+
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)
