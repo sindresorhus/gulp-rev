@@ -1,43 +1,25 @@
 'use strict';
-var path = require('path');
-var gutil = require('gulp-util');
-var through = require('through2');
-var objectAssign = require('object-assign');
-var file = require('vinyl-file');
-var revHash = require('rev-hash');
-var revPath = require('rev-path');
-var sortKeys = require('sort-keys');
-var modifyFilename = require('modify-filename');
+const path = require('path');
+const gutil = require('gulp-util');
+const through = require('through2');
+const vinylFile = require('vinyl-file');
+const revHash = require('rev-hash');
+const revPath = require('rev-path');
+const sortKeys = require('sort-keys');
+const modifyFilename = require('modify-filename');
 
 function relPath(base, filePath) {
 	if (filePath.indexOf(base) !== 0) {
 		return filePath.replace(/\\/g, '/');
 	}
 
-	var newPath = filePath.substr(base.length).replace(/\\/g, '/');
+	const newPath = filePath.slice(base.length).replace(/\\/g, '/');
 
 	if (newPath[0] === '/') {
-		return newPath.substr(1);
+		return newPath.slice(1);
 	}
 
 	return newPath;
-}
-
-function getManifestFile(opts, cb) {
-	file.read(opts.path, opts, function (err, manifest) {
-		if (err) {
-			// not found
-			if (err.code === 'ENOENT') {
-				cb(null, new gutil.File(opts));
-			} else {
-				cb(err);
-			}
-
-			return;
-		}
-
-		cb(null, manifest);
-	});
 }
 
 function transformFilename(file) {
@@ -46,8 +28,8 @@ function transformFilename(file) {
 	file.revOrigBase = file.base;
 	file.revHash = revHash(file.contents);
 
-	file.path = modifyFilename(file.path, function (filename, extension) {
-		var extIndex = filename.indexOf('.');
+	file.path = modifyFilename(file.path, (filename, extension) => {
+		const extIndex = filename.indexOf('.');
 
 		filename = extIndex === -1 ?
 			revPath(filename, file.revHash) :
@@ -57,11 +39,19 @@ function transformFilename(file) {
 	});
 }
 
-var plugin = function () {
-	var sourcemaps = [];
-	var pathMap = {};
+const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(err => {
+	if (err.code === 'ENOENT') {
+		return new gutil.File(opts);
+	}
 
-	return through.obj(function (file, enc, cb) {
+	throw err;
+});
+
+const plugin = () => {
+	const sourcemaps = [];
+	const pathMap = {};
+
+	return through.obj((file, enc, cb) => {
 		if (file.isNull()) {
 			cb(null, file);
 			return;
@@ -79,14 +69,14 @@ var plugin = function () {
 			return;
 		}
 
-		var oldPath = file.path;
+		const oldPath = file.path;
 		transformFilename(file);
 		pathMap[oldPath] = file.revHash;
 
 		cb(null, file);
 	}, function (cb) {
-		sourcemaps.forEach(function (file) {
-			var reverseFilename;
+		sourcemaps.forEach(file => {
+			let reverseFilename;
 
 			// attempt to parse the sourcemap's JSON to get the reverse filename
 			try {
@@ -102,44 +92,41 @@ var plugin = function () {
 				file.revOrigPath = file.path;
 				file.revOrigBase = file.base;
 
-				var hash = pathMap[reverseFilename];
+				const hash = pathMap[reverseFilename];
 				file.path = revPath(file.path.replace(/\.map$/, ''), hash) + '.map';
 			} else {
 				transformFilename(file);
 			}
 
 			this.push(file);
-		}, this);
+		});
 
 		cb();
 	});
 };
 
-plugin.manifest = function (pth, opts) {
+plugin.manifest = (pth, opts) => {
 	if (typeof pth === 'string') {
 		pth = {path: pth};
 	}
 
-	opts = objectAssign({
+	opts = Object.assign({
 		path: 'rev-manifest.json',
 		merge: false,
-		// Apply the default JSON transformer.
-		// The user can pass in his on transformer if he wants. The only requirement is that it should
-		// support 'parse' and 'stringify' methods.
 		transformer: JSON
 	}, opts, pth);
 
-	var manifest = {};
+	let manifest = {};
 
-	return through.obj(function (file, enc, cb) {
+	return through.obj((file, enc, cb) => {
 		// ignore all non-rev'd files
 		if (!file.path || !file.revOrigPath) {
 			cb();
 			return;
 		}
 
-		var revisionedFile = relPath(file.base, file.path);
-		var originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
+		const revisionedFile = relPath(file.base, file.path);
+		const originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
 
 		manifest[originalFile] = revisionedFile;
 
@@ -151,26 +138,21 @@ plugin.manifest = function (pth, opts) {
 			return;
 		}
 
-		getManifestFile(opts, function (err, manifestFile) {
-			if (err) {
-				cb(err);
-				return;
-			}
-
+		getManifestFile(opts).then(manifestFile => {
 			if (opts.merge && !manifestFile.isNull()) {
-				var oldManifest = {};
+				let oldManifest = {};
 
 				try {
 					oldManifest = opts.transformer.parse(manifestFile.contents.toString());
 				} catch (err) {}
 
-				manifest = objectAssign(oldManifest, manifest);
+				manifest = Object.assign(oldManifest, manifest);
 			}
 
 			manifestFile.contents = new Buffer(opts.transformer.stringify(sortKeys(manifest), null, '  '));
 			this.push(manifestFile);
 			cb();
-		}.bind(this));
+		}).catch(cb);
 	});
 };
 

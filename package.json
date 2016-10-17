@@ -35,7 +35,7 @@
     }
   ],
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4"
   },
   "scripts": {
     "test": "xo && mocha"
@@ -61,12 +61,11 @@
   "dependencies": {
     "gulp-util": "^3.0.0",
     "modify-filename": "^1.1.0",
-    "object-assign": "^4.0.1",
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
     "sort-keys": "^1.0.0",
     "through2": "^2.0.0",
-    "vinyl-file": "^1.1.0"
+    "vinyl-file": "^2.0.0"
   },
   "devDependencies": {
     "mocha": "*",
@@ -76,6 +75,7 @@
     "envs": [
       "node",
       "mocha"
-    ]
+    ],
+    "esnext": true
   }
 }

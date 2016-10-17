@@ -1,13 +1,13 @@
 'use strict';
-var path = require('path');
-var assert = require('assert');
-var gutil = require('gulp-util');
-var rev = require('./');
+const path = require('path');
+const assert = require('assert');
+const gutil = require('gulp-util');
+const rev = require('./');
 
-it('should rev files', function (cb) {
-	var stream = rev();
+it('should rev files', cb => {
+	const stream = rev();
 
-	stream.on('data', function (file) {
+	stream.on('data', file => {
 		assert.equal(file.path, 'unicorn-d41d8cd98f.css');
 		assert.equal(file.revOrigPath, 'unicorn.css');
 		cb();
@@ -19,10 +19,10 @@ it('should rev files', function (cb) {
 	}));
 });
 
-it('should add the revision hash before the first `.` in the filename', function (cb) {
-	var stream = rev();
+it('should add the revision hash before the first `.` in the filename', cb => {
+	const stream = rev();
 
-	stream.on('data', function (file) {
+	stream.on('data', file => {
 		assert.equal(file.path, 'unicorn-d41d8cd98f.css.map');
 		assert.equal(file.revOrigPath, 'unicorn.css.map');
 		cb();
@@ -36,10 +36,10 @@ it('should add the revision hash before the first `.` in the filename', function
 	stream.end();
 });
 
-it('should build a rev manifest file', function (cb) {
-	var stream = rev.manifest();
+it('should build a rev manifest file', cb => {
+	const stream = rev.manifest();
 
-	stream.on('data', function (newFile) {
+	stream.on('data', newFile => {
 		assert.equal(newFile.relative, 'rev-manifest.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
@@ -48,7 +48,7 @@ it('should build a rev manifest file', function (cb) {
 		cb();
 	});
 
-	var file = new gutil.File({
+	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
@@ -59,16 +59,16 @@ it('should build a rev manifest file', function (cb) {
 	stream.end();
 });
 
-it('should allow naming the manifest file', function (cb) {
-	var path = 'manifest.json';
-	var stream = rev.manifest({path: path});
+it('should allow naming the manifest file', cb => {
+	const path = 'manifest.json';
+	const stream = rev.manifest({path});
 
-	stream.on('data', function (newFile) {
+	stream.on('data', newFile => {
 		assert.equal(newFile.relative, path);
 		cb();
 	});
 
-	var file = new gutil.File({
+	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
@@ -79,13 +79,13 @@ it('should allow naming the manifest file', function (cb) {
 	stream.end();
 });
 
-it('should append to an existing rev manifest file', function (cb) {
-	var stream = rev.manifest({
+it('should append to an existing rev manifest file', cb => {
+	const stream = rev.manifest({
 		path: 'test.manifest-fixture.json',
 		merge: true
 	});
 
-	stream.on('data', function (newFile) {
+	stream.on('data', newFile => {
 		assert.equal(newFile.relative, 'test.manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
@@ -97,7 +97,7 @@ it('should append to an existing rev manifest file', function (cb) {
 		cb();
 	});
 
-	var file = new gutil.File({
+	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
@@ -108,10 +108,10 @@ it('should append to an existing rev manifest file', function (cb) {
 	stream.end();
 });
 
-it('should not append to an existing rev manifest by default', function (cb) {
-	var stream = rev.manifest({path: 'test.manifest-fixture.json'});
+it('should not append to an existing rev manifest by default', cb => {
+	const stream = rev.manifest({path: 'test.manifest-fixture.json'});
 
-	stream.on('data', function (newFile) {
+	stream.on('data', newFile => {
 		assert.equal(newFile.relative, 'test.manifest-fixture.json');
 		assert.deepEqual(
 			JSON.parse(newFile.contents.toString()),
@@ -120,7 +120,7 @@ it('should not append to an existing rev manifest by default', function (cb) {
 		cb();
 	});
 
-	var file = new gutil.File({
+	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
@@ -131,13 +131,13 @@ it('should not append to an existing rev manifest by default', function (cb) {
 	stream.end();
 });
 
-it('should sort the rev manifest keys', function (cb) {
-	var stream = rev.manifest({
+it('should sort the rev manifest keys', cb => {
+	const stream = rev.manifest({
 		path: 'test.manifest-fixture.json',
 		merge: true
 	});
 
-	stream.on('data', function (newFile) {
+	stream.on('data', newFile => {
 		assert.deepEqual(
 			Object.keys(JSON.parse(newFile.contents.toString())),
 			['app.js', 'pony.css', 'unicorn.css']
@@ -145,14 +145,14 @@ it('should sort the rev manifest keys', function (cb) {
 		cb();
 	});
 
-	var file = new gutil.File({
+	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
 
 	file.revOrigPath = 'unicorn.css';
 
-	var fileTwo = new gutil.File({
+	const fileTwo = new gutil.File({
 		path: 'pony-d41d8cd98f.css',
 		contents: new Buffer('')
 	});
@@ -164,11 +164,11 @@ it('should sort the rev manifest keys', function (cb) {
 	stream.end();
 });
 
-it('should respect directories', function (cb) {
-	var stream = rev.manifest();
+it('should respect directories', cb => {
+	const stream = rev.manifest();
 
-	stream.on('data', function (newFile) {
-		var MANIFEST = {};
+	stream.on('data', newFile => {
+		const MANIFEST = {};
 		MANIFEST[path.join('foo', 'unicorn.css')] = path.join('foo', 'unicorn-d41d8cd98f.css');
 		MANIFEST[path.join('bar', 'pony.css')] = path.join('bar', 'pony-d41d8cd98f.css');
 
@@ -177,7 +177,7 @@ it('should respect directories', function (cb) {
 		cb();
 	});
 
-	var file1 = new gutil.File({
+	const file1 = new gutil.File({
 		cwd: __dirname,
 		base: __dirname,
 		path: path.join(__dirname, 'foo', 'unicorn-d41d8cd98f.css'),
@@ -189,7 +189,7 @@ it('should respect directories', function (cb) {
 	file1.origName = 'unicorn.css';
 	file1.revName = 'unicorn-d41d8cd98f.css';
 
-	var file2 = new gutil.File({
+	const file2 = new gutil.File({
 		cwd: __dirname,
 		base: __dirname,
 		path: path.join(__dirname, 'bar', 'pony-d41d8cd98f.css'),
@@ -206,11 +206,11 @@ it('should respect directories', function (cb) {
 	stream.end();
 });
 
-it('should respect files coming from directories with different bases', function (cb) {
-	var stream = rev.manifest();
+it('should respect files coming from directories with different bases', cb => {
+	const stream = rev.manifest();
 
-	stream.on('data', function (newFile) {
-		var MANIFEST = {};
+	stream.on('data', newFile => {
+		const MANIFEST = {};
 		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
 		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
 
@@ -219,7 +219,7 @@ it('should respect files coming from directories with different bases', function
 		cb();
 	});
 
-	var file1 = new gutil.File({
+	const file1 = new gutil.File({
 		cwd: __dirname,
 		base: path.join(__dirname, 'output'),
 		path: path.join(__dirname, 'output', 'foo', 'scriptfoo-d41d8cd98f.js'),
@@ -231,7 +231,7 @@ it('should respect files coming from directories with different bases', function
 	file1.origName = 'scriptfoo.js';
 	file1.revName = 'scriptfoo-d41d8cd98f.js';
 
-	var file2 = new gutil.File({
+	const file2 = new gutil.File({
 		cwd: __dirname,
 		base: path.join(__dirname, 'output'),
 		path: path.join(__dirname, 'output', 'bar', 'scriptbar-d41d8cd98f.js'),
@@ -248,10 +248,10 @@ it('should respect files coming from directories with different bases', function
 	stream.end();
 });
 
-it('should store the hashes for later', function (cb) {
-	var stream = rev();
+it('should store the hashes for later', cb => {
+	const stream = rev();
 
-	stream.on('data', function (file) {
+	stream.on('data', file => {
 		assert.equal(file.path, 'unicorn-d41d8cd98f.css');
 		assert.equal(file.revOrigPath, 'unicorn.css');
 		assert.equal(file.revHash, 'd41d8cd98f');
@@ -264,10 +264,10 @@ it('should store the hashes for later', function (cb) {
 	}));
 });
 
-it('should handle sourcemaps transparently', function (cb) {
-	var stream = rev();
+it('should handle sourcemaps transparently', cb => {
+	const stream = rev();
 
-	stream.on('data', function (file) {
+	stream.on('data', file => {
 		if (path.extname(file.path) === '.map') {
 			assert.equal(file.path, 'maps/pastissada-d41d8cd98f.css.map');
 			cb();
@@ -285,10 +285,10 @@ it('should handle sourcemaps transparently', function (cb) {
 	}));
 });
 
-it('should handle unparseable sourcemaps correctly', function (cb) {
-	var stream = rev();
+it('should handle unparseable sourcemaps correctly', cb => {
+	const stream = rev();
 
-	stream.on('data', function (file) {
+	stream.on('data', file => {
 		if (path.extname(file.path) === '.map') {
 			assert.equal(file.path, 'pastissada-d41d8cd98f.css.map');
 			cb();
@@ -306,10 +306,10 @@ it('should handle unparseable sourcemaps correctly', function (cb) {
 	}));
 });
 
-it('should be okay when the optional sourcemap.file is not defined', function (cb) {
-	var stream = rev();
+it('should be okay when the optional sourcemap.file is not defined', cb => {
+	const stream = rev();
 
-	stream.on('data', function (file) {
+	stream.on('data', file => {
 		if (path.extname(file.path) === '.map') {
 			assert.equal(file.path, 'pastissada-d41d8cd98f.css.map');
 			cb();
@@ -327,10 +327,10 @@ it('should be okay when the optional sourcemap.file is not defined', function (c
 	}));
 });
 
-it('should handle a . in the folder name', function (cb) {
-	var stream = rev();
+it('should handle a . in the folder name', cb => {
+	const stream = rev();
 
-	stream.on('data', function (file) {
+	stream.on('data', file => {
 		assert.equal(file.path, 'mysite.io/unicorn-d41d8cd98f.css');
 		assert.equal(file.revOrigPath, 'mysite.io/unicorn.css');
 		cb();
@@ -342,11 +342,11 @@ it('should handle a . in the folder name', function (cb) {
 	}));
 });
 
-it('should use correct base path for each file', function (cb) {
-	var stream = rev.manifest();
+it('should use correct base path for each file', cb => {
+	const stream = rev.manifest();
 
-	stream.on('data', function (newFile) {
-		var MANIFEST = {};
+	stream.on('data', newFile => {
+		const MANIFEST = {};
 		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
 		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
 
@@ -354,7 +354,7 @@ it('should use correct base path for each file', function (cb) {
 		cb();
 	});
 
-	var fileFoo = new gutil.File({
+	const fileFoo = new gutil.File({
 		cwd: 'app/',
 		base: 'app/',
 		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
@@ -362,7 +362,7 @@ it('should use correct base path for each file', function (cb) {
 	});
 	fileFoo.revOrigPath = 'scriptfoo.js';
 
-	var fileBar = new gutil.File({
+	const fileBar = new gutil.File({
 		cwd: 'assets/',
 		base: 'assets/',
 		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
