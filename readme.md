@@ -113,7 +113,7 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 ```json
 {
 	"css/unicorn.css": "css/unicorn-d41d8cd98f.css",
-	"js/unicorn.js": "js/unicorn-273c2cin3f.js"
+	"js/unicorn.js": "js/unicorn-273c2c123f.js"
 }
 ```
 
