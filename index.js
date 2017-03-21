@@ -137,7 +137,9 @@ plugin.manifest = (pth, opts) => {
 			cb();
 			return;
 		}
-
+		if(opts.base){
+			opts.path=path.resolve(opts.base,opts.path)
+		}
 		getManifestFile(opts).then(manifestFile => {
 			if (opts.merge && !manifestFile.isNull()) {
 				let oldManifest = {};
