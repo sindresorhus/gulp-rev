@@ -1,6 +1,6 @@
 'use strict';
 const path = require('path');
-const assert = require('assert');
+const test = require('ava');
 const gutil = require('gulp-util');
 const rev = require('./');
 
@@ -19,13 +19,13 @@ function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, bas
 	return file;
 }
 
-it('should rev files', cb => {
+test.cb('should rev files', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
-		assert.equal(file.path, 'unicorn-d41d8cd98f.css');
-		assert.equal(file.revOrigPath, 'unicorn.css');
-		cb();
+		t.is(file.path, 'unicorn-d41d8cd98f.css');
+		t.is(file.revOrigPath, 'unicorn.css');
+		t.end();
 	});
 
 	stream.write(createFile({
@@ -33,13 +33,13 @@ it('should rev files', cb => {
 	}));
 });
 
-it('should add the revision hash before the first `.` in the filename', cb => {
+test.cb('should add the revision hash before the first `.` in the filename', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
-		assert.equal(file.path, 'unicorn-d41d8cd98f.css.map');
-		assert.equal(file.revOrigPath, 'unicorn.css.map');
-		cb();
+		t.is(file.path, 'unicorn-d41d8cd98f.css.map');
+		t.is(file.revOrigPath, 'unicorn.css.map');
+		t.end();
 	});
 
 	stream.write(createFile({
@@ -49,16 +49,16 @@ it('should add the revision hash before the first `.` in the filename', cb => {
 	stream.end();
 });
 
-it('should build a rev manifest file', cb => {
+test.cb('should build a rev manifest file', t => {
 	const stream = rev.manifest();
 
 	stream.on('data', newFile => {
-		assert.equal(newFile.relative, 'rev-manifest.json');
-		assert.deepEqual(
+		t.is(newFile.relative, 'rev-manifest.json');
+		t.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'unicorn.css': 'unicorn-d41d8cd98f.css'}
 		);
-		cb();
+		t.end();
 	});
 
 	const file = createFile({
@@ -70,13 +70,13 @@ it('should build a rev manifest file', cb => {
 	stream.end();
 });
 
-it('should allow naming the manifest file', cb => {
+test.cb('should allow naming the manifest file', t => {
 	const path = 'manifest.json';
 	const stream = rev.manifest({path});
 
 	stream.on('data', newFile => {
-		assert.equal(newFile.relative, path);
-		cb();
+		t.is(newFile.relative, path);
+		t.end();
 	});
 
 	const file = createFile({
@@ -88,22 +88,22 @@ it('should allow naming the manifest file', cb => {
 	stream.end();
 });
 
-it('should append to an existing rev manifest file', cb => {
+test.cb('should append to an existing rev manifest file', t => {
 	const stream = rev.manifest({
 		path: 'test.manifest-fixture.json',
 		merge: true
 	});
 
 	stream.on('data', newFile => {
-		assert.equal(newFile.relative, 'test.manifest-fixture.json');
-		assert.deepEqual(
+		t.is(newFile.relative, 'test.manifest-fixture.json');
+		t.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{
 				'app.js': 'app-a41d8cd1.js',
 				'unicorn.css': 'unicorn-d41d8cd98f.css'
 			}
 		);
-		cb();
+		t.end();
 	});
 
 	const file = createFile({
@@ -115,16 +115,16 @@ it('should append to an existing rev manifest file', cb => {
 	stream.end();
 });
 
-it('should not append to an existing rev manifest by default', cb => {
+test.cb('should not append to an existing rev manifest by default', t => {
 	const stream = rev.manifest({path: 'test.manifest-fixture.json'});
 
 	stream.on('data', newFile => {
-		assert.equal(newFile.relative, 'test.manifest-fixture.json');
-		assert.deepEqual(
+		t.is(newFile.relative, 'test.manifest-fixture.json');
+		t.deepEqual(
 			JSON.parse(newFile.contents.toString()),
 			{'unicorn.css': 'unicorn-d41d8cd98f.css'}
 		);
-		cb();
+		t.end();
 	});
 
 	const file = createFile({
@@ -136,18 +136,18 @@ it('should not append to an existing rev manifest by default', cb => {
 	stream.end();
 });
 
-it('should sort the rev manifest keys', cb => {
+test.cb('should sort the rev manifest keys', t => {
 	const stream = rev.manifest({
 		path: 'test.manifest-fixture.json',
 		merge: true
 	});
 
 	stream.on('data', newFile => {
-		assert.deepEqual(
+		t.deepEqual(
 			Object.keys(JSON.parse(newFile.contents.toString())),
 			['app.js', 'pony.css', 'unicorn.css']
 		);
-		cb();
+		t.end();
 	});
 
 	const file = createFile({
@@ -165,7 +165,7 @@ it('should sort the rev manifest keys', cb => {
 	stream.end();
 });
 
-it('should respect directories', cb => {
+test.cb('should respect directories', t => {
 	const stream = rev.manifest();
 
 	stream.on('data', newFile => {
@@ -173,9 +173,9 @@ it('should respect directories', cb => {
 		MANIFEST[path.join('foo', 'unicorn.css')] = path.join('foo', 'unicorn-d41d8cd98f.css');
 		MANIFEST[path.join('bar', 'pony.css')] = path.join('bar', 'pony-d41d8cd98f.css');
 
-		assert.equal(newFile.relative, 'rev-manifest.json');
-		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
-		cb();
+		t.is(newFile.relative, 'rev-manifest.json');
+		t.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
+		t.end();
 	});
 
 	const file1 = createFile({
@@ -203,7 +203,7 @@ it('should respect directories', cb => {
 	stream.end();
 });
 
-it('should respect files coming from directories with different bases', cb => {
+test.cb('should respect files coming from directories with different bases', t => {
 	const stream = rev.manifest();
 
 	stream.on('data', newFile => {
@@ -211,9 +211,9 @@ it('should respect files coming from directories with different bases', cb => {
 		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
 		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
 
-		assert.equal(newFile.relative, 'rev-manifest.json');
-		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
-		cb();
+		t.is(newFile.relative, 'rev-manifest.json');
+		t.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
+		t.end();
 	});
 
 	const file1 = createFile({
@@ -242,14 +242,14 @@ it('should respect files coming from directories with different bases', cb => {
 	stream.end();
 });
 
-it('should store the hashes for later', cb => {
+test.cb('should store the hashes for later', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
-		assert.equal(file.path, 'unicorn-d41d8cd98f.css');
-		assert.equal(file.revOrigPath, 'unicorn.css');
-		assert.equal(file.revHash, 'd41d8cd98f');
-		cb();
+		t.is(file.path, 'unicorn-d41d8cd98f.css');
+		t.is(file.revOrigPath, 'unicorn.css');
+		t.is(file.revHash, 'd41d8cd98f');
+		t.end();
 	});
 
 	stream.write(createFile({
@@ -257,13 +257,13 @@ it('should store the hashes for later', cb => {
 	}));
 });
 
-it('should handle sourcemaps transparently', cb => {
+test.cb('should handle sourcemaps transparently', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
 		if (path.extname(file.path) === '.map') {
-			assert.equal(file.path, 'maps/pastissada-d41d8cd98f.css.map');
-			cb();
+			t.is(file.path, 'maps/pastissada-d41d8cd98f.css.map');
+			t.end();
 		}
 	});
 
@@ -277,13 +277,13 @@ it('should handle sourcemaps transparently', cb => {
 	}));
 });
 
-it('should handle unparseable sourcemaps correctly', cb => {
+test.cb('should handle unparseable sourcemaps correctly', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
 		if (path.extname(file.path) === '.map') {
-			assert.equal(file.path, 'pastissada-d41d8cd98f.css.map');
-			cb();
+			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
+			t.end();
 		}
 	});
 
@@ -297,13 +297,13 @@ it('should handle unparseable sourcemaps correctly', cb => {
 	}));
 });
 
-it('should be okay when the optional sourcemap.file is not defined', cb => {
+test.cb('should be okay when the optional sourcemap.file is not defined', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
 		if (path.extname(file.path) === '.map') {
-			assert.equal(file.path, 'pastissada-d41d8cd98f.css.map');
-			cb();
+			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
+			t.end();
 		}
 	});
 
@@ -317,13 +317,13 @@ it('should be okay when the optional sourcemap.file is not defined', cb => {
 	}));
 });
 
-it('should handle a . in the folder name', cb => {
+test.cb('should handle a . in the folder name', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
-		assert.equal(file.path, 'mysite.io/unicorn-d41d8cd98f.css');
-		assert.equal(file.revOrigPath, 'mysite.io/unicorn.css');
-		cb();
+		t.is(file.path, 'mysite.io/unicorn-d41d8cd98f.css');
+		t.is(file.revOrigPath, 'mysite.io/unicorn.css');
+		t.end();
 	});
 
 	stream.write(createFile({
@@ -331,7 +331,7 @@ it('should handle a . in the folder name', cb => {
 	}));
 });
 
-it('should use correct base path for each file', cb => {
+test.cb('should use correct base path for each file', t => {
 	const stream = rev.manifest();
 
 	stream.on('data', newFile => {
@@ -339,8 +339,8 @@ it('should use correct base path for each file', cb => {
 		MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
 		MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
 
-		assert.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
-		cb();
+		t.deepEqual(JSON.parse(newFile.contents.toString()), MANIFEST);
+		t.end();
 	});
 
 	const fileFoo = createFile({

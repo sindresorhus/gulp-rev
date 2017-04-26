@@ -38,7 +38,7 @@
     "node": ">=4"
   },
   "scripts": {
-    "test": "xo && mocha"
+    "test": "xo && ava"
   },
   "files": [
     "index.js"
@@ -68,13 +68,12 @@
     "vinyl-file": "^2.0.0"
   },
   "devDependencies": {
-    "mocha": "*",
+    "ava": "*",
     "xo": "*"
   },
   "xo": {
     "envs": [
-      "node",
-      "mocha"
+      "node"
     ],
     "esnext": true
   }
