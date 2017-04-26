@@ -15,7 +15,7 @@ it('should rev files', cb => {
 
 	stream.write(new gutil.File({
 		path: 'unicorn.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	}));
 });
 
@@ -30,7 +30,7 @@ it('should add the revision hash before the first `.` in the filename', cb => {
 
 	stream.write(new gutil.File({
 		path: 'unicorn.css.map',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	}));
 
 	stream.end();
@@ -50,7 +50,7 @@ it('should build a rev manifest file', cb => {
 
 	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file.revOrigPath = 'unicorn.css';
@@ -70,7 +70,7 @@ it('should allow naming the manifest file', cb => {
 
 	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file.revOrigPath = 'unicorn.css';
@@ -99,7 +99,7 @@ it('should append to an existing rev manifest file', cb => {
 
 	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file.revOrigPath = 'unicorn.css';
@@ -122,7 +122,7 @@ it('should not append to an existing rev manifest by default', cb => {
 
 	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file.revOrigPath = 'unicorn.css';
@@ -147,14 +147,14 @@ it('should sort the rev manifest keys', cb => {
 
 	const file = new gutil.File({
 		path: 'unicorn-d41d8cd98f.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file.revOrigPath = 'unicorn.css';
 
 	const fileTwo = new gutil.File({
 		path: 'pony-d41d8cd98f.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	fileTwo.revOrigPath = 'pony.css';
@@ -181,7 +181,7 @@ it('should respect directories', cb => {
 		cwd: __dirname,
 		base: __dirname,
 		path: path.join(__dirname, 'foo', 'unicorn-d41d8cd98f.css'),
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file1.revOrigBase = __dirname;
@@ -193,7 +193,7 @@ it('should respect directories', cb => {
 		cwd: __dirname,
 		base: __dirname,
 		path: path.join(__dirname, 'bar', 'pony-d41d8cd98f.css'),
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file2.revOrigBase = __dirname;
@@ -223,7 +223,7 @@ it('should respect files coming from directories with different bases', cb => {
 		cwd: __dirname,
 		base: path.join(__dirname, 'output'),
 		path: path.join(__dirname, 'output', 'foo', 'scriptfoo-d41d8cd98f.js'),
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file1.revOrigBase = path.join(__dirname, 'vendor1');
@@ -235,7 +235,7 @@ it('should respect files coming from directories with different bases', cb => {
 		cwd: __dirname,
 		base: path.join(__dirname, 'output'),
 		path: path.join(__dirname, 'output', 'bar', 'scriptbar-d41d8cd98f.js'),
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 
 	file2.revOrigBase = path.join(__dirname, 'vendor2');
@@ -260,7 +260,7 @@ it('should store the hashes for later', cb => {
 
 	stream.write(new gutil.File({
 		path: 'unicorn.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	}));
 });
 
@@ -276,12 +276,12 @@ it('should handle sourcemaps transparently', cb => {
 
 	stream.write(new gutil.File({
 		path: 'pastissada.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	}));
 
 	stream.end(new gutil.File({
 		path: 'maps/pastissada.css.map',
-		contents: new Buffer(JSON.stringify({file: 'pastissada.css'}))
+		contents: Buffer.from(JSON.stringify({file: 'pastissada.css'}))
 	}));
 });
 
@@ -297,12 +297,12 @@ it('should handle unparseable sourcemaps correctly', cb => {
 
 	stream.write(new gutil.File({
 		path: 'pastissada.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	}));
 
 	stream.end(new gutil.File({
 		path: 'pastissada.css.map',
-		contents: new Buffer('Wait a minute, this is invalid JSON!')
+		contents: Buffer.from('Wait a minute, this is invalid JSON!')
 	}));
 });
 
@@ -318,12 +318,12 @@ it('should be okay when the optional sourcemap.file is not defined', cb => {
 
 	stream.write(new gutil.File({
 		path: 'pastissada.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	}));
 
 	stream.end(new gutil.File({
 		path: 'pastissada.css.map',
-		contents: new Buffer(JSON.stringify({}))
+		contents: Buffer.from(JSON.stringify({}))
 	}));
 });
 
@@ -338,7 +338,7 @@ it('should handle a . in the folder name', cb => {
 
 	stream.write(new gutil.File({
 		path: 'mysite.io/unicorn.css',
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	}));
 });
 
@@ -358,7 +358,7 @@ it('should use correct base path for each file', cb => {
 		cwd: 'app/',
 		base: 'app/',
 		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 	fileFoo.revOrigPath = 'scriptfoo.js';
 
@@ -366,7 +366,7 @@ it('should use correct base path for each file', cb => {
 		cwd: 'assets/',
 		base: 'assets/',
 		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
-		contents: new Buffer('')
+		contents: Buffer.from('')
 	});
 	fileBar.revOrigPath = 'scriptbar.js';
 

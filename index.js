@@ -23,7 +23,7 @@ function relPath(base, filePath) {
 }
 
 function transformFilename(file) {
-	// save the old path for later
+	// Save the old path for later
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
 	file.revHash = revHash(file.contents);
@@ -62,7 +62,7 @@ const plugin = () => {
 			return;
 		}
 
-		// this is a sourcemap, hold until the end
+		// This is a sourcemap, hold until the end
 		if (path.extname(file.path) === '.map') {
 			sourcemaps.push(file);
 			cb();
@@ -78,7 +78,7 @@ const plugin = () => {
 		sourcemaps.forEach(file => {
 			let reverseFilename;
 
-			// attempt to parse the sourcemap's JSON to get the reverse filename
+			// Attempt to parse the sourcemap's JSON to get the reverse filename
 			try {
 				reverseFilename = JSON.parse(file.contents.toString()).file;
 			} catch (err) {}
@@ -88,7 +88,7 @@ const plugin = () => {
 			}
 
 			if (pathMap[reverseFilename]) {
-				// save the old path for later
+				// Save the old path for later
 				file.revOrigPath = file.path;
 				file.revOrigBase = file.base;
 
@@ -119,7 +119,7 @@ plugin.manifest = (pth, opts) => {
 	let manifest = {};
 
 	return through.obj((file, enc, cb) => {
-		// ignore all non-rev'd files
+		// Ignore all non-rev'd files
 		if (!file.path || !file.revOrigPath) {
 			cb();
 			return;
@@ -132,7 +132,7 @@ plugin.manifest = (pth, opts) => {
 
 		cb();
 	}, function (cb) {
-		// no need to write a manifest file if there's nothing to manifest
+		// No need to write a manifest file if there's nothing to manifest
 		if (Object.keys(manifest).length === 0) {
 			cb();
 			return;
@@ -149,7 +149,7 @@ plugin.manifest = (pth, opts) => {
 				manifest = Object.assign(oldManifest, manifest);
 			}
 
-			manifestFile.contents = new Buffer(opts.transformer.stringify(sortKeys(manifest), null, '  '));
+			manifestFile.contents = Buffer.from(opts.transformer.stringify(sortKeys(manifest), null, '  '));
 			this.push(manifestFile);
 			cb();
 		}).catch(cb);
