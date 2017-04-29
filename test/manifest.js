@@ -1,51 +1,12 @@
 import path from 'path';
 import test from 'ava';
 import pEvent from 'p-event';
-import gutil from 'gulp-util';
-import rev from './';
+import rev from '../';
+import createFile from './fixtures';
 
-function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, base, contents = ''}) {
-	const file = new gutil.File({
-		path,
-		cwd,
-		base,
-		contents: Buffer.from(contents)
-	});
-	file.revOrigPath = revOrigPath;
-	file.revOrigBase = revOrigBase;
-	file.origName = origName;
-	file.revName = revName;
-
-	return file;
-}
-
-test('should rev files', async t => {
-	const stream = rev();
-	const data = pEvent(stream, 'data');
-
-	stream.write(createFile({
-		path: 'unicorn.css'
-	}));
-	stream.end();
-
-	const file = await data;
-	t.is(file.path, 'unicorn-d41d8cd98f.css');
-	t.is(file.revOrigPath, 'unicorn.css');
-});
-
-test('should add the revision hash before the first `.` in the filename', async t => {
-	const stream = rev();
-	const data = pEvent(stream, 'data');
-
-	stream.write(createFile({
-		path: 'unicorn.css.map'
-	}));
-	stream.end();
-
-	const file = await data;
-	t.is(file.path, 'unicorn-d41d8cd98f.css.map');
-	t.is(file.revOrigPath, 'unicorn.css.map');
-});
+const manifestFixture = './fixtures/test.manifest-fixture.json';
+const manifestFixturePath = path.join(__dirname, manifestFixture);
+const manifestFixtureRelative = path.join('test', manifestFixture);
 
 test('should build a rev manifest file', async t => {
 	const stream = rev.manifest();
@@ -82,7 +43,7 @@ test('should allow naming the manifest file', async t => {
 
 test('should append to an existing rev manifest file', async t => {
 	const stream = rev.manifest({
-		path: 'test.manifest-fixture.json',
+		path: manifestFixturePath,
 		merge: true
 	});
 	const data = pEvent(stream, 'data');
@@ -94,7 +55,7 @@ test('should append to an existing rev manifest file', async t => {
 	stream.end();
 
 	const file = await data;
-	t.is(file.relative, 'test.manifest-fixture.json');
+	t.is(file.relative, manifestFixtureRelative);
 	t.deepEqual(
 		JSON.parse(file.contents.toString()),
 		{
@@ -105,7 +66,7 @@ test('should append to an existing rev manifest file', async t => {
 });
 
 test('should not append to an existing rev manifest by default', async t => {
-	const stream = rev.manifest({path: 'test.manifest-fixture.json'});
+	const stream = rev.manifest({path: manifestFixturePath});
 	const data = pEvent(stream, 'data');
 
 	stream.write(createFile({
@@ -115,7 +76,7 @@ test('should not append to an existing rev manifest by default', async t => {
 	stream.end();
 
 	const file = await data;
-	t.is(file.relative, 'test.manifest-fixture.json');
+	t.is(file.relative, manifestFixtureRelative);
 	t.deepEqual(
 		JSON.parse(file.contents.toString()),
 		{'unicorn.css': 'unicorn-d41d8cd98f.css'}
@@ -124,7 +85,7 @@ test('should not append to an existing rev manifest by default', async t => {
 
 test('should sort the rev manifest keys', async t => {
 	const stream = rev.manifest({
-		path: 'test.manifest-fixture.json',
+		path: manifestFixturePath,
 		merge: true
 	});
 	const data = pEvent(stream, 'data');
@@ -211,93 +172,6 @@ test('should respect files coming from directories with different bases', async 
 	const file = await data;
 	t.is(file.relative, 'rev-manifest.json');
 	t.deepEqual(JSON.parse(file.contents.toString()), MANIFEST);
-});
-
-test('should store the hashes for later', async t => {
-	const stream = rev();
-	const data = pEvent(stream, 'data');
-
-	stream.write(createFile({
-		path: 'unicorn.css'
-	}));
-
-	const file = await data;
-	t.is(file.path, 'unicorn-d41d8cd98f.css');
-	t.is(file.revOrigPath, 'unicorn.css');
-	t.is(file.revHash, 'd41d8cd98f');
-});
-
-test.cb('should handle sourcemaps transparently', t => {
-	const stream = rev();
-
-	stream.on('data', file => {
-		if (path.extname(file.path) === '.map') {
-			t.is(file.path, 'maps/pastissada-d41d8cd98f.css.map');
-			t.end();
-		}
-	});
-
-	stream.write(createFile({
-		path: 'pastissada.css'
-	}));
-
-	stream.end(createFile({
-		path: 'maps/pastissada.css.map',
-		contents: JSON.stringify({file: 'pastissada.css'})
-	}));
-});
-
-test.cb('should handle unparseable sourcemaps correctly', t => {
-	const stream = rev();
-
-	stream.on('data', file => {
-		if (path.extname(file.path) === '.map') {
-			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
-			t.end();
-		}
-	});
-
-	stream.write(createFile({
-		path: 'pastissada.css'
-	}));
-
-	stream.end(createFile({
-		path: 'pastissada.css.map',
-		contents: 'Wait a minute, this is invalid JSON!'
-	}));
-});
-
-test.cb('should be okay when the optional sourcemap.file is not defined', t => {
-	const stream = rev();
-
-	stream.on('data', file => {
-		if (path.extname(file.path) === '.map') {
-			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
-			t.end();
-		}
-	});
-
-	stream.write(createFile({
-		path: 'pastissada.css'
-	}));
-
-	stream.end(createFile({
-		path: 'pastissada.css.map',
-		contents: JSON.stringify({})
-	}));
-});
-
-test('should handle a . in the folder name', async t => {
-	const stream = rev();
-	const data = pEvent(stream, 'data');
-
-	stream.write(createFile({
-		path: 'mysite.io/unicorn.css'
-	}));
-
-	const file = await data;
-	t.is(file.path, 'mysite.io/unicorn-d41d8cd98f.css');
-	t.is(file.revOrigPath, 'mysite.io/unicorn.css');
 });
 
 test('should use correct base path for each file', async t => {
