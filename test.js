@@ -1,8 +1,7 @@
-'use strict';
-const path = require('path');
-const test = require('ava');
-const gutil = require('gulp-util');
-const rev = require('./');
+import path from 'path';
+import test from 'ava';
+import gutil from 'gulp-util';
+import rev from './';
 
 function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, base, contents = ''}) {
 	const file = new gutil.File({
