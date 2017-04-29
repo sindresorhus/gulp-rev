@@ -69,6 +69,7 @@
   },
   "devDependencies": {
     "ava": "*",
+    "p-event": "*",
     "xo": "*"
   },
   "xo": {
