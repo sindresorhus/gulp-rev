@@ -8,10 +8,9 @@ test('should rev files', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'unicorn.css'
 	}));
-	stream.end();
 
 	const file = await data;
 	t.is(file.path, 'unicorn-d41d8cd98f.css');
@@ -22,10 +21,9 @@ test('should add the revision hash before the first `.` in the filename', async 
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'unicorn.css.map'
 	}));
-	stream.end();
 
 	const file = await data;
 	t.is(file.path, 'unicorn-d41d8cd98f.css.map');
@@ -36,7 +34,7 @@ test('should store the hashes for later', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'unicorn.css'
 	}));
 
@@ -110,7 +108,7 @@ test('should handle a . in the folder name', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'mysite.io/unicorn.css'
 	}));
 

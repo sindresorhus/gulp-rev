@@ -12,11 +12,10 @@ test('should build a rev manifest file', async t => {
 	const stream = rev.manifest();
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
 		revOrigPath: 'unicorn.css'
 	}));
-	stream.end();
 
 	const file = await data;
 	t.is(file.relative, 'rev-manifest.json');
@@ -31,11 +30,10 @@ test('should allow naming the manifest file', async t => {
 	const stream = rev.manifest({path});
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
 		revOrigPath: 'unicorn.css'
 	}));
-	stream.end();
 
 	const file = await data;
 	t.is(file.relative, path);
@@ -48,11 +46,10 @@ test('should append to an existing rev manifest file', async t => {
 	});
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
 		revOrigPath: 'unicorn.css'
 	}));
-	stream.end();
 
 	const file = await data;
 	t.is(file.relative, manifestFixtureRelative);
@@ -69,11 +66,10 @@ test('should not append to an existing rev manifest by default', async t => {
 	const stream = rev.manifest({path: manifestFixturePath});
 	const data = pEvent(stream, 'data');
 
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
 		revOrigPath: 'unicorn.css'
 	}));
-	stream.end();
 
 	const file = await data;
 	t.is(file.relative, manifestFixtureRelative);
@@ -94,11 +90,10 @@ test('should sort the rev manifest keys', async t => {
 		path: 'unicorn-d41d8cd98f.css',
 		revOrigPath: 'unicorn.css'
 	}));
-	stream.write(createFile({
+	stream.end(createFile({
 		path: 'pony-d41d8cd98f.css',
 		revOrigPath: 'pony.css'
 	}));
-	stream.end();
 
 	const file = await data;
 	t.deepEqual(
@@ -120,7 +115,7 @@ test('should respect directories', async t => {
 		origName: 'unicorn.css',
 		revName: 'unicorn-d41d8cd98f.css'
 	}));
-	stream.write(createFile({
+	stream.end(createFile({
 		cwd: __dirname,
 		base: __dirname,
 		path: path.join(__dirname, 'bar', 'pony-d41d8cd98f.css'),
@@ -129,7 +124,6 @@ test('should respect directories', async t => {
 		origName: 'pony.css',
 		revName: 'pony-d41d8cd98f.css'
 	}));
-	stream.end();
 
 	const MANIFEST = {};
 	MANIFEST[path.join('foo', 'unicorn.css')] = path.join('foo', 'unicorn-d41d8cd98f.css');
@@ -154,7 +148,7 @@ test('should respect files coming from directories with different bases', async 
 		origName: 'scriptfoo.js',
 		revName: 'scriptfoo-d41d8cd98f.js'
 	}));
-	stream.write(createFile({
+	stream.end(createFile({
 		cwd: __dirname,
 		base: path.join(__dirname, 'output'),
 		path: path.join(__dirname, 'output', 'bar', 'scriptbar-d41d8cd98f.js'),
@@ -163,7 +157,6 @@ test('should respect files coming from directories with different bases', async 
 		origName: 'scriptfoo.js',
 		revName: 'scriptfoo-d41d8cd98f.js'
 	}));
-	stream.end();
 
 	const MANIFEST = {};
 	MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
@@ -184,13 +177,12 @@ test('should use correct base path for each file', async t => {
 		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
 		revOrigPath: 'scriptfoo.js'
 	}));
-	stream.write(createFile({
+	stream.end(createFile({
 		cwd: 'assets/',
 		base: 'assets/',
 		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
 		revOrigPath: 'scriptbar.js'
 	}));
-	stream.end();
 
 	const MANIFEST = {};
 	MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
