@@ -1,4 +1,4 @@
-const gutil = require('gulp-util');
+import gutil from 'gulp-util';
 
 function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, base, contents = ''}) {
 	const file = new gutil.File({
@@ -15,4 +15,4 @@ function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, bas
 	return file;
 }
 
-module.exports = createFile;
+export default createFile;

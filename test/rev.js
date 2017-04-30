@@ -2,7 +2,7 @@ import path from 'path';
 import test from 'ava';
 import pEvent from 'p-event';
 import rev from '../';
-import createFile from './fixtures';
+import createFile from './helpers';
 
 test('should rev files', async t => {
 	const stream = rev();
