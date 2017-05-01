@@ -1,10 +1,10 @@
 import path from 'path';
 import test from 'ava';
 import pEvent from 'p-event';
-import rev from '../';
+import rev from '..';
 import createFile from './helpers';
 
-test('should rev files', async t => {
+test('revs files', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
@@ -17,7 +17,7 @@ test('should rev files', async t => {
 	t.is(file.revOrigPath, 'unicorn.css');
 });
 
-test('should add the revision hash before the first `.` in the filename', async t => {
+test('adds the revision hash before the first `.` in the filename', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
@@ -30,7 +30,7 @@ test('should add the revision hash before the first `.` in the filename', async 
 	t.is(file.revOrigPath, 'unicorn.css.map');
 });
 
-test('should store the hashes for later', async t => {
+test('stores the hashes for later', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
@@ -44,7 +44,7 @@ test('should store the hashes for later', async t => {
 	t.is(file.revHash, 'd41d8cd98f');
 });
 
-test.cb('should handle sourcemaps transparently', t => {
+test.cb('handles sourcemaps transparently', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
@@ -64,7 +64,7 @@ test.cb('should handle sourcemaps transparently', t => {
 	}));
 });
 
-test.cb('should handle unparseable sourcemaps correctly', t => {
+test.cb('handles unparseable sourcemaps correctly', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
@@ -84,7 +84,7 @@ test.cb('should handle unparseable sourcemaps correctly', t => {
 	}));
 });
 
-test.cb('should be okay when the optional sourcemap.file is not defined', t => {
+test.cb('okay when the optional sourcemap.file is not defined', t => {
 	const stream = rev();
 
 	stream.on('data', file => {
@@ -104,7 +104,7 @@ test.cb('should be okay when the optional sourcemap.file is not defined', t => {
 	}));
 });
 
-test('should handle a . in the folder name', async t => {
+test('handles a `.` in the folder name', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 

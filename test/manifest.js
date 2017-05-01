@@ -1,14 +1,14 @@
 import path from 'path';
 import test from 'ava';
 import pEvent from 'p-event';
-import rev from '../';
+import rev from '..';
 import createFile from './helpers';
 
 const manifestFixture = './helpers/test.manifest-fixture.json';
 const manifestFixturePath = path.join(__dirname, manifestFixture);
 const manifestFixtureRelative = path.join('test', manifestFixture);
 
-test('should build a rev manifest file', async t => {
+test('builds a rev manifest file', async t => {
 	const stream = rev.manifest();
 	const data = pEvent(stream, 'data');
 
@@ -25,7 +25,7 @@ test('should build a rev manifest file', async t => {
 	);
 });
 
-test('should allow naming the manifest file', async t => {
+test('allows naming the manifest file', async t => {
 	const path = 'manifest.json';
 	const stream = rev.manifest({path});
 	const data = pEvent(stream, 'data');
@@ -39,7 +39,7 @@ test('should allow naming the manifest file', async t => {
 	t.is(file.relative, path);
 });
 
-test('should append to an existing rev manifest file', async t => {
+test('appends to an existing rev manifest file', async t => {
 	const stream = rev.manifest({
 		path: manifestFixturePath,
 		merge: true
@@ -62,7 +62,7 @@ test('should append to an existing rev manifest file', async t => {
 	);
 });
 
-test('should not append to an existing rev manifest by default', async t => {
+test('does not append to an existing rev manifest by default', async t => {
 	const stream = rev.manifest({path: manifestFixturePath});
 	const data = pEvent(stream, 'data');
 
@@ -79,7 +79,7 @@ test('should not append to an existing rev manifest by default', async t => {
 	);
 });
 
-test('should sort the rev manifest keys', async t => {
+test('sorts the rev manifest keys', async t => {
 	const stream = rev.manifest({
 		path: manifestFixturePath,
 		merge: true
@@ -102,7 +102,7 @@ test('should sort the rev manifest keys', async t => {
 	);
 });
 
-test('should respect directories', async t => {
+test('respects directories', async t => {
 	const stream = rev.manifest();
 	const data = pEvent(stream, 'data');
 
@@ -134,7 +134,7 @@ test('should respect directories', async t => {
 	t.deepEqual(JSON.parse(file.contents.toString()), MANIFEST);
 });
 
-test('should respect files coming from directories with different bases', async t => {
+test('respects files coming from directories with different bases', async t => {
 	const stream = rev.manifest();
 	const data = pEvent(stream, 'data');
 
@@ -167,7 +167,7 @@ test('should respect files coming from directories with different bases', async 
 	t.deepEqual(JSON.parse(file.contents.toString()), MANIFEST);
 });
 
-test('should use correct base path for each file', async t => {
+test('uses correct base path for each file', async t => {
 	const stream = rev.manifest();
 	const data = pEvent(stream, 'data');
 
