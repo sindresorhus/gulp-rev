@@ -65,17 +65,11 @@
     "rev-path": "^1.0.0",
     "sort-keys": "^1.0.0",
     "through2": "^2.0.0",
-    "vinyl-file": "^2.0.0"
+    "vinyl-file": "^3.0.0"
   },
   "devDependencies": {
     "ava": "*",
-    "p-event": "*",
+    "p-event": "^1.0.0",
     "xo": "*"
-  },
-  "xo": {
-    "envs": [
-      "node"
-    ],
-    "esnext": true
   }
 }
