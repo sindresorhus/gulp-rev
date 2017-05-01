@@ -201,6 +201,14 @@ For more info on how to integrate `gulp-rev` into your app, have a look at the [
 - [gulp-rev-format](https://github.com/atamas101/gulp-rev-format) - Provide hash formatting options for static assets (prefix, suffix, last-extension)
 
 
+## Maintainers
+
+- [Sindre Sorhus](https://sindresorhus.com)
+- [Justin Hileman](http://justinhileman.info)
+- [Ben Bieler](https://github.com/benbieler)
+- [Gabin Aureche](https://gabinaureche.com)
+
+
 ## License
 
 MIT © [Sindre Sorhus](https://sindresorhus.com)
