@@ -164,8 +164,7 @@ gulp.task('default', () =>
 
 ## Different hash for unchanged files
 
-Since streams order is not guaranteed, some plugin (such as `gulp-concat`) can cause the final file's content to change.
-To avoid generating a new hash for unchanged source files, you can:
+Since the order of streams are not guaranteed, some plugins such as `gulp-concat` can cause the final file's content and hash to change. To avoid generating a new hash for unchanged source files, you can:
 
 - Sort the streams with [gulp-sort](https://github.com/pgilad/gulp-sort)
 - Filter unchanged files with [gulp-unchanged](https://github.com/sindresorhus/gulp-changed)
