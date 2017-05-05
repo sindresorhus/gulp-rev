@@ -162,6 +162,15 @@ gulp.task('default', () =>
 ```
 
 
+## Different hash for unchanged files
+
+Since the order of streams are not guaranteed, some plugins such as `gulp-concat` can cause the final file's content and hash to change. To avoid generating a new hash for unchanged source files, you can:
+
+- Sort the streams with [gulp-sort](https://github.com/pgilad/gulp-sort)
+- Filter unchanged files with [gulp-unchanged](https://github.com/sindresorhus/gulp-changed)
+- Read more about [incremental builds](https://github.com/gulpjs/gulp#incremental-builds)
+
+
 ## Streaming
 
 This plugin does not support streaming. If you have files from a streaming source, such as Browserify, you should use [`gulp-buffer`](https://github.com/jeromew/gulp-buffer) before `gulp-rev` in your pipeline:
