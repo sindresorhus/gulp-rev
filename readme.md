@@ -217,6 +217,22 @@ For more info on how to integrate `gulp-rev` into your app, have a look at the [
 - [Ben Bieler](https://github.com/benbieler)
 - [Gabin Aureche](https://gabinaureche.com)
 
+### Updating files with fingerprinted assets
+To update files with the newly rev'd assets, run them through [gulp-fingerprint](https://www.npmjs.org/package/gulp-fingerprint):
+
+```js
+var gulp = require('gulp');
+var fingerprint = require('gulp-fingerprint');
+
+// rev-manifest.json produced in a previous gulp-rev task
+var manifest = require('./build/assets/rev-manifest');
+
+gulp.task('fingerprint', function () {
+    return gulp.src('build/assets/css/*.css')
+        .pipe(fingerprint(manifest))
+        .pipe(gulp.dest('build/assets/css'));
+});
+```
 
 ## License
 
