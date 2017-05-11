@@ -9,6 +9,11 @@ const sortKeys = require('sort-keys');
 const modifyFilename = require('modify-filename');
 
 function relPath(base, filePath) {
+	if ( path.sep === '\\') {
+		base = base.replace(/\\/gi, '/');
+		filePath = filePath.replace(/\\/gi, '/');
+	}
+
 	if (filePath.indexOf(base) !== 0) {
 		return filePath.replace(/\\/g, '/');
 	}
