@@ -49,7 +49,7 @@ test.cb('handles sourcemaps transparently', t => {
 
 	stream.on('data', file => {
 		if (path.extname(file.path) === '.map') {
-			t.is(file.path, 'maps/pastissada-d41d8cd98f.css.map');
+			t.is(file.path, path.normalize('maps/pastissada-d41d8cd98f.css.map'));
 			t.end();
 		}
 	});
@@ -113,6 +113,6 @@ test('handles a `.` in the folder name', async t => {
 	}));
 
 	const file = await data;
-	t.is(file.path, 'mysite.io/unicorn-d41d8cd98f.css');
+	t.is(file.path, path.normalize('mysite.io/unicorn-d41d8cd98f.css'));
 	t.is(file.revOrigPath, 'mysite.io/unicorn.css');
 });

@@ -126,8 +126,8 @@ test('respects directories', async t => {
 	}));
 
 	const MANIFEST = {};
-	MANIFEST[path.join('foo', 'unicorn.css')] = path.join('foo', 'unicorn-d41d8cd98f.css');
-	MANIFEST[path.join('bar', 'pony.css')] = path.join('bar', 'pony-d41d8cd98f.css');
+	MANIFEST[path.join('foo', 'unicorn.css').replace(/\\/g, '/')] = path.join('foo', 'unicorn-d41d8cd98f.css').replace(/\\/g, '/');
+	MANIFEST[path.join('bar', 'pony.css').replace(/\\/g, '/')] = path.join('bar', 'pony-d41d8cd98f.css').replace(/\\/g, '/');
 
 	const file = await data;
 	t.is(file.relative, 'rev-manifest.json');
@@ -159,8 +159,8 @@ test('respects files coming from directories with different bases', async t => {
 	}));
 
 	const MANIFEST = {};
-	MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
-	MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
+	MANIFEST[path.join('foo', 'scriptfoo.js').replace(/\\/g, '/')] = path.join('foo', 'scriptfoo-d41d8cd98f.js').replace(/\\/g, '/');
+	MANIFEST[path.join('bar', 'scriptbar.js').replace(/\\/g, '/')] = path.join('bar', 'scriptbar-d41d8cd98f.js').replace(/\\/g, '/');
 
 	const file = await data;
 	t.is(file.relative, 'rev-manifest.json');
@@ -174,19 +174,19 @@ test('uses correct base path for each file', async t => {
 	stream.write(createFile({
 		cwd: 'app/',
 		base: 'app/',
-		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
+		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js').replace(/\\/g, '/'),
 		revOrigPath: 'scriptfoo.js'
 	}));
 	stream.end(createFile({
 		cwd: 'assets/',
 		base: 'assets/',
-		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
+		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js').replace(/\\/g, '/'),
 		revOrigPath: 'scriptbar.js'
 	}));
 
 	const MANIFEST = {};
-	MANIFEST[path.join('foo', 'scriptfoo.js')] = path.join('foo', 'scriptfoo-d41d8cd98f.js');
-	MANIFEST[path.join('bar', 'scriptbar.js')] = path.join('bar', 'scriptbar-d41d8cd98f.js');
+	MANIFEST[path.join('foo', 'scriptfoo.js').replace(/\\/g, '/')] = path.join('foo', 'scriptfoo-d41d8cd98f.js').replace(/\\/g, '/');
+	MANIFEST[path.join('bar', 'scriptbar.js').replace(/\\/g, '/')] = path.join('bar', 'scriptbar-d41d8cd98f.js').replace(/\\/g, '/');
 
 	const file = await data;
 	t.deepEqual(JSON.parse(file.contents.toString()), MANIFEST);
