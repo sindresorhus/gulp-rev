@@ -174,13 +174,13 @@ test('uses correct base path for each file', async t => {
 	stream.write(createFile({
 		cwd: 'app/',
 		base: 'app/',
-		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js').replace(/\\/g, '/'),
+		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
 		revOrigPath: 'scriptfoo.js'
 	}));
 	stream.end(createFile({
 		cwd: 'assets/',
 		base: 'assets/',
-		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js').replace(/\\/g, '/'),
+		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
 		revOrigPath: 'scriptbar.js'
 	}));
 

@@ -9,11 +9,14 @@ const sortKeys = require('sort-keys');
 const modifyFilename = require('modify-filename');
 
 function relPath(base, filePath) {
+	filePath = filePath.replace(/\\/g, '/');
+	base = base.replace(/\\/g, '/');
+
 	if (filePath.indexOf(base) !== 0) {
-		return filePath.replace(/\\/g, '/');
+		return filePath;
 	}
 
-	const newPath = filePath.slice(base.length).replace(/\\/g, '/');
+	const newPath = filePath.slice(base.length);
 
 	if (newPath[0] === '/') {
 		return newPath.slice(1);
