@@ -126,8 +126,8 @@ test('respects directories', async t => {
 	}));
 
 	const MANIFEST = {};
-	MANIFEST[path.join('foo', 'unicorn.css').replace(/\\/g, '/')] = path.join('foo', 'unicorn-d41d8cd98f.css').replace(/\\/g, '/');
-	MANIFEST[path.join('bar', 'pony.css').replace(/\\/g, '/')] = path.join('bar', 'pony-d41d8cd98f.css').replace(/\\/g, '/');
+	MANIFEST['foo/unicorn.css'] = 'foo/unicorn-d41d8cd98f.css';
+	MANIFEST['bar/pony.css'] = 'bar/pony-d41d8cd98f.css';
 
 	const file = await data;
 	t.is(file.relative, 'rev-manifest.json');
@@ -159,8 +159,8 @@ test('respects files coming from directories with different bases', async t => {
 	}));
 
 	const MANIFEST = {};
-	MANIFEST[path.join('foo', 'scriptfoo.js').replace(/\\/g, '/')] = path.join('foo', 'scriptfoo-d41d8cd98f.js').replace(/\\/g, '/');
-	MANIFEST[path.join('bar', 'scriptbar.js').replace(/\\/g, '/')] = path.join('bar', 'scriptbar-d41d8cd98f.js').replace(/\\/g, '/');
+	MANIFEST['foo/scriptfoo.js'] = 'foo/scriptfoo-d41d8cd98f.js';
+	MANIFEST['bar/scriptbar.js'] = 'bar/scriptbar-d41d8cd98f.js';
 
 	const file = await data;
 	t.is(file.relative, 'rev-manifest.json');
@@ -185,8 +185,8 @@ test('uses correct base path for each file', async t => {
 	}));
 
 	const MANIFEST = {};
-	MANIFEST[path.join('foo', 'scriptfoo.js').replace(/\\/g, '/')] = path.join('foo', 'scriptfoo-d41d8cd98f.js').replace(/\\/g, '/');
-	MANIFEST[path.join('bar', 'scriptbar.js').replace(/\\/g, '/')] = path.join('bar', 'scriptbar-d41d8cd98f.js').replace(/\\/g, '/');
+	MANIFEST['foo/scriptfoo.js'] = 'foo/scriptfoo-d41d8cd98f.js';
+	MANIFEST['bar/scriptbar.js'] = 'bar/scriptbar-d41d8cd98f.js';
 
 	const file = await data;
 	t.deepEqual(JSON.parse(file.contents.toString()), MANIFEST);
