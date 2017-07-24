@@ -178,9 +178,9 @@ test('uses correct base path for each file', async t => {
 		revOrigPath: 'scriptfoo.js'
 	}));
 	stream.end(createFile({
-		cwd: 'assets/',
+		cwd: '/',
 		base: 'assets/',
-		path: path.join('assets', 'bar', 'scriptbar-d41d8cd98f.js'),
+		path: path.join('/assets', 'bar', 'scriptbar-d41d8cd98f.js'),
 		revOrigPath: 'scriptbar.js'
 	}));
 
