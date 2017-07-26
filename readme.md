@@ -198,7 +198,9 @@ gulp.task('default', () =>
 For more info on how to integrate `gulp-rev` into your app, have a look at the [integration guide](integration.md).
 
 
-## Works with gulp-rev
+## Use gulp-rev in combination with one or more of
+
+It may be useful - and necessary - to use `gulp-rev` with other packages to complete the task.
 
 - [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace) - Rewrite occurences of filenames which have been renamed
 - [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url) - Override URLs in CSS files with the revved ones
