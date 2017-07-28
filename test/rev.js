@@ -17,6 +17,19 @@ test('revs files', async t => {
 	t.is(file.revOrigPath, 'unicorn.css');
 });
 
+test('revs files 2', async t => {
+	const stream = rev();
+	const data = pEvent(stream, 'data');
+
+	stream.end(createFile({
+		path: 'jquery-1.9.2.min.js'
+	}));
+
+	const file = await data;
+	t.is(file.path, 'jquery-1.9.2.min-d41d8cd98f.js');
+	t.is(file.revOrigPath, 'jquery-1.9.2.min.js');
+});
+
 test('adds the revision hash before the first `.` in the filename', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
