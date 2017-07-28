@@ -25,15 +25,27 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-function transformFilename(file) {
+function transformFilename(file, lastExt) {
 	// Save the old path for later
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
 	file.revHash = revHash(file.contents);
 
+	if(lastExt){
+		//rename file use lastIndexOf('.') as extention
+		if(file.path.indexOf('.', file.base.length) > 0){
+			let extIndex = file.path.lastIndexOf('.');
+			let filename = file.path.slice(0, extIndex);
+			let extension =  file.path.slice(extIndex);
+			file.path = filename + '-' + file.revHash + extension;
+		} else {
+			file.path = file.path + '-' + file.revHash
+		}
+		return;
+	}
+		
 	file.path = modifyFilename(file.path, (filename, extension) => {
-		const extIndex = filename.indexOf('.');
-
+		let extIndex = filename.indexOf('.');
 		filename = extIndex === -1 ?
 			revPath(filename, file.revHash) :
 			revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
@@ -50,9 +62,12 @@ const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(err => {
 	throw err;
 });
 
-const plugin = () => {
+const plugin = (opts) => {
 	const sourcemaps = [];
 	const pathMap = {};
+	
+	 //rename file use lastIndexOf('.') as extention
+	let lastExt = opts && opts.lastExt || true;
 
 	return through.obj((file, enc, cb) => {
 		if (file.isNull()) {
@@ -73,7 +88,7 @@ const plugin = () => {
 		}
 
 		const oldPath = file.path;
-		transformFilename(file);
+		transformFilename(file, lastExt);
 		pathMap[oldPath] = file.revHash;
 
 		cb(null, file);
