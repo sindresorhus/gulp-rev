@@ -33,7 +33,8 @@ function transformFilename(file, lastExt) {
 
 	if (lastExt) {
 		// Rename file use lastIndexOf('.') as extention
-		if (file.path.indexOf('.', file.base.length) > 0) {
+		const baseIndex = file.path.startsWith(file.base) ? file.base.length : 0;
+		if (file.path.indexOf('.', baseIndex) > 0) {
 			const extIndex = file.path.lastIndexOf('.');
 			const filename = file.path.slice(0, extIndex);
 			const extension = file.path.slice(extIndex);
@@ -43,7 +44,7 @@ function transformFilename(file, lastExt) {
 		}
 		return;
 	}
-	
+
 	file.path = modifyFilename(file.path, (filename, extension) => {
 		const extIndex = filename.indexOf('.');
 		filename = extIndex === -1 ?
@@ -62,7 +63,7 @@ const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(err => {
 	throw err;
 });
 
-const plugin = (opts) => {
+const plugin = opts => {
 	const sourcemaps = [];
 	const pathMap = {};
 
