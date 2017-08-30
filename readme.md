@@ -80,6 +80,17 @@ An object with `parse` and `stringify` methods. This can be used to provide a
 custom transformer instead of the default `JSON` for the manifest file.
 
 
+### originalPrefix
+Type: `string`<br>
+Default: `null`
+originalPrefix . This could come in handy for things like rewriting references to the manifest file.
+
+### revisionedUrl
+Type: `string`<br>
+Default: `null`
+revisionedUrl . This could come in handy for things like rewriting references to the manifest file.
+
+
 ### Original path
 
 Original file paths are stored at `file.revOrigPath`. This could come in handy for things like rewriting references to the assets.
