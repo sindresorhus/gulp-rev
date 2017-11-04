@@ -198,6 +198,15 @@ gulp.task('default', () =>
 For more info on how to integrate `gulp-rev` into your app, have a look at the [integration guide](integration.md).
 
 
+---
+
+<a target="_blank" rel="nofollow" href="https://app.codesponsor.io/link/tmkVF4Qm7RNE8e9RVwnim6gU/sindresorhus/gulp-rev">
+	<img alt="Sponsor" width="888" height="68" src="https://app.codesponsor.io/embed/tmkVF4Qm7RNE8e9RVwnim6gU/sindresorhus/gulp-rev.svg">
+</a>
+
+---
+
+
 ## Use gulp-rev in combination with one or more of
 
 It may be useful - and necessary - to use `gulp-rev` with other packages to complete the task.
