@@ -37,7 +37,16 @@ gulp.task('default', () =>
 
 ## API
 
-### rev()
+### rev([options])
+
+#### options
+
+##### forceRev
+
+Type: `string`<br>
+Default: `false`
+
+Override the `revHash` of the file. This can be used when you want the rev to run, but have predicitable results, and a manifest file.
 
 ### rev.manifest([path], [options])
 

@@ -25,11 +25,11 @@ function relPath(base, filePath) {
 	return newPath;
 }
 
-function transformFilename(file) {
+function transformFilename(file, opts) {
 	// Save the old path for later
 	file.revOrigPath = file.path;
 	file.revOrigBase = file.base;
-	file.revHash = revHash(file.contents);
+	file.revHash = opts.forceRev || revHash(file.contents);
 
 	file.path = modifyFilename(file.path, (filename, extension) => {
 		const extIndex = filename.indexOf('.');
@@ -50,9 +50,13 @@ const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(err => {
 	throw err;
 });
 
-const plugin = () => {
+const plugin = opts => {
 	const sourcemaps = [];
 	const pathMap = {};
+
+	opts = Object.assign({
+		forceRev: false
+	}, opts);
 
 	return through.obj((file, enc, cb) => {
 		if (file.isNull()) {
@@ -73,7 +77,7 @@ const plugin = () => {
 		}
 
 		const oldPath = file.path;
-		transformFilename(file);
+		transformFilename(file, opts);
 		pathMap[oldPath] = file.revHash;
 
 		cb(null, file);
@@ -98,7 +102,7 @@ const plugin = () => {
 				const hash = pathMap[reverseFilename];
 				file.path = revPath(file.path.replace(/\.map$/, ''), hash) + '.map';
 			} else {
-				transformFilename(file);
+				transformFilename(file, opts);
 			}
 
 			this.push(file);

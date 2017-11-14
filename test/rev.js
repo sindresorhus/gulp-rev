@@ -30,6 +30,19 @@ test('adds the revision hash before the first `.` in the filename', async t => {
 	t.is(file.revOrigPath, 'unicorn.css.map');
 });
 
+test('ability to override the `revHash` for debugging', async t => {
+	const stream = rev({forceRev: 'forcedRev'});
+	const data = pEvent(stream, 'data');
+
+	stream.end(createFile({
+		path: 'unicorn.css.map'
+	}));
+
+	const file = await data;
+	t.is(file.path, 'unicorn-forcedRev.css.map');
+	t.is(file.revOrigPath, 'unicorn.css.map');
+});
+
 test('stores the hashes for later', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
