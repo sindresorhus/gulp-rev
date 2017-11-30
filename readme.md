@@ -9,7 +9,7 @@ Make sure to set the files to [never expire](http://developer.yahoo.com/performa
 
 ---
 
-<p align="center"><b>🔥 Want to strengthen your core JavaScript skills and master ES6?</b><br>I would personally recommend this awesome <a href="https://ES6.io/friend/AWESOME">ES6 course</a> by Wes Bos.</p>
+<p align="center"><b>🔥 Want to strengthen your core JavaScript skills and master ES6?</b><br>I would personally recommend this awesome <a href="https://ES6.io/friend/AWESOME">ES6 course</a> by Wes Bos.<br>Also check out his <a href="https://LearnNode.com/friend/AWESOME">Node.js</a>, <a href="https://ReactForBeginners.com/friend/AWESOME">React</a>, <a href="https://SublimeTextBook.com/friend/AWESOME">Sublime</a> courses.</p>
 
 ---
 
@@ -196,15 +196,6 @@ gulp.task('default', () =>
 ## Integration
 
 For more info on how to integrate `gulp-rev` into your app, have a look at the [integration guide](integration.md).
-
-
----
-
-<a target="_blank" rel="nofollow" href="https://app.codesponsor.io/link/tmkVF4Qm7RNE8e9RVwnim6gU/sindresorhus/gulp-rev">
-	<img alt="Sponsor" width="888" height="68" src="https://app.codesponsor.io/embed/tmkVF4Qm7RNE8e9RVwnim6gU/sindresorhus/gulp-rev.svg">
-</a>
-
----
 
 
 ## Use gulp-rev in combination with one or more of
