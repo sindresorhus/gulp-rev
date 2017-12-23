@@ -1,12 +1,13 @@
 'use strict';
 const path = require('path');
-const gutil = require('gulp-util');
 const through = require('through2');
 const vinylFile = require('vinyl-file');
 const revHash = require('rev-hash');
 const revPath = require('rev-path');
 const sortKeys = require('sort-keys');
 const modifyFilename = require('modify-filename');
+const Vinyl = require('vinyl');
+const PluginError = require('plugin-error');
 
 function relPath(base, filePath) {
 	filePath = filePath.replace(/\\/g, '/');
@@ -44,7 +45,7 @@ function transformFilename(file) {
 
 const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(err => {
 	if (err.code === 'ENOENT') {
-		return new gutil.File(opts);
+		return new Vinyl(opts);
 	}
 
 	throw err;
@@ -61,7 +62,7 @@ const plugin = () => {
 		}
 
 		if (file.isStream()) {
-			cb(new gutil.PluginError('gulp-rev', 'Streaming not supported'));
+			cb(new PluginError('gulp-rev', 'Streaming not supported'));
 			return;
 		}
 
