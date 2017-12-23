@@ -1,7 +1,7 @@
-import gutil from 'gulp-util';
+import Vinyl from 'vinyl';
 
 function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, base, contents = ''}) {
-	const file = new gutil.File({
+	const file = new Vinyl({
 		path,
 		cwd,
 		base,
