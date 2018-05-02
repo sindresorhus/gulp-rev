@@ -1,6 +1,6 @@
 {
   "name": "gulp-rev",
-  "version": "8.1.0",
+  "version": "8.1.1",
   "description": "Static asset revisioning by appending content hash to filenames: unicorn.css => unicorn-d41d8cd98f.css",
   "license": "MIT",
   "repository": "sindresorhus/gulp-rev",
@@ -34,12 +34,13 @@
     "assets"
   ],
   "dependencies": {
-    "gulp-util": "^3.0.0",
     "modify-filename": "^1.1.0",
+    "plugin-error": "^0.1.2",
     "rev-hash": "^2.0.0",
     "rev-path": "^2.0.0",
     "sort-keys": "^2.0.0",
     "through2": "^2.0.0",
+    "vinyl": "^2.1.0",
     "vinyl-file": "^3.0.0"
   },
   "devDependencies": {
