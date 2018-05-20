@@ -13,7 +13,7 @@ function relPath(base, filePath) {
 	filePath = filePath.replace(/\\/g, '/');
 	base = base.replace(/\\/g, '/');
 
-	if (filePath.indexOf(base) !== 0) {
+	if (!filePath.startsWith(base)) {
 		return filePath;
 	}
 
@@ -85,7 +85,7 @@ const plugin = () => {
 			// Attempt to parse the sourcemap's JSON to get the reverse filename
 			try {
 				reverseFilename = JSON.parse(file.contents.toString()).file;
-			} catch (err) {}
+			} catch (_) {}
 
 			if (!reverseFilename) {
 				reverseFilename = path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
@@ -148,7 +148,7 @@ plugin.manifest = (pth, opts) => {
 
 				try {
 					oldManifest = opts.transformer.parse(manifestFile.contents.toString());
-				} catch (err) {}
+				} catch (_) {}
 
 				manifest = Object.assign(oldManifest, manifest);
 			}
