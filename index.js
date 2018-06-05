@@ -33,7 +33,7 @@ function transformFilename(file) {
 	file.revHash = revHash(file.contents);
 
 	file.path = modifyFilename(file.path, (filename, extension) => {
-		const extIndex = filename.indexOf('.');
+		const extIndex = filename.lastIndexOf('.');
 
 		filename = extIndex === -1 ?
 			revPath(filename, file.revHash) :
