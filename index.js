@@ -43,12 +43,12 @@ function transformFilename(file) {
 	});
 }
 
-const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(err => {
-	if (err.code === 'ENOENT') {
+const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(error => {
+	if (error.code === 'ENOENT') {
 		return new Vinyl(opts);
 	}
 
-	throw err;
+	throw error;
 });
 
 const plugin = () => {

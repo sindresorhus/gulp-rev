@@ -1,6 +1,15 @@
 import Vinyl from 'vinyl';
 
-function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, base, contents = ''}) {
+export default function createFile({
+	path,
+	revOrigPath,
+	revOrigBase,
+	origName,
+	revName,
+	cwd,
+	base,
+	contents = ''
+}) {
 	const file = new Vinyl({
 		path,
 		cwd,
@@ -14,5 +23,3 @@ function createFile({path, revOrigPath, revOrigBase, origName, revName, cwd, bas
 
 	return file;
 }
-
-export default createFile;

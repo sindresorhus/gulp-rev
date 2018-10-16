@@ -97,7 +97,7 @@ const gulp = require('gulp');
 const rev = require('gulp-rev');
 
 gulp.task('default', () =>
-	// by default, gulp would pick `assets/css` as the base,
+	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
 		.pipe(gulp.dest('build/assets'))  // copy original assets to build dir
@@ -124,7 +124,7 @@ const gulp = require('gulp');
 const rev = require('gulp-rev');
 
 gulp.task('default', () =>
-	// by default, gulp would pick `assets/css` as the base,
+	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
 		.pipe(gulp.dest('build/assets'))
@@ -132,7 +132,7 @@ gulp.task('default', () =>
 		.pipe(gulp.dest('build/assets'))
 		.pipe(rev.manifest({
 			base: 'build/assets',
-			merge: true // merge with the existing manifest if one exists
+			merge: true // Merge with the existing manifest if one exists
 		}))
 		.pipe(gulp.dest('build/assets'))
 );
@@ -158,7 +158,7 @@ gulp.task('default', () =>
 		.pipe(rev())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'))
-)
+);
 ```
 
 
