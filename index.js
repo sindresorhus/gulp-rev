@@ -33,13 +33,10 @@ function transformFilename(file) {
 	file.revHash = revHash(file.contents);
 
 	file.path = modifyFilename(file.path, (filename, extension) => {
-		const extIndex = filename.lastIndexOf('.');
-
-		filename = extIndex === -1 ?
-			revPath(filename, file.revHash) :
-			revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
-
-		return filename + extension;
+		if (path.extname(file.path) === '.map' || filename.endsWith('.min')) {
+			return revPath(filename, file.revHash) + extension;
+		}
+		return revPath(filename + extension, file.revHash);
 	});
 }
 
