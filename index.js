@@ -37,7 +37,7 @@ function transformFilename(file) {
 
 		filename = extIndex === -1 ?
 			revPath(filename, file.revHash) :
-			revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
+			revPath(filename.slice(0, extIndex) + filename.slice(extIndex), file.revHash);
 
 		return filename + extension;
 	});
