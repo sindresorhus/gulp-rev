@@ -114,5 +114,5 @@ test('handles a `.` in the folder name', async t => {
 
 	const file = await data;
 	t.is(file.path, path.normalize('mysite.io/unicorn-d41d8cd98f.css'));
-	t.is(file.revOrigPath, 'mysite.io/unicorn.css');
+	t.is(file.revOrigPath, path.normalize('mysite.io/unicorn.css'));
 });
