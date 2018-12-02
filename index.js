@@ -33,6 +33,10 @@ function transformFilename(file) {
 	file.revHash = revHash(file.contents);
 
 	file.path = modifyFilename(file.path, (filename, extension) => {
+		if (!file.hasMd5) {
+			return filename + extension;
+		}
+
 		const extIndex = filename.lastIndexOf('.');
 
 		filename = extIndex === -1 ?
@@ -51,11 +55,12 @@ const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(error => {
 	throw error;
 });
 
-const plugin = () => {
+const plugin = (hasMd5 = true) => {
 	const sourcemaps = [];
 	const pathMap = {};
 
 	return through.obj((file, enc, cb) => {
+		file.hasMd5 = hasMd5;
 		if (file.isNull()) {
 			cb(null, file);
 			return;
