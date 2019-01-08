@@ -202,7 +202,7 @@ For more info on how to integrate `gulp-rev` into your app, have a look at the [
 
 It may be useful - and necessary - to use `gulp-rev` with other packages to complete the task.
 
-- [gulp-rev-rewrite](https://github.com/TheDancingCode/gulp-rev-rewrite) - Rewrite occurences of filenames which have been renamed
+- [gulp-rev-rewrite](https://github.com/TheDancingCode/gulp-rev-rewrite) - Rewrite occurrences of filenames which have been renamed
 - [gulp-rev-css-url](https://github.com/galkinrost/gulp-rev-css-url) - Override URLs in CSS files with the revved ones
 - [gulp-rev-outdated](https://github.com/shonny-ua/gulp-rev-outdated) - Old static asset revision files filter
 - [gulp-rev-collector](https://github.com/shonny-ua/gulp-rev-collector) - Static asset revision data collector
