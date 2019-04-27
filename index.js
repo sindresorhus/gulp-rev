@@ -115,6 +115,7 @@ plugin.manifest = (pth, opts) => {
 	}
 
 	opts = Object.assign({
+                build_prefix: '',
 		path: 'rev-manifest.json',
 		merge: false,
 		transformer: JSON
@@ -132,7 +133,7 @@ plugin.manifest = (pth, opts) => {
 		const revisionedFile = relPath(path.resolve(file.cwd, file.base), path.resolve(file.cwd, file.path));
 		const originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
 
-		manifest[originalFile] = revisionedFile;
+		manifest[originalFile] = path.join(opts.build_prefix, revisionedFile);
 
 		cb();
 	}, function (cb) {
