@@ -1,10 +1,10 @@
 import path from 'path';
 import test from 'ava';
 import pEvent from 'p-event';
+import createFile from './_helper';
 import rev from '..';
-import createFile from './helpers';
 
-const manifestFixture = './helpers/test.manifest-fixture.json';
+const manifestFixture = './test.manifest-fixture.json';
 const manifestFixturePath = path.join(__dirname, manifestFixture);
 const manifestFixtureRelative = path.join('test', manifestFixture);
 

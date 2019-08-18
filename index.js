@@ -9,7 +9,7 @@ const modifyFilename = require('modify-filename');
 const Vinyl = require('vinyl');
 const PluginError = require('plugin-error');
 
-function relPath(base, filePath) {
+function relativePath(base, filePath) {
 	filePath = filePath.replace(/\\/g, '/');
 	base = base.replace(/\\/g, '/');
 
@@ -43,33 +43,37 @@ function transformFilename(file) {
 	});
 }
 
-const getManifestFile = opts => vinylFile.read(opts.path, opts).catch(error => {
-	if (error.code === 'ENOENT') {
-		return new Vinyl(opts);
-	}
+const getManifestFile = async options => {
+	try {
+		return await vinylFile.read(options.path, options);
+	} catch (error) {
+		if (error.code === 'ENOENT') {
+			return new Vinyl(options);
+		}
 
-	throw error;
-});
+		throw error;
+	}
+};
 
 const plugin = () => {
 	const sourcemaps = [];
 	const pathMap = {};
 
-	return through.obj((file, enc, cb) => {
+	return through.obj((file, encoding, callback) => {
 		if (file.isNull()) {
-			cb(null, file);
+			callback(null, file);
 			return;
 		}
 
 		if (file.isStream()) {
-			cb(new PluginError('gulp-rev', 'Streaming not supported'));
+			callback(new PluginError('gulp-rev', 'Streaming not supported'));
 			return;
 		}
 
 		// This is a sourcemap, hold until the end
 		if (path.extname(file.path) === '.map') {
 			sourcemaps.push(file);
-			cb();
+			callback();
 			return;
 		}
 
@@ -77,9 +81,9 @@ const plugin = () => {
 		transformFilename(file);
 		pathMap[oldPath] = file.revHash;
 
-		cb(null, file);
-	}, function (cb) {
-		sourcemaps.forEach(file => {
+		callback(null, file);
+	}, function (callback) {
+		for (const file of sourcemaps) {
 			let reverseFilename;
 
 			// Attempt to parse the sourcemap's JSON to get the reverse filename
@@ -103,60 +107,68 @@ const plugin = () => {
 			}
 
 			this.push(file);
-		});
+		}
 
-		cb();
+		callback();
 	});
 };
 
-plugin.manifest = (pth, opts) => {
-	if (typeof pth === 'string') {
-		pth = {path: pth};
+plugin.manifest = (path_, options) => {
+	if (typeof path_ === 'string') {
+		path_ = {path: path_};
 	}
 
-	opts = Object.assign({
+	options = {
 		path: 'rev-manifest.json',
 		merge: false,
-		transformer: JSON
-	}, opts, pth);
+		transformer: JSON,
+		...options,
+		...path_
+	};
 
 	let manifest = {};
 
-	return through.obj((file, enc, cb) => {
+	return through.obj((file, encoding, callback) => {
 		// Ignore all non-rev'd files
 		if (!file.path || !file.revOrigPath) {
-			cb();
+			callback();
 			return;
 		}
 
-		const revisionedFile = relPath(path.resolve(file.cwd, file.base), path.resolve(file.cwd, file.path));
+		const revisionedFile = relativePath(path.resolve(file.cwd, file.base), path.resolve(file.cwd, file.path));
 		const originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
 
 		manifest[originalFile] = revisionedFile;
 
-		cb();
-	}, function (cb) {
+		callback();
+	}, function (callback) {
 		// No need to write a manifest file if there's nothing to manifest
 		if (Object.keys(manifest).length === 0) {
-			cb();
+			callback();
 			return;
 		}
 
-		getManifestFile(opts).then(manifestFile => {
-			if (opts.merge && !manifestFile.isNull()) {
-				let oldManifest = {};
+		(async () => {
+			try {
+				const manifestFile = await getManifestFile(options);
 
-				try {
-					oldManifest = opts.transformer.parse(manifestFile.contents.toString());
-				} catch (_) {}
+				if (options.merge && !manifestFile.isNull()) {
+					let oldManifest = {};
 
-				manifest = Object.assign(oldManifest, manifest);
+					try {
+						oldManifest = options.transformer.parse(manifestFile.contents.toString());
+					} catch (_) {}
+
+					manifest = Object.assign(oldManifest, manifest);
+				}
+
+				manifestFile.contents = Buffer.from(options.transformer.stringify(sortKeys(manifest), undefined, '  '));
+				this.push(manifestFile);
+				callback();
+			} catch (error) {
+				callback(error);
 			}
-
-			manifestFile.contents = Buffer.from(opts.transformer.stringify(sortKeys(manifest), null, '  '));
-			this.push(manifestFile);
-			cb();
-		}).catch(cb);
+		})();
 	});
 };
 

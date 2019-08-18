@@ -7,12 +7,6 @@
 
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
 
----
-
-<p align="center"><b>🔥 Want to strengthen your core JavaScript skills and master ES6?</b><br>I would personally recommend this awesome <a href="https://ES6.io/friend/AWESOME">ES6 course</a> by Wes Bos.<br>Also check out his <a href="https://LearnNode.com/friend/AWESOME">Node.js</a>, <a href="https://ReactForBeginners.com/friend/AWESOME">React</a>, <a href="https://SublimeTextBook.com/friend/AWESOME">Sublime</a> courses.</p>
-
----
-
 
 ## Install
 
@@ -27,7 +21,7 @@ $ npm install --save-dev gulp-rev
 const gulp = require('gulp');
 const rev = require('gulp-rev');
 
-gulp.task('default', () =>
+exports.default = () => (
 	gulp.src('src/*.css')
 		.pipe(rev())
 		.pipe(gulp.dest('dist'))
@@ -39,7 +33,7 @@ gulp.task('default', () =>
 
 ### rev()
 
-### rev.manifest([path], [options])
+### rev.manifest(path?, options?)
 
 #### path
 
@@ -49,6 +43,8 @@ Default: `rev-manifest.json`
 Manifest file path.
 
 #### options
+
+Type: `object`
 
 ##### base
 
@@ -96,15 +92,15 @@ The hash of each rev'd file is stored at `file.revHash`. You can use this for cu
 const gulp = require('gulp');
 const rev = require('gulp-rev');
 
-gulp.task('default', () =>
+exports.default = () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
-		.pipe(gulp.dest('build/assets'))  // copy original assets to build dir
+		.pipe(gulp.dest('build/assets'))  // Copy original assets to build dir
 		.pipe(rev())
-		.pipe(gulp.dest('build/assets'))  // write rev'd assets to build dir
+		.pipe(gulp.dest('build/assets'))  // Write rev'd assets to build dir
 		.pipe(rev.manifest())
-		.pipe(gulp.dest('build/assets'))  // write manifest to build dir
+		.pipe(gulp.dest('build/assets'))  // Write manifest to build dir
 );
 ```
 
@@ -123,7 +119,7 @@ By default, `rev-manifest.json` will be replaced as a whole. To merge with an ex
 const gulp = require('gulp');
 const rev = require('gulp-rev');
 
-gulp.task('default', () =>
+exports.default = () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
@@ -151,7 +147,7 @@ const rev = require('gulp-rev');
 const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
 
-gulp.task('default', () =>
+exports.default = () => (
 	gulp.src('src/*.js')
 		.pipe(sourcemaps.init())
 		.pipe(concat({path: 'bundle.js', cwd: ''}))
@@ -182,7 +178,7 @@ const source = require('vinyl-source-stream');
 const buffer = require('gulp-buffer');
 const rev = require('gulp-rev');
 
-gulp.task('default', () =>
+exports.default = () => (
 	browserify('src/index.js')
 		.bundle({debug: true})
 		.pipe(source('index.min.js'))
@@ -210,16 +206,3 @@ It may be useful - and necessary - to use `gulp-rev` with other packages to comp
 - [gulp-rev-delete-original](https://github.com/nib-health-funds/gulp-rev-delete-original) - Delete original files after rev
 - [gulp-rev-loader](https://github.com/adjavaherian/gulp-rev-loader) - Use rev-manifest with webpack
 - [gulp-rev-format](https://github.com/atamas101/gulp-rev-format) - Provide hash formatting options for static assets (prefix, suffix, last-extension)
-
-
-## Maintainers
-
-- [Sindre Sorhus](https://sindresorhus.com)
-- [Justin Hileman](http://justinhileman.info)
-- [Ben Bieler](https://github.com/benbieler)
-- [Gabin Aureche](https://gabinaureche.com)
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)
