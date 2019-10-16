@@ -165,20 +165,11 @@ plugin.manifest = (path_, options) => {
 
 		const revisionedFile = relativePath(path.resolve(file.cwd, file.base), path.resolve(file.cwd, file.path));
 		const originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
+		const fileKey = getManifestKey(originalFile, opts);
 
-		if (typeof opts.keyModifier === 'function') {
-			const originalFileModified = opts.keyModifier(originalFile);
-			if (typeof originalFileModified === 'string') {
-				manifest[originalFileModified] = revisionedFile;
-			} else {
-				manifest[originalFile] = revisionedFile;
-			}
-		} else {
-			manifest[originalFile] = revisionedFile;
-		}
-
-		callback();
-	}, function (callback) {
+		manifest[fileKey] = getManifestValue(revisionedFile, opts);
+		cb();
+	}, function (cb) {
 		// No need to write a manifest file if there's nothing to manifest
 		if (Object.keys(manifest).length === 0) {
 			callback();
