@@ -55,6 +55,19 @@ const getManifestFile = async options => {
 	}
 };
 
+function getManifestKey(key, opts) {
+	let keyResult = key;
+
+	if (typeof opts.keyModifier === 'function') {
+		keyResult = opts.keyModifier(key);
+
+		if (typeof keyResult !== 'string') {
+			throw new Error(`Non string result after keyModifier applied to ${key}`);
+		}
+	}
+
+	return keyResult;
+}
 const plugin = () => {
 	const sourcemaps = [];
 	const pathMap = {};
