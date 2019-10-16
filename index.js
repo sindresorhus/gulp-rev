@@ -68,6 +68,21 @@ function getManifestKey(key, opts) {
 
 	return keyResult;
 }
+
+function getManifestValue(value, opts) {
+	let valueResult = value;
+
+	if (typeof opts.valueModifier === 'function') {
+		valueResult = opts.valueModifier(value);
+		if (typeof valueResult !== 'string') {
+			throw new Error(`Non string result after valueModifier applied to ${value}`);
+		}
+	}
+
+	return valueResult;
+
+}
+
 const plugin = () => {
 	const sourcemaps = [];
 	const pathMap = {};
