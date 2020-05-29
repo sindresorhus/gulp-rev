@@ -75,6 +75,11 @@ Default: `JSON`
 An object with `parse` and `stringify` methods. This can be used to provide a
 custom transformer instead of the default `JSON` for the manifest file.
 
+###### keyModifier
+Type: `Function`<br>
+Default: `null`
+
+Modify the generated `key` in the rev file.
 
 ### Original path
 
