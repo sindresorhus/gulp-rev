@@ -1,19 +1,17 @@
-# gulp-rev [![Build Status](https://travis-ci.org/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-rev) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo) [![Gitter](https://badges.gitter.im/join_chat.svg)](https://gitter.im/sindresorhus/gulp-rev)
+# gulp-rev [![Build Status](https://travis-ci.com/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.com/github/sindresorhus/gulp-rev) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
 
 > Static asset revisioning by appending content hash to filenames
 > `unicorn.css` → `unicorn-d41d8cd98f.css`
 
-**This project is feature complete.**
+**This project is feature complete. PRs adding new features will not be accepted.**
 
 Make sure to set the files to [never expire](http://developer.yahoo.com/performance/rules.html#expires) for this to have an effect.
-
 
 ## Install
 
 ```
 $ npm install --save-dev gulp-rev
 ```
-
 
 ## Usage
 
@@ -28,7 +26,6 @@ exports.default = () => (
 );
 ```
 
-
 ## API
 
 ### rev()
@@ -37,8 +34,8 @@ exports.default = () => (
 
 #### path
 
-Type: `string`<br>
-Default: `rev-manifest.json`
+Type: `string`\
+Default: `'rev-manifest.json'`
 
 Manifest file path.
 
@@ -48,43 +45,40 @@ Type: `object`
 
 ##### base
 
-Type: `string`<br>
+Type: `string`\
 Default: `process.cwd()`
 
 Override the `base` of the manifest file.
 
 ##### cwd
 
-Type: `string`<br>
+Type: `string`\
 Default: `process.cwd()`
 
 Override the current working directory of the manifest file.
 
 ##### merge
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: `false`
 
 Merge existing manifest file.
 
 ##### transformer
 
-Type: `object`<br>
+Type: `object`\
 Default: `JSON`
 
 An object with `parse` and `stringify` methods. This can be used to provide a
 custom transformer instead of the default `JSON` for the manifest file.
 
-
 ### Original path
 
 Original file paths are stored at `file.revOrigPath`. This could come in handy for things like rewriting references to the assets.
 
-
 ### Asset hash
 
 The hash of each rev'd file is stored at `file.revHash`. You can use this for customizing the file renaming, or for building different manifest formats.
-
 
 ### Asset manifest
 
@@ -136,7 +130,6 @@ exports.default = () => (
 
 You can optionally call `rev.manifest('manifest.json')` to give it a different path or filename.
 
-
 ## Sourcemaps and `gulp-concat`
 
 Because of the way `gulp-concat` handles file paths, you may need to set `cwd` and `path` manually on your `gulp-concat` instance to get everything to work correctly:
@@ -157,7 +150,6 @@ exports.default = () => (
 );
 ```
 
-
 ## Different hash for unchanged files
 
 Since the order of streams are not guaranteed, some plugins such as `gulp-concat` can cause the final file's content and hash to change. To avoid generating a new hash for unchanged source files, you can:
@@ -165,7 +157,6 @@ Since the order of streams are not guaranteed, some plugins such as `gulp-concat
 - Sort the streams with [gulp-sort](https://github.com/pgilad/gulp-sort)
 - Filter unchanged files with [gulp-unchanged](https://github.com/sindresorhus/gulp-changed)
 - Read more about [incremental builds](https://github.com/gulpjs/gulp#incremental-builds)
-
 
 ## Streaming
 
@@ -188,11 +179,9 @@ exports.default = () => (
 );
 ```
 
-
 ## Integration
 
 For more info on how to integrate `gulp-rev` into your app, have a look at the [integration guide](integration.md).
-
 
 ## Use gulp-rev in combination with one or more of
 
