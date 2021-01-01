@@ -1,4 +1,4 @@
-# gulp-rev [![Build Status](https://travis-ci.com/sindresorhus/gulp-rev.svg?branch=master)](https://travis-ci.com/github/sindresorhus/gulp-rev) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
+# gulp-rev
 
 > Static asset revisioning by appending content hash to filenames
 > `unicorn.css` → `unicorn-d41d8cd98f.css`
