@@ -193,6 +193,7 @@ It may be useful - and necessary - to use `gulp-rev` with other packages to comp
 - [gulp-rev-collector](https://github.com/shonny-ua/gulp-rev-collector) - Static asset revision data collector
 - [rev-del](https://github.com/callumacrae/rev-del) - Delete old unused assets
 - [gulp-rev-delete-original](https://github.com/nib-health-funds/gulp-rev-delete-original) - Delete original files after rev
+- [gulp-rev-dist-clean](https://github.com/alexandre-abrioux/gulp-rev-dist-clean) - Clean-up temporary and legacy files created by gulp-rev 
 - [gulp-rev-loader](https://github.com/adjavaherian/gulp-rev-loader) - Use rev-manifest with webpack
 - [gulp-rev-format](https://github.com/atamas101/gulp-rev-format) - Provide hash formatting options for static assets (prefix, suffix, last-extension)
 - [gulp-rev-sri](https://github.com/shaunwarman/gulp-rev-sri) - Add subresource integrity field to rev-manifest
