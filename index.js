@@ -1,13 +1,13 @@
-'use strict';
-const path = require('path');
-const through = require('through2');
-const vinylFile = require('vinyl-file');
-const revHash = require('rev-hash');
-const revPath = require('rev-path');
-const sortKeys = require('sort-keys');
-const modifyFilename = require('modify-filename');
-const Vinyl = require('vinyl');
-const PluginError = require('plugin-error');
+import {Buffer} from 'node:buffer';
+import path from 'node:path';
+import through from 'through2';
+import {vinylFile} from 'vinyl-file';
+import revHash from 'rev-hash';
+import {revPath} from 'rev-path';
+import sortKeys from 'sort-keys';
+import modifyFilename from 'modify-filename';
+import Vinyl from 'vinyl';
+import PluginError from 'plugin-error';
 
 function relativePath(base, filePath) {
 	filePath = filePath.replace(/\\/g, '/');
@@ -35,9 +35,9 @@ function transformFilename(file) {
 	file.path = modifyFilename(file.path, (filename, extension) => {
 		const extIndex = filename.lastIndexOf('.');
 
-		filename = extIndex === -1 ?
-			revPath(filename, file.revHash) :
-			revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
+		filename = extIndex === -1
+			? revPath(filename, file.revHash)
+			: revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
 
 		return filename + extension;
 	});
@@ -45,7 +45,7 @@ function transformFilename(file) {
 
 const getManifestFile = async options => {
 	try {
-		return await vinylFile.read(options.path, options);
+		return await vinylFile(options.path, options);
 	} catch (error) {
 		if (error.code === 'ENOENT') {
 			return new Vinyl(options);
@@ -89,7 +89,7 @@ const plugin = () => {
 			// Attempt to parse the sourcemap's JSON to get the reverse filename
 			try {
 				reverseFilename = JSON.parse(file.contents.toString()).file;
-			} catch (_) {}
+			} catch {}
 
 			if (!reverseFilename) {
 				reverseFilename = path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
@@ -123,7 +123,7 @@ plugin.manifest = (path_, options) => {
 		merge: false,
 		transformer: JSON,
 		...options,
-		...path_
+		...path_,
 	};
 
 	let manifest = {};
@@ -157,7 +157,7 @@ plugin.manifest = (path_, options) => {
 
 					try {
 						oldManifest = options.transformer.parse(manifestFile.contents.toString());
-					} catch (_) {}
+					} catch {}
 
 					manifest = Object.assign(oldManifest, manifest);
 				}
@@ -172,4 +172,4 @@ plugin.manifest = (path_, options) => {
 	});
 };
 
-module.exports = plugin;
+export default plugin;

@@ -4,11 +4,14 @@
 	"description": "Static asset revisioning by appending content hash to filenames: unicorn.css => unicorn-d41d8cd98f.css",
 	"license": "MIT",
 	"repository": "sindresorhus/gulp-rev",
+	"funding": "https://github.com/sponsors/sindresorhus",
 	"author": {
 		"name": "Sindre Sorhus",
 		"email": "sindresorhus@gmail.com",
 		"url": "sindresorhus.com"
 	},
+	"type": "module",
+	"exports": "./index.js",
 	"engines": {
 		"node": ">=14"
 	},
@@ -34,19 +37,19 @@
 		"assets"
 	],
 	"dependencies": {
-		"modify-filename": "^1.1.0",
+		"modify-filename": "^2.0.0",
 		"plugin-error": "^2.0.1",
-		"rev-hash": "^3.0.0",
-		"rev-path": "^2.0.0",
-		"sort-keys": "^4.0.0",
+		"rev-hash": "^4.0.0",
+		"rev-path": "^3.0.0",
+		"sort-keys": "^5.0.0",
 		"through2": "^4.0.2",
 		"vinyl": "^3.0.0",
-		"vinyl-file": "^3.0.0"
+		"vinyl-file": "^5.0.0"
 	},
 	"devDependencies": {
-		"ava": "^2.3.0",
-		"p-event": "^4.1.0",
-		"xo": "^0.24.0"
+		"ava": "^5.1.0",
+		"p-event": "^5.0.1",
+		"xo": "^0.53.1"
 	},
 	"peerDependencies": {
 		"gulp": ">=4"

@@ -1,15 +1,15 @@
-import path from 'path';
+import path from 'node:path';
 import test from 'ava';
-import pEvent from 'p-event';
-import rev from '..';
-import createFile from './_helper';
+import {pEvent, pEventIterator} from 'p-event';
+import rev from '../index.js';
+import createFile from './_helper.js';
 
 test('revs files', async t => {
 	const stream = rev();
 	const data = pEvent(stream, 'data');
 
 	stream.end(createFile({
-		path: 'unicorn.css'
+		path: 'unicorn.css',
 	}));
 
 	const file = await data;
@@ -22,7 +22,7 @@ test('adds the revision hash before the first `.` in the filename', async t => {
 	const data = pEvent(stream, 'data');
 
 	stream.end(createFile({
-		path: 'unicorn.css.map'
+		path: 'unicorn.css.map',
 	}));
 
 	const file = await data;
@@ -35,7 +35,7 @@ test('stores the hashes for later', async t => {
 	const data = pEvent(stream, 'data');
 
 	stream.end(createFile({
-		path: 'unicorn.css'
+		path: 'unicorn.css',
 	}));
 
 	const file = await data;
@@ -44,64 +44,70 @@ test('stores the hashes for later', async t => {
 	t.is(file.revHash, 'd41d8cd98f');
 });
 
-test.cb('handles sourcemaps transparently', t => {
+test('handles sourcemaps transparently', async t => {
 	const stream = rev();
-
-	stream.on('data', file => {
-		if (path.extname(file.path) === '.map') {
-			t.is(file.path, path.normalize('maps/pastissada-d41d8cd98f.css.map'));
-			t.end();
-		}
+	const data = pEventIterator(stream, 'data', {
+		resolutionEvents: ['finish'],
 	});
 
 	stream.write(createFile({
-		path: 'pastissada.css'
+		path: 'pastissada.css',
 	}));
 
 	stream.end(createFile({
 		path: 'maps/pastissada.css.map',
-		contents: JSON.stringify({file: 'pastissada.css'})
+		contents: JSON.stringify({file: 'pastissada.css'}),
 	}));
+
+	for await (const file of data) {
+		if (path.extname(file.path) === '.map') {
+			t.is(file.path, path.normalize('maps/pastissada-d41d8cd98f.css.map'));
+		}
+	}
 });
 
-test.cb('handles unparseable sourcemaps correctly', t => {
+test('handles unparseable sourcemaps correctly', async t => {
 	const stream = rev();
-
-	stream.on('data', file => {
-		if (path.extname(file.path) === '.map') {
-			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
-			t.end();
-		}
+	const data = pEventIterator(stream, 'data', {
+		resolutionEvents: ['finish'],
 	});
 
 	stream.write(createFile({
-		path: 'pastissada.css'
+		path: 'pastissada.css',
 	}));
 
 	stream.end(createFile({
 		path: 'pastissada.css.map',
-		contents: 'Wait a minute, this is invalid JSON!'
+		contents: 'Wait a minute, this is invalid JSON!',
 	}));
-});
 
-test.cb('okay when the optional sourcemap.file is not defined', t => {
-	const stream = rev();
-
-	stream.on('data', file => {
+	for await (const file of data) {
 		if (path.extname(file.path) === '.map') {
 			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
-			t.end();
 		}
+	}
+});
+
+test('okay when the optional sourcemap.file is not defined', async t => {
+	const stream = rev();
+	const data = pEventIterator(stream, 'data', {
+		resolutionEvents: ['finish'],
 	});
 
 	stream.write(createFile({
-		path: 'pastissada.css'
+		path: 'pastissada.css',
 	}));
 
 	stream.end(createFile({
 		path: 'pastissada.css.map',
-		contents: JSON.stringify({})
+		contents: JSON.stringify({}),
 	}));
+
+	for await (const file of data) {
+		if (path.extname(file.path) === '.map') {
+			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
+		}
+	}
 });
 
 test('handles a `.` in the folder name', async t => {
@@ -109,7 +115,7 @@ test('handles a `.` in the folder name', async t => {
 	const data = pEvent(stream, 'data');
 
 	stream.end(createFile({
-		path: 'mysite.io/unicorn.css'
+		path: 'mysite.io/unicorn.css',
 	}));
 
 	const file = await data;
