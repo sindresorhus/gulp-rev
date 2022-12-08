@@ -16,13 +16,13 @@ $ npm install --save-dev gulp-rev
 ## Usage
 
 ```js
-const gulp = require('gulp');
-const rev = require('gulp-rev');
+import {src, dest} from 'gulp';
+import rev from 'gulp-rev';
 
-exports.default = () => (
-	gulp.src('src/*.css')
+export default () => (
+	src('src/*.css')
 		.pipe(rev())
-		.pipe(gulp.dest('dist'))
+		.pipe(dest('dist'))
 );
 ```
 
@@ -83,18 +83,18 @@ The hash of each rev'd file is stored at `file.revHash`. You can use this for cu
 ### Asset manifest
 
 ```js
-const gulp = require('gulp');
-const rev = require('gulp-rev');
+import {src, dest} from 'gulp';
+import rev from 'gulp-rev';
 
-exports.default = () => (
+export default = () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
-		.pipe(gulp.dest('build/assets'))  // Copy original assets to build dir
+	src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
+		.pipe(dest('build/assets'))  // Copy original assets to build dir
 		.pipe(rev())
-		.pipe(gulp.dest('build/assets'))  // Write rev'd assets to build dir
+		.pipe(dest('build/assets'))  // Write rev'd assets to build dir
 		.pipe(rev.manifest())
-		.pipe(gulp.dest('build/assets'))  // Write manifest to build dir
+		.pipe(dest('build/assets'))  // Write manifest to build dir
 );
 ```
 
@@ -110,21 +110,21 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
 
 ```js
-const gulp = require('gulp');
-const rev = require('gulp-rev');
+import {src, dest} from 'gulp';
+import rev from 'gulp-rev';
 
-exports.default = () => (
+export default = () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
-		.pipe(gulp.dest('build/assets'))
+	src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
+		.pipe(dest('build/assets'))
 		.pipe(rev())
-		.pipe(gulp.dest('build/assets'))
+		.pipe(dest('build/assets'))
 		.pipe(rev.manifest({
 			base: 'build/assets',
 			merge: true // Merge with the existing manifest if one exists
 		}))
-		.pipe(gulp.dest('build/assets'))
+		.pipe(dest('build/assets'))
 );
 ```
 
@@ -136,18 +136,18 @@ Because of the way `gulp-concat` handles file paths, you may need to set `cwd` a
 
 ```js
 const gulp = require('gulp');
-const rev = require('gulp-rev');
 const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
 
-exports.default = () => (
-	gulp.src('src/*.js')
+exports.default = async () => {
+	const {default: rev} = await import('gulp-rev');
+	return gulp.src('src/*.js')
 		.pipe(sourcemaps.init())
 		.pipe(concat({path: 'bundle.js', cwd: ''}))
 		.pipe(rev())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'))
-);
+};
 ```
 
 ## Different hash for unchanged files
@@ -167,16 +167,16 @@ const gulp = require('gulp');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('gulp-buffer');
-const rev = require('gulp-rev');
 
-exports.default = () => (
-	browserify('src/index.js')
+exports.default = async () => {
+	const {default: rev} = await import('gulp-rev');
+	return browserify('src/index.js')
 		.bundle({debug: true})
 		.pipe(source('index.min.js'))
 		.pipe(buffer())
 		.pipe(rev())
 		.pipe(gulp.dest('dist'))
-);
+};
 ```
 
 ## Integration
