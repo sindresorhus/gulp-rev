@@ -35,7 +35,7 @@
 	],
 	"dependencies": {
 		"modify-filename": "^1.1.0",
-		"plugin-error": "^1.0.1",
+		"plugin-error": "^2.0.1",
 		"rev-hash": "^3.0.0",
 		"rev-path": "^2.0.0",
 		"sort-keys": "^4.0.0",
