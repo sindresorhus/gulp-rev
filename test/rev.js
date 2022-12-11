@@ -59,11 +59,15 @@ test('handles sourcemaps transparently', async t => {
 		contents: JSON.stringify({file: 'pastissada.css'}),
 	}));
 
+	let sourcemapCount = 0;
 	for await (const file of data) {
 		if (path.extname(file.path) === '.map') {
 			t.is(file.path, path.normalize('maps/pastissada-d41d8cd98f.css.map'));
+			sourcemapCount++;
 		}
 	}
+
+	t.is(sourcemapCount, 1);
 });
 
 test('handles unparseable sourcemaps correctly', async t => {
@@ -81,11 +85,15 @@ test('handles unparseable sourcemaps correctly', async t => {
 		contents: 'Wait a minute, this is invalid JSON!',
 	}));
 
+	let sourcemapCount = 0;
 	for await (const file of data) {
 		if (path.extname(file.path) === '.map') {
 			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
+			sourcemapCount++;
 		}
 	}
+
+	t.is(sourcemapCount, 1);
 });
 
 test('okay when the optional sourcemap.file is not defined', async t => {
@@ -103,11 +111,15 @@ test('okay when the optional sourcemap.file is not defined', async t => {
 		contents: JSON.stringify({}),
 	}));
 
+	let sourcemapCount = 0;
 	for await (const file of data) {
 		if (path.extname(file.path) === '.map') {
 			t.is(file.path, 'pastissada-d41d8cd98f.css.map');
+			sourcemapCount++;
 		}
 	}
+
+	t.is(sourcemapCount, 1);
 });
 
 test('handles a `.` in the folder name', async t => {
