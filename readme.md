@@ -86,7 +86,7 @@ The hash of each rev'd file is stored at `file.revHash`. You can use this for cu
 import gulp from 'gulp';
 import rev from 'gulp-rev';
 
-export default = () => (
+export default () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
@@ -113,7 +113,7 @@ By default, `rev-manifest.json` will be replaced as a whole. To merge with an ex
 import gulp from 'gulp';
 import rev from 'gulp-rev';
 
-export default = () => (
+export default () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
@@ -135,19 +135,19 @@ You can optionally call `rev.manifest('manifest.json')` to give it a different p
 Because of the way `gulp-concat` handles file paths, you may need to set `cwd` and `path` manually on your `gulp-concat` instance to get everything to work correctly:
 
 ```js
-const gulp = require('gulp');
-const sourcemaps = require('gulp-sourcemaps');
-const concat = require('gulp-concat');
+import gulp from 'gulp';
+import rev from 'gulp-rev';
+import sourcemaps from 'gulp-sourcemaps';
+import concat from 'gulp-concat';
 
-exports.default = async () => {
-	const {default: rev} = await import('gulp-rev');
-	return gulp.src('src/*.js')
+export default () => (
+	gulp.src('src/*.js')
 		.pipe(sourcemaps.init())
 		.pipe(concat({path: 'bundle.js', cwd: ''}))
 		.pipe(rev())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'))
-};
+);
 ```
 
 ## Different hash for unchanged files
@@ -163,20 +163,20 @@ Since the order of streams are not guaranteed, some plugins such as `gulp-concat
 This plugin does not support streaming. If you have files from a streaming source, such as Browserify, you should use [`gulp-buffer`](https://github.com/jeromew/gulp-buffer) before `gulp-rev` in your pipeline:
 
 ```js
-const gulp = require('gulp');
-const browserify = require('browserify');
-const source = require('vinyl-source-stream');
-const buffer = require('gulp-buffer');
+import gulp from 'gulp';
+import browserify from 'browserify';
+import source from 'vinyl-source-stream';
+import buffer from 'gulp-buffer';
+import rev from 'gulp-rev';
 
-exports.default = async () => {
-	const {default: rev} = await import('gulp-rev');
-	return browserify('src/index.js')
+export default () => (
+	browserify('src/index.js')
 		.bundle({debug: true})
 		.pipe(source('index.min.js'))
 		.pipe(buffer())
 		.pipe(rev())
 		.pipe(gulp.dest('dist'))
-};
+);
 ```
 
 ## Integration
