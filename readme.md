@@ -16,13 +16,13 @@ $ npm install --save-dev gulp-rev
 ## Usage
 
 ```js
-import {src, dest} from 'gulp';
+import gulp from 'gulp';
 import rev from 'gulp-rev';
 
 export default () => (
-	src('src/*.css')
+	gulp.src('src/*.css')
 		.pipe(rev())
-		.pipe(dest('dist'))
+		.pipe(gulp.dest('dist'))
 );
 ```
 
@@ -83,18 +83,18 @@ The hash of each rev'd file is stored at `file.revHash`. You can use this for cu
 ### Asset manifest
 
 ```js
-import {src, dest} from 'gulp';
+import gulp from 'gulp';
 import rev from 'gulp-rev';
 
 export default = () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
-		.pipe(dest('build/assets'))  // Copy original assets to build dir
+	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
+		.pipe(gulp.dest('build/assets'))  // Copy original assets to build dir
 		.pipe(rev())
-		.pipe(dest('build/assets'))  // Write rev'd assets to build dir
+		.pipe(gulp.dest('build/assets'))  // Write rev'd assets to build dir
 		.pipe(rev.manifest())
-		.pipe(dest('build/assets'))  // Write manifest to build dir
+		.pipe(gulp.dest('build/assets'))  // Write manifest to build dir
 );
 ```
 
@@ -110,21 +110,21 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
 
 ```js
-import {src, dest} from 'gulp';
+import gulp from 'gulp';
 import rev from 'gulp-rev';
 
 export default = () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
-	src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
-		.pipe(dest('build/assets'))
+	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
+		.pipe(gulp.dest('build/assets'))
 		.pipe(rev())
-		.pipe(dest('build/assets'))
+		.pipe(gulp.dest('build/assets'))
 		.pipe(rev.manifest({
 			base: 'build/assets',
 			merge: true // Merge with the existing manifest if one exists
 		}))
-		.pipe(dest('build/assets'))
+		.pipe(gulp.dest('build/assets'))
 );
 ```
 
