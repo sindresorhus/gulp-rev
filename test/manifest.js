@@ -1,8 +1,12 @@
-import path from 'path';
+import {Buffer} from 'node:buffer';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import test from 'ava';
-import pEvent from 'p-event';
-import rev from '..';
-import createFile from './_helper';
+import {pEvent} from 'p-event';
+import rev from '../index.js';
+import createFile from './_helper.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const manifestFixture = './test.manifest-fixture.json';
 const manifestFixturePath = path.join(__dirname, manifestFixture);
@@ -14,14 +18,14 @@ test('builds a rev manifest file', async t => {
 
 	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
-		revOrigPath: 'unicorn.css'
+		revOrigPath: 'unicorn.css',
 	}));
 
 	const file = await data;
 	t.is(file.relative, 'rev-manifest.json');
 	t.deepEqual(
 		JSON.parse(file.contents.toString()),
-		{'unicorn.css': 'unicorn-d41d8cd98f.css'}
+		{'unicorn.css': 'unicorn-d41d8cd98f.css'},
 	);
 });
 
@@ -32,7 +36,7 @@ test('allows naming the manifest file', async t => {
 
 	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
-		revOrigPath: 'unicorn.css'
+		revOrigPath: 'unicorn.css',
 	}));
 
 	const file = await data;
@@ -42,13 +46,13 @@ test('allows naming the manifest file', async t => {
 test('appends to an existing rev manifest file', async t => {
 	const stream = rev.manifest({
 		path: manifestFixturePath,
-		merge: true
+		merge: true,
 	});
 	const data = pEvent(stream, 'data');
 
 	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
-		revOrigPath: 'unicorn.css'
+		revOrigPath: 'unicorn.css',
 	}));
 
 	const file = await data;
@@ -57,8 +61,8 @@ test('appends to an existing rev manifest file', async t => {
 		JSON.parse(file.contents.toString()),
 		{
 			'app.js': 'app-a41d8cd1.js',
-			'unicorn.css': 'unicorn-d41d8cd98f.css'
-		}
+			'unicorn.css': 'unicorn-d41d8cd98f.css',
+		},
 	);
 });
 
@@ -68,37 +72,37 @@ test('does not append to an existing rev manifest by default', async t => {
 
 	stream.end(createFile({
 		path: 'unicorn-d41d8cd98f.css',
-		revOrigPath: 'unicorn.css'
+		revOrigPath: 'unicorn.css',
 	}));
 
 	const file = await data;
 	t.is(file.relative, manifestFixtureRelative);
 	t.deepEqual(
 		JSON.parse(file.contents.toString()),
-		{'unicorn.css': 'unicorn-d41d8cd98f.css'}
+		{'unicorn.css': 'unicorn-d41d8cd98f.css'},
 	);
 });
 
 test('sorts the rev manifest keys', async t => {
 	const stream = rev.manifest({
 		path: manifestFixturePath,
-		merge: true
+		merge: true,
 	});
 	const data = pEvent(stream, 'data');
 
 	stream.write(createFile({
 		path: 'unicorn-d41d8cd98f.css',
-		revOrigPath: 'unicorn.css'
+		revOrigPath: 'unicorn.css',
 	}));
 	stream.end(createFile({
 		path: 'pony-d41d8cd98f.css',
-		revOrigPath: 'pony.css'
+		revOrigPath: 'pony.css',
 	}));
 
 	const file = await data;
 	t.deepEqual(
 		Object.keys(JSON.parse(file.contents.toString())),
-		['app.js', 'pony.css', 'unicorn.css']
+		['app.js', 'pony.css', 'unicorn.css'],
 	);
 });
 
@@ -113,7 +117,7 @@ test('respects directories', async t => {
 		revOrigPath: path.join(__dirname, 'foo', 'unicorn.css'),
 		revOrigBase: __dirname,
 		origName: 'unicorn.css',
-		revName: 'unicorn-d41d8cd98f.css'
+		revName: 'unicorn-d41d8cd98f.css',
 	}));
 	stream.end(createFile({
 		cwd: __dirname,
@@ -122,7 +126,7 @@ test('respects directories', async t => {
 		revOrigBase: __dirname,
 		revOrigPath: path.join(__dirname, 'bar', 'pony.css'),
 		origName: 'pony.css',
-		revName: 'pony-d41d8cd98f.css'
+		revName: 'pony-d41d8cd98f.css',
 	}));
 
 	const MANIFEST = {};
@@ -146,7 +150,7 @@ test('respects files coming from directories with different bases', async t => {
 		revOrigBase: path.join(__dirname, 'vendor1'),
 		revOrigPath: path.join(__dirname, 'vendor1', 'foo', 'scriptfoo.js'),
 		origName: 'scriptfoo.js',
-		revName: 'scriptfoo-d41d8cd98f.js'
+		revName: 'scriptfoo-d41d8cd98f.js',
 	}));
 	stream.end(createFile({
 		cwd: __dirname,
@@ -155,7 +159,7 @@ test('respects files coming from directories with different bases', async t => {
 		revOrigBase: path.join(__dirname, 'vendor2'),
 		revOrigPath: path.join(__dirname, 'vendor2', 'bar', 'scriptbar.js'),
 		origName: 'scriptfoo.js',
-		revName: 'scriptfoo-d41d8cd98f.js'
+		revName: 'scriptfoo-d41d8cd98f.js',
 	}));
 
 	const MANIFEST = {};
@@ -175,13 +179,13 @@ test('uses correct base path for each file', async t => {
 		cwd: 'app/',
 		base: 'app/',
 		path: path.join('app', 'foo', 'scriptfoo-d41d8cd98f.js'),
-		revOrigPath: 'scriptfoo.js'
+		revOrigPath: 'scriptfoo.js',
 	}));
 	stream.end(createFile({
 		cwd: '/',
 		base: 'assets/',
 		path: path.join('/assets', 'bar', 'scriptbar-d41d8cd98f.js'),
-		revOrigPath: 'scriptbar.js'
+		revOrigPath: 'scriptbar.js',
 	}));
 
 	const MANIFEST = {};

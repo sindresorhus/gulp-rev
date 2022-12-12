@@ -16,10 +16,10 @@ $ npm install --save-dev gulp-rev
 ## Usage
 
 ```js
-const gulp = require('gulp');
-const rev = require('gulp-rev');
+import gulp from 'gulp';
+import rev from 'gulp-rev';
 
-exports.default = () => (
+export default () => (
 	gulp.src('src/*.css')
 		.pipe(rev())
 		.pipe(gulp.dest('dist'))
@@ -83,10 +83,10 @@ The hash of each rev'd file is stored at `file.revHash`. You can use this for cu
 ### Asset manifest
 
 ```js
-const gulp = require('gulp');
-const rev = require('gulp-rev');
+import gulp from 'gulp';
+import rev from 'gulp-rev';
 
-exports.default = () => (
+export default () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
@@ -110,10 +110,10 @@ An asset manifest, mapping the original paths to the revisioned paths, will be w
 By default, `rev-manifest.json` will be replaced as a whole. To merge with an existing manifest, pass `merge: true` and the output destination (as `base`) to `rev.manifest()`:
 
 ```js
-const gulp = require('gulp');
-const rev = require('gulp-rev');
+import gulp from 'gulp';
+import rev from 'gulp-rev';
 
-exports.default = () => (
+export default () => (
 	// By default, Gulp would pick `assets/css` as the base,
 	// so we need to set it explicitly:
 	gulp.src(['assets/css/*.css', 'assets/js/*.js'], {base: 'assets'})
@@ -135,12 +135,12 @@ You can optionally call `rev.manifest('manifest.json')` to give it a different p
 Because of the way `gulp-concat` handles file paths, you may need to set `cwd` and `path` manually on your `gulp-concat` instance to get everything to work correctly:
 
 ```js
-const gulp = require('gulp');
-const rev = require('gulp-rev');
-const sourcemaps = require('gulp-sourcemaps');
-const concat = require('gulp-concat');
+import gulp from 'gulp';
+import rev from 'gulp-rev';
+import sourcemaps from 'gulp-sourcemaps';
+import concat from 'gulp-concat';
 
-exports.default = () => (
+export default () => (
 	gulp.src('src/*.js')
 		.pipe(sourcemaps.init())
 		.pipe(concat({path: 'bundle.js', cwd: ''}))
@@ -163,13 +163,13 @@ Since the order of streams are not guaranteed, some plugins such as `gulp-concat
 This plugin does not support streaming. If you have files from a streaming source, such as Browserify, you should use [`gulp-buffer`](https://github.com/jeromew/gulp-buffer) before `gulp-rev` in your pipeline:
 
 ```js
-const gulp = require('gulp');
-const browserify = require('browserify');
-const source = require('vinyl-source-stream');
-const buffer = require('gulp-buffer');
-const rev = require('gulp-rev');
+import gulp from 'gulp';
+import browserify from 'browserify';
+import source from 'vinyl-source-stream';
+import buffer from 'gulp-buffer';
+import rev from 'gulp-rev';
 
-exports.default = () => (
+export default () => (
 	browserify('src/index.js')
 		.bundle({debug: true})
 		.pipe(source('index.min.js'))

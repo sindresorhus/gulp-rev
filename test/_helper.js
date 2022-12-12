@@ -1,3 +1,4 @@
+import {Buffer} from 'node:buffer';
 import Vinyl from 'vinyl';
 
 export default function createFile({
@@ -8,13 +9,13 @@ export default function createFile({
 	revName,
 	cwd,
 	base,
-	contents = ''
+	contents = '',
 }) {
 	const file = new Vinyl({
 		path,
 		cwd,
 		base,
-		contents: Buffer.from(contents)
+		contents: Buffer.from(contents),
 	});
 	file.revOrigPath = revOrigPath;
 	file.revOrigBase = revOrigBase;
