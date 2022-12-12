@@ -12,7 +12,6 @@ For our examples, we'll assume the following `rev-manifest.json`:
 }
 ```
 
-
 ## Approach #1 - Generate index.html during build
 
 One approach to working with `rev-manifest.json` is to use a templating language, such as [handlebars](http://handlebarsjs.com), to generate an `index.html` file which contained your fingerprinted files embedded into the page.
@@ -38,32 +37,31 @@ The idea is to read in your app's `rev-manifest.json`, and use the non-fingerpri
 #### `gulpfile.js`
 
 ```js
-const fs = require('fs');
-const gulp = require('gulp');
-const handlebars = require('gulp-compile-handlebars');
-const rename = require('gulp-rename');
+import fs from 'node:fs';
+import gulp from 'gulp';
+import handlebars from 'gulp-compile-handlebars';
+import rename from 'gulp-rename';
 
 // Create a handlebars helper to look up
 // fingerprinted asset by non-fingerprinted name
-const handlebarOpts = {
+const handlebarOptions = {
 	helpers: {
 		assetPath: (path, context) => ['/assets', context.data.root[path]].join('/')
 	}
 };
 
-exports['compile-index-html'] = () => {
+export const compileIndexHtml = () => {
 	// Read in our manifest file
 	const manifest = JSON.parse(fs.readFileSync('path/to/rev-manifest', 'utf8'));
 
 	// Read in our handlebars template, compile it using
 	// our manifest, and output it to index.html
 	return gulp.src('index.hbs')
-		.pipe(handlebars(manifest, handlebarOpts))
+		.pipe(handlebars(manifest, handlebarOptions))
 		.pipe(rename('index.html'))
 		.pipe(gulp.dest('public'));
 };
 ```
-
 
 ## Approach #2 - AJAX in manifest, inject assets into the page
 
@@ -75,22 +73,21 @@ For example, if you wanted to include your JavaScript files into the page:
 $.getJSON('/path/to/rev-manifest.json', manifest => {
 	const s = document.getElementsByTagName('script')[0];
 
-	const assetPath = src => {
-		src = `js/${src}.js`;
-		return ['/assets', manifest[src]].join('/');
+	const assetPath = source => {
+		source = `js/${source}.js`;
+		return ['/assets', manifest[source]].join('/');
 	};
 
-	for (const src of ['lib', 'app']) {
+	for (const source of ['lib', 'app']) {
 		const element = document.createElement('script');
 		element.async = true;
-		element.src = assetPath(src);
+		element.src = assetPath(source);
 		s.parentNode.insertBefore(element, s);
 	}
 })
 ```
 
 The above example assumes your assets live under `/assets` on your server.
-
 
 ## Approach #3 - PHP reads the manifest and provides asset names
 

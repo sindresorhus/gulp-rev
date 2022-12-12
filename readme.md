@@ -9,8 +9,8 @@ Make sure to set the files to [never expire](http://developer.yahoo.com/performa
 
 ## Install
 
-```
-$ npm install --save-dev gulp-rev
+```sh
+npm install --save-dev gulp-rev
 ```
 
 ## Usage
