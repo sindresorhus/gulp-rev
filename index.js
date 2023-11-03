@@ -1,17 +1,16 @@
 import {Buffer} from 'node:buffer';
 import path from 'node:path';
-import transformStream from 'easy-transform-stream';
 import {vinylFile} from 'vinyl-file';
 import revHash from 'rev-hash';
 import {revPath} from 'rev-path';
 import sortKeys from 'sort-keys';
 import modifyFilename from 'modify-filename';
 import Vinyl from 'vinyl';
-import PluginError from 'plugin-error';
+import {gulpPlugin} from 'gulp-plugin-extras';
 
 function relativePath(base, filePath) {
-	filePath = filePath.replace(/\\/g, '/');
-	base = base.replace(/\\/g, '/');
+	filePath = filePath.replaceAll('\\', '/');
+	base = base.replaceAll('\\', '/');
 
 	if (!filePath.startsWith(base)) {
 		return filePath;
@@ -55,20 +54,12 @@ const getManifestFile = async options => {
 	}
 };
 
-const plugin = () => {
+export default function gulpRev() {
 	const sourcemaps = [];
 	const pathMap = {};
 
-	return transformStream({objectMode: true}, file => {
-		if (file.isNull()) {
-			return file;
-		}
-
-		if (file.isStream()) {
-			throw new PluginError('gulp-rev', 'Streaming not supported');
-		}
-
-		// This is a sourcemap, hold until the end
+	return gulpPlugin('gulp-rev', file => {
+		// This is a sourcemap, hold until the end.
 		if (path.extname(file.path) === '.map') {
 			sourcemaps.push(file);
 			return;
@@ -79,40 +70,38 @@ const plugin = () => {
 		pathMap[oldPath] = file.revHash;
 
 		return file;
-	}, () => {
-		const files = [];
+	}, {
+		async * onFinish() {
+			for (const file of sourcemaps) {
+				let reverseFilename;
 
-		for (const file of sourcemaps) {
-			let reverseFilename;
+				// Attempt to parse the sourcemap's JSON to get the reverse filename
+				try {
+					reverseFilename = JSON.parse(file.contents.toString()).file;
+				} catch {}
 
-			// Attempt to parse the sourcemap's JSON to get the reverse filename
-			try {
-				reverseFilename = JSON.parse(file.contents.toString()).file;
-			} catch {}
+				if (!reverseFilename) {
+					reverseFilename = path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
+				}
 
-			if (!reverseFilename) {
-				reverseFilename = path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
+				if (pathMap[reverseFilename]) {
+					// Save the old path for later
+					file.revOrigPath = file.path;
+					file.revOrigBase = file.base;
+
+					const hash = pathMap[reverseFilename];
+					file.path = revPath(file.path.replace(/\.map$/, ''), hash) + '.map';
+				} else {
+					transformFilename(file);
+				}
+
+				yield file;
 			}
-
-			if (pathMap[reverseFilename]) {
-				// Save the old path for later
-				file.revOrigPath = file.path;
-				file.revOrigBase = file.base;
-
-				const hash = pathMap[reverseFilename];
-				file.path = revPath(file.path.replace(/\.map$/, ''), hash) + '.map';
-			} else {
-				transformFilename(file);
-			}
-
-			files.push(file);
-		}
-
-		return files;
+		},
 	});
-};
+}
 
-plugin.manifest = (path_, options) => {
+gulpRev.manifest = (path_, options) => {
 	if (typeof path_ === 'string') {
 		path_ = {path: path_};
 	}
@@ -127,38 +116,38 @@ plugin.manifest = (path_, options) => {
 
 	let manifest = {};
 
-	return transformStream({objectMode: true}, file => {
+	return gulpPlugin('gulp-rev', file => {
 		// Ignore all non-rev'd files
 		if (!file.path || !file.revOrigPath) {
 			return;
 		}
 
 		const revisionedFile = relativePath(path.resolve(file.cwd, file.base), path.resolve(file.cwd, file.path));
-		const originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replace(/\\/g, '/');
+		const originalFile = path.join(path.dirname(revisionedFile), path.basename(file.revOrigPath)).replaceAll('\\', '/');
 
 		manifest[originalFile] = revisionedFile;
-	}, async function * () {
-		// No need to write a manifest file if there's nothing to manifest
-		if (Object.keys(manifest).length === 0) {
-			return;
-		}
+	}, {
+		async * onFinish() {
+			// No need to write a manifest file if there's nothing to manifest
+			if (Object.keys(manifest).length === 0) {
+				return;
+			}
 
-		const manifestFile = await getManifestFile(options);
+			const manifestFile = await getManifestFile(options);
 
-		if (options.merge && !manifestFile.isNull()) {
-			let oldManifest = {};
+			if (options.merge && !manifestFile.isNull()) {
+				let oldManifest = {};
 
-			try {
-				oldManifest = options.transformer.parse(manifestFile.contents.toString());
-			} catch {}
+				try {
+					oldManifest = options.transformer.parse(manifestFile.contents.toString());
+				} catch {}
 
-			manifest = Object.assign(oldManifest, manifest);
-		}
+				manifest = Object.assign(oldManifest, manifest);
+			}
 
-		manifestFile.contents = Buffer.from(options.transformer.stringify(sortKeys(manifest), undefined, '  '));
+			manifestFile.contents = Buffer.from(options.transformer.stringify(sortKeys(manifest), undefined, '  '));
 
-		yield manifestFile;
+			yield manifestFile;
+		},
 	});
 };
-
-export default plugin;

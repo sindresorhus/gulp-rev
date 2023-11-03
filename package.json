@@ -13,7 +13,7 @@
 	"type": "module",
 	"exports": "./index.js",
 	"engines": {
-		"node": ">=16"
+		"node": ">=18"
 	},
 	"scripts": {
 		"test": "xo && ava"
@@ -37,19 +37,18 @@
 		"assets"
 	],
 	"dependencies": {
-		"easy-transform-stream": "^1.0.0",
+		"gulp-plugin-extras": "^0.3.0",
 		"modify-filename": "^2.0.0",
-		"plugin-error": "^2.0.1",
-		"rev-hash": "^4.0.0",
+		"rev-hash": "^4.1.0",
 		"rev-path": "^3.0.0",
 		"sort-keys": "^5.0.0",
 		"vinyl": "^3.0.0",
 		"vinyl-file": "^5.0.0"
 	},
 	"devDependencies": {
-		"ava": "^5.1.0",
-		"p-event": "^5.0.1",
-		"xo": "^0.53.1"
+		"ava": "^5.3.1",
+		"p-event": "^6.0.0",
+		"xo": "^0.56.0"
 	},
 	"peerDependencies": {
 		"gulp": ">=4"
