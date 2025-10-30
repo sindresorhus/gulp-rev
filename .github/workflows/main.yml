@@ -10,8 +10,9 @@ jobs:
       fail-fast: false
       matrix:
         node-version:
+          - 24
+          - 22
           - 20
-          - 18
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
