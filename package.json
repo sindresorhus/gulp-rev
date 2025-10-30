@@ -41,7 +41,7 @@
 		"modify-filename": "^2.0.0",
 		"rev-hash": "^4.1.0",
 		"rev-path": "^3.0.0",
-		"sort-keys": "^5.0.0",
+		"sort-keys": "^6.0.0",
 		"vinyl": "^3.0.0",
 		"vinyl-file": "^5.0.0"
 	},
