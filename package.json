@@ -47,7 +47,7 @@
 	},
 	"devDependencies": {
 		"ava": "^6.4.1",
-		"p-event": "^6.0.0",
+		"p-event": "^7.0.0",
 		"xo": "^0.56.0"
 	},
 	"peerDependencies": {
