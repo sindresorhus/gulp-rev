@@ -80,9 +80,7 @@ export default function gulpRev() {
 					reverseFilename = JSON.parse(file.contents.toString()).file;
 				} catch {}
 
-				if (!reverseFilename) {
-					reverseFilename = path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
-				}
+				reverseFilename ||= path.relative(path.dirname(file.path), path.basename(file.path, '.map'));
 
 				if (pathMap[reverseFilename]) {
 					// Save the old path for later

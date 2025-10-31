@@ -12,6 +12,7 @@
 	},
 	"type": "module",
 	"exports": "./index.js",
+	"sideEffects": false,
 	"engines": {
 		"node": ">=20"
 	},
@@ -42,13 +43,13 @@
 		"rev-hash": "^4.1.0",
 		"rev-path": "^3.0.0",
 		"sort-keys": "^6.0.0",
-		"vinyl": "^3.0.0",
+		"vinyl": "^3.0.1",
 		"vinyl-file": "^5.0.0"
 	},
 	"devDependencies": {
 		"ava": "^6.4.1",
 		"p-event": "^7.0.0",
-		"xo": "^0.56.0"
+		"xo": "^1.2.3"
 	},
 	"peerDependencies": {
 		"gulp": ">=4"
